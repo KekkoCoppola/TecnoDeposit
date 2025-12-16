@@ -43,7 +43,7 @@ FLUSH PRIVILEGES;
 Importa lo schema database (se disponibile):
 
 ```bash
-mysql -u tecnodeposit_user -p tecnodeposit < path/to/schema.sql
+mysql -u tecnodeposit_user -p tecnodeposit < src/resources/DB.sql
 ```
 
 ### 3. Configurazione Applicazione
