@@ -40,10 +40,10 @@ GRANT ALL PRIVILEGES ON tecnodeposit.* TO 'tecnodeposit_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Importa lo schema database (se disponibile):
+Importa lo schema database:
 
 ```bash
-mysql -u tecnodeposit_user -p tecnodeposit < src/resources/DB.sql
+mysql -u tecnodeposit_user -p tecnodeposit < src/main/resources/DB.sql
 ```
 
 ### 3. Configurazione Applicazione
