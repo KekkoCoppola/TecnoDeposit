@@ -51,5 +51,4 @@ desktop.ini
 *.exe
 
 # Backup files
-*.sql
 backup/
