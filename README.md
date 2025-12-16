@@ -23,7 +23,10 @@ Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Ja
 ## ⚙️ Setup e Configurazione
 
 ### NB. Codice Svuota Magazzino
-Il codice otp per lo svuotamento del magazzino è: a3D!9fLk7@pQ4zV6m#Y1dR8wK$eJ0tN3cX7zT1wF5hR8uP2sL0vM9gB6dQ3yC4
+Il codice otp per lo svuotamento del magazzino.
+```bash
+a3D!9fLk7@pQ4zV6m#Y1dR8wK$eJ0tN3cX7zT1wF5hR8uP2sL0vM9gB6dQ3yC4
+```
 
 ### 1. Clone del Repository
 
