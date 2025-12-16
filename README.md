@@ -24,7 +24,7 @@ Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Ja
 
 ### NB. Codice Svuota Magazzino
 Il codice otp per lo svuotamento del magazzino.
-```bash
+```
 a3D!9fLk7@pQ4zV6m#Y1dR8wK$eJ0tN3cX7zT1wF5hR8uP2sL0vM9gB6dQ3yC4
 ```
 
