@@ -1,0 +1,102 @@
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+	    .sidebar-link.active {
+			background-color: #d4291d;
+		}
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 0.50rem 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .status-riparato { background-color: #3b82f6; color: white; }
+		.status-in-magazzino { background-color: #10b981; color: white; }
+		.status-installato { background-color: #8b5cf6; color: white; }
+		.status-destinato { background-color: #0ea5e9; color: white; }
+		.status-assegnato { background-color: #0284c7; color: white; }
+		.status-in-attesa { background-color: #facc15; color: black; }
+		.status-guasto { background-color: #b91c1c; color: white; }
+		.status-non-riparato { background-color: #f97316; color: white; }
+		.status-non-riparabile { background-color: #4b5563; color: white; }
+		
+				
+        /* Profile dropdown styles */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .profile-dropdown-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            color: #4b5563;
+            transition: all 0.2s;
+        }
+
+        .profile-dropdown-item:hover {
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+
+        .profile-dropdown-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .profile-dropdown-divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 0.25rem 0;
+        }

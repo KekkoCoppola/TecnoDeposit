@@ -1,0 +1,241 @@
+# TecnoDeposit
+
+Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Jakarta EE e MySQL.
+
+## 🚀 Funzionalità Principali
+
+- **Gestione Inventario**: CRUD completo articoli con stati, assegnazioni tecnici, tracking garanzie
+- **Richieste Materiale**: Sistema di richieste con workflow approvazione
+- **Gestione Fornitori**: Anagrafica fornitori e centri revisione
+- **Autenticazione**: Login sicuro con gestione ruoli (Admin/Tecnico)
+- **Notifiche**: Sistema notifiche email con template HTML
+- **Scanner QR/Barcode**: Ricerca rapida articoli tramite scanner
+- **Statistiche**: Dashboard con report e contatori real-time
+- **Import/Export**: Import bulk articoli, backup database
+
+## 📋 Requisiti
+
+- **Java JDK**: 17 o superiore
+- **Application Server**: Apache Tomcat 10.1+ o compatibile Jakarta EE
+- **Database**: MySQL 8.0+
+- **Build Tool**: Maven o Ant (a seconda della configurazione)
+
+## ⚙️ Setup e Configurazione
+
+### 1. Clone del Repository
+
+```bash
+git clone https://github.com/yourusername/TecnoDeposit.git
+cd TecnoDeposit
+```
+
+### 2. Configurazione Database
+
+Crea il database MySQL:
+
+```sql
+CREATE DATABASE tecnodeposit CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'tecnodeposit_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+GRANT ALL PRIVILEGES ON tecnodeposit.* TO 'tecnodeposit_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Importa lo schema database (se disponibile):
+
+```bash
+mysql -u tecnodeposit_user -p tecnodeposit < path/to/schema.sql
+```
+
+### 3. Configurazione Applicazione
+
+1. Copia il file template di configurazione:
+
+```bash
+cp src/main/resources/config.properties.template src/main/resources/config.properties
+```
+
+2. Modifica `config.properties` con le tue credenziali:
+
+```properties
+# Database
+db.url=jdbc:mysql://localhost:3306/tecnodeposit
+db.username=tecnodeposit_user
+db.password=your_secure_password
+
+# Email SMTP (per invio notifiche)
+email.smtp.host=smtp.gmail.com
+email.smtp.port=587
+email.smtp.username=your-email@gmail.com
+email.smtp.password=your-app-password
+email.smtp.from=noreply@tecnodeposit.it
+
+# AES Key per crittografia (genera nuova chiave)
+crypto.aes.key.b64=YOUR_BASE64_KEY_HERE
+```
+
+### 4. Generare Chiave AES
+
+Per la crittografia dei dati sensibili, genera una chiave AES-256:
+
+```bash
+# Linux/Mac
+openssl rand -base64 32
+
+# Windows (PowerShell)
+$bytes = New-Object byte[] 32; (New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes); [Convert]::ToBase64String($bytes)
+```
+
+Copia il risultato in `crypto.aes.key.b64` nel file `config.properties`.
+
+### 5. Build e Deploy
+
+#### Con Maven:
+
+```bash
+mvn clean package
+cp target/TecnoDeposit.war /path/to/tomcat/webapps/
+```
+
+#### Con IDE (Eclipse):
+
+1. Import progetto come "Existing Project"
+2. Configure Tomcat server nelle impostazioni
+3. Run > Run on Server
+
+## 🔐 Configurazione Email (Gmail)
+
+Se usi Gmail per SMTP:
+
+1. Vai su [Google Account Security](https://myaccount.google.com/security)
+2. Abilita "2-Step Verification"
+3. Genera "App Password" per TecnoDeposit
+4. Usa l'App Password nel file `config.properties`
+
+## 🛡️ Sicurezza
+
+> **⚠️ IMPORTANTE**: Non committare mai il file `config.properties` nel repository!
+
+Il file `.gitignore` è configurato per escludere:
+- `config.properties` (credenziali)
+- File di build (`*.class`, `*.war`)
+- File IDE (`.idea`, `.settings`)
+- Log files
+
+### Best Practices
+
+- Cambia tutte le password di default
+- Usa password forti per database e admin
+- Configura HTTPS in produzione
+- Limita accesso database solo da localhost (o IP fidati)
+- Esegui backup regolari del database
+
+## 📁 Struttura Progetto
+
+```
+TecnoDeposit/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   ├── controller/      # Servlet controller
+│       │   ├── model/           # Entità e business logic
+│       │   ├── dao/             # Data Access Objects
+│       │   └── util/            # Utility (Email, Crypto, etc.)
+│       ├── webapp/
+│       │   ├── WEB-INF/
+│       │   │   └── web.xml      # Configurazione servlet
+│       │   ├── partials/        # JSP parziali
+│       │   ├── scripts/         # JavaScript
+│       │   ├── css/             # Stylesheet
+│       │   └── *.jsp            # Pagine JSP
+│       └── resources/
+│           └── config.properties.template
+├── build/                       # File compilati (ignorato)
+├── .gitignore
+└── README.md
+```
+
+## 🚀 Primo Accesso
+
+Dopo il deploy, l'applicazione sarà accessibile a:
+
+```
+http://localhost:8080/TecnoDeposit/
+```
+
+**Credenziali default** (se configurate nel database):
+- Username: `admin`
+- Password: Vedere log applicazione o configurazione iniziale
+
+> **⚠️ Cambia immediatamente la password default!**
+
+## 🐛 Troubleshooting
+
+### Errore connessione database
+
+```
+❌ MySQL JDBC Driver not found!
+```
+
+**Soluzione**: Aggiungi MySQL Connector/J alle dipendenze:
+
+```xml
+<!-- pom.xml -->
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <version>8.0.33</version>
+</dependency>
+```
+
+### config.properties not found
+
+```
+⚠️ config.properties not found, using environment variables
+```
+
+**Soluzione**: 
+1. Verifica che `config.properties` sia in `src/main/resources/`
+2. Assicurati che il file sia incluso nel build
+3. In alternativa, configura variabili ambiente
+
+### Email non inviate
+
+- Verifica credenziali SMTP in `config.properties`
+- Controlla che "App Password" sia configurata (se Gmail)
+- Verifica firewall/antivirus non blocchi porta 587
+
+## 📊 Features Roadmap
+
+- [x] Gestione inventario completa
+- [x] Sistema autenticazione e ruoli
+- [x] Notifiche email
+- [x] Scanner QR/Barcode
+- [ ] API REST per integrazione
+- [ ] Dashboard analytics avanzata
+- [ ] Mobile app (React Native)
+- [ ] Export PDF report
+
+## 🤝 Contribuire
+
+Le Pull Request sono benvenute! Per cambiamenti importanti:
+
+1. Apri prima una Issue per discutere le modifiche
+2. Fork il progetto
+3. Crea un feature branch (`git checkout -b feature/AmazingFeature`)
+4. Commit le modifiche (`git commit -m 'Add AmazingFeature'`)
+5. Push al branch (`git push origin feature/AmazingFeature`)
+6. Apri una Pull Request
+
+## 📝 License
+
+Questo progetto è proprietario. Tutti i diritti riservati.
+
+## 📞 Supporto
+
+Per assistenza:
+- Email: assistenza@tecnodeposit.it
+- Website: [www.tecnodeposit.it](https://www.tecnodeposit.it)
+
+---
+
+**Powered by TecnoDeposit © 2025**

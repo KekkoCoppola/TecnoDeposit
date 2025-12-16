@@ -1,0 +1,173 @@
+<%@ page import="model.ListaArticoli" %>
+<%
+    String username = (String) session.getAttribute("username");
+    String ruolo = (String) session.getAttribute("ruolo");
+    ListaArticoli lista = new ListaArticoli();
+    Integer count = lista.countArticoli(); 
+%>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* Default: nascondi tutto */
+.desktop-only {
+    display: none;
+}
+.mobile-only {
+    display: none;
+}
+
+/* Desktop view */
+@media (min-width: 768px) {
+    .desktop-only {
+        display: block;
+    }
+}
+
+/* Mobile view */
+@media (max-width: 767px) {
+    .mobile-only {
+        display: block;
+        
+    }
+    
+}
+
+</style>
+
+<div id="sidebar" class=" desktop-only sidebar bg-[#e52c1f] text-white w-64 flex flex-col height=100vh">
+<div class="p-4 border-t border-[#c5271b]">
+                <button id="toggle-sidebar" class="flex items-center text-[#f8b4b0] hover:text-white">
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="sidebar-text ml-3">Riduci</span>
+                </button>
+            </div>
+            <div class="p-4 flex items-center border-b border-[#c5271b]">
+                <div class="w-10 h-10 rounded-full bg-[#d4291d] flex items-center justify-center">
+                <img src = "img/Icon.png" width=30 height=30>
+                   <!--   <i class="fas fa-box-open text-xl"></i>-->
+                </div>
+                <span class="logo-text ml-3 text-xl font-bold">TecnoDeposit</span>
+            </div>
+            
+            <div class="p-4 border-b border-[#c5271b]">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-[#d4291d] flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="sidebar-text ml-3">
+                  
+                        <p class="font-medium"><%= username %></p>
+                        <p class="text-xs text-[#f8b4b0]"><%= ruolo %></p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                <%
+    String uri = request.getRequestURI(); // es: /app/prodotti.jsp
+    String context = request.getContextPath(); // es: /app
+%>
+                    <li>
+                        <a href="<%= request.getContextPath() %>/dashboard" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/dashboard.jsp") ? "active" : "" %>">
+                            <i class="fas fa-table  "></i>
+                            <span class="sidebar-text ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <!-- <li>
+                        <a href="#" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] ">
+                            <i class="fas fa-boxes"></i>
+                            <span class="sidebar-text ml-3">Articoli</span>
+                            <span class="sidebar-text ml-auto bg-[#d4291d] text-xs px-2 py-1 rounded-full"><%= count %></span>
+                        </a>
+                    </li> -->
+                    <li>
+                        <a href="<%= request.getContextPath() %>/fornitori" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/fornitori.jsp") ? "active" : "" %>">
+                            <i class="fas fa-screwdriver-wrench"></i>
+                            <span class="sidebar-text ml-3">Centri Revisione</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%= request.getContextPath() %>/statistiche" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/statistiche.jsp") ? "active" : "" %>">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="sidebar-text ml-3">Statistiche</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%= request.getContextPath() %>/richieste-materiale" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/richieste.jsp") ? "active" : "" %>">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span class="sidebar-text ml-3"> Richieste Materiale</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%= request.getContextPath() %>/impostazioni" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/impostazioni.jsp") ? "active" : "" %>">
+                            <i class="fas fa-cog"></i>
+                            <span class="sidebar-text ml-3">Impostazioni</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                
+            </nav>
+            <div class="p-4 border-t border-[#c5271b]">
+                <div class="py-1">
+                                    <a href="<%= request.getContextPath() %>/logout" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d]" id="logout-btn">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        
+                                        <span class="sidebar-text ml-3">Logout</span>
+                                    </a>
+                                </div>
+            </div>
+        </div>
+        
+      <!-- TELEFONO -->  
+        
+        <div class="fixed bottom-0 left-0 right-0 bg-[#e52c1f] shadow-lg border-t border-white z-50 mobile-only" >
+        <div class="flex justify-around items-center h-16">
+            <!-- Dashboard -->
+            <div class="flex flex-col items-center justify-center w-full h-full text-white">
+                <div class="text-xl">
+                <a href="<%= request.getContextPath() %>/dashboard" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/dashboard.jsp") ? "active" : "" %>">
+                    <i class="fas fa-table  "></i>
+                    </a>
+                </div>
+                <span class="text-xs font-medium mt-1 transition-all duration-300 ease-in-out
+    <%= uri.endsWith("/dashboard.jsp") ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none" %>">Dashboard</span>
+            </div>
+
+            <!-- Fornitori -->
+            <div class="flex flex-col items-center justify-center w-full h-full text-white">
+                <div class="text-xl">
+                <a href="<%= request.getContextPath() %>/fornitori" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/fornitori.jsp") ? "active" : "" %>">
+                    <i class="fas fa-screwdriver-wrench"></i>
+                    </a>
+                </div>
+                <span class="text-xs font-medium mt-1 transition-all duration-300 ease-in-out
+    <%= uri.endsWith("/fornitori.jsp") ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none" %>">Centri Revisione</span>
+            </div>
+
+            <!-- Statistiche -->
+            <div class="flex flex-col items-center justify-center w-full h-full text-white">
+                <div class="text-xl">
+                <a href="<%= request.getContextPath() %>/statistiche" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/statistiche.jsp") ? "active" : "" %>">
+                    <i class="fas fa-chart-line"></i>
+                    </a>
+                </div>
+                <span class="text-xs font-medium mt-1 transition-all duration-300 ease-in-out
+    <%= uri.endsWith("/statistiche.jsp") ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none" %>">Statistiche</span>
+            </div>
+
+            <!-- Impostazioni -->
+            <div class="flex flex-col items-center justify-center w-full h-full text-white">
+            
+                <div class="text-xl">
+                <a href="<%= request.getContextPath() %>/richieste-materiale" class="nav-item flex items-center p-2 rounded-lg hover:bg-[#d4291d] sidebar-link <%= uri.endsWith("/richieste.jsp") ? "active" : "" %>">
+                    <i class="fas fa-clipboard-list"></i>
+                    </a>
+                </div>
+                <span class="text-xs font-medium mt-1 transition-all duration-300 ease-in-out
+    <%= uri.endsWith("/richieste.jsp") ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none" %>">Richieste</span>
+            </div>
+        </div>
+    </div>
+

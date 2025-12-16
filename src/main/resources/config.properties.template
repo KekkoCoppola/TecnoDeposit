@@ -1,0 +1,38 @@
+# TecnoDeposit Configuration Template
+# Copy this file to config.properties and fill with your values
+
+# Database Configuration
+db.url=jdbc:mysql://localhost:3306/tecnodeposit
+db.username=your_db_username
+db.password=your_db_password
+db.driver=com.mysql.cj.jdbc.Driver
+
+# Connection Pool Settings (optional)
+db.pool.initialSize=5
+db.pool.maxActive=20
+db.pool.maxIdle=10
+db.pool.minIdle=5
+
+# Email Configuration (SMTP)
+email.smtp.host=smtp.gmail.com
+email.smtp.port=587
+email.smtp.username=your-email@gmail.com
+email.smtp.password=your-app-password
+email.smtp.from=noreply@tecnodeposit.it
+email.smtp.starttls=true
+
+# AES Encryption Key (Base64 encoded, 256-bit)
+# Generate with: openssl rand -base64 32
+crypto.aes.key.b64=YOUR_BASE64_ENCODED_AES_KEY_HERE
+
+# Application Settings
+app.name=TecnoDeposit
+app.version=1.0.0
+app.environment=development
+
+# Application Base URL (used in email links)
+# Change this to your production URL when deploying
+app.base.url=http://localhost:8080/TecnoDeposit
+
+# Session Configuration
+session.timeout=1800

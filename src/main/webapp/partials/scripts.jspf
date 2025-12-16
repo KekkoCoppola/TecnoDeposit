@@ -1,0 +1,45 @@
+
+document.getElementById('toggle-sidebar')?.addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+    const icon = this.querySelector('i');
+    if (sidebar.classList.contains('collapsed')) {
+        icon.classList.replace('fa-chevron-left', 'fa-chevron-right');
+        this.querySelector('.sidebar-text').textContent = 'Espandi';
+    } else {
+        icon.classList.replace('fa-chevron-right', 'fa-chevron-left');
+        this.querySelector('.sidebar-text').textContent = 'Riduci';
+    }
+});
+
+ window.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggle-sidebar');
+
+    if (window.innerWidth <= 768 && !sidebar.classList.contains('collapsed')) {
+      sidebar.classList.add('collapsed');
+
+      // Aggiorna anche l’icona e il testo
+      const icon = toggleBtn.querySelector('i');
+      if (icon) {
+        icon.classList.replace('fa-chevron-left', 'fa-chevron-right');
+      }
+
+      const label = toggleBtn.querySelector('.sidebar-text');
+      if (label) {
+        label.textContent = 'Espandi';
+      }
+    }
+  });
+
+const profileBtn = document.getElementById('profile-btn');
+const profileDropdown = document.getElementById('profile-dropdown');
+profileBtn?.addEventListener('click', function(e) {
+    e.stopPropagation();
+    profileDropdown.classList.toggle('show');
+});
+document.addEventListener('click', function(e) {
+    if (!profileBtn?.contains(e.target) && !profileDropdown?.contains(e.target)) {
+        profileDropdown?.classList.remove('show');
+    }
+});

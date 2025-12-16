@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee 
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+ <!-- FILTRO -->   
+<filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>controller.AuthFilter</filter-class>
+</filter>
+
+<filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+
+
+ <!-- 401 -->   
+<error-page>
+    <error-code>401</error-code>
+    <location>/error401.jsp</location>
+</error-page>  
+ <!-- 403 -->   
+<error-page>
+    <error-code>403</error-code>
+    <location>/error403.jsp</location>
+</error-page>        
+<!-- 404 -->   
+<error-page>
+    <error-code>404</error-code>
+    <location>/error404.jsp</location>
+</error-page>
+<!-- 500 -->   
+<error-page>
+    <error-code>500</error-code>
+    <location>/error500.jsp</location>
+</error-page>
+         
+<!-- LISTENER DI SESSIONE -->
+<listener>
+    <listener-class>controller.SessionCleanupListener</listener-class>
+</listener>
+
+
+  <!-- ONE-TIME REVEAL CREDENZIALI-->
+<servlet>
+    <servlet-name>CredenzialiServlet</servlet-name>
+    <servlet-class>controller.CredenzialiServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>CredenzialiServlet</servlet-name>
+    <url-pattern>/credenziali</url-pattern>
+</servlet-mapping>
+
+  <!-- CATALOGO DEL FORNITORE -->
+<servlet>
+    <servlet-name>CatalogoFornitoreServlet</servlet-name>
+    <servlet-class>controller.CatalogoFornitoreServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>CatalogoFornitoreServlet</servlet-name>
+    <url-pattern>/catalogo-fornitore</url-pattern>
+</servlet-mapping>
+
+
+  <!-- INFORMAZIONI -->
+<servlet>
+    <servlet-name>InformazioniServlet</servlet-name>
+    <servlet-class>controller.InformazioniServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>InformazioniServlet</servlet-name>
+    <url-pattern>/informazioni</url-pattern>
+</servlet-mapping>
+
+
+  <!-- STORICO -->
+<servlet>
+    <servlet-name>StoricoArticoloServlet</servlet-name>
+    <servlet-class>controller.StoricoArticoloServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>StoricoArticoloServlet</servlet-name>
+    <url-pattern>/storico-articolo</url-pattern>
+</servlet-mapping>
+
+  <!-- NOTIFICHE -->
+<servlet>
+    <servlet-name>NotificationServlet</servlet-name>
+    <servlet-class>controller.NotificationServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>NotificationServlet</servlet-name>
+    <url-pattern>/api/notifications</url-pattern>
+</servlet-mapping>
+
+  <!-- FILTRO -->
+<servlet>
+    <servlet-name>FiltroServlet</servlet-name>
+    <servlet-class>controller.FiltroServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>FiltroServlet</servlet-name>
+    <url-pattern>/filtro</url-pattern>
+</servlet-mapping>
+
+  <!-- LOGIN -->
+<servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>controller.LoginServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/login</url-pattern>
+</servlet-mapping>
+
+  <!-- ARTICOLO -->
+<servlet>
+    <servlet-name>ArticoloServlet</servlet-name>
+    <servlet-class>controller.ArticoloServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ArticoloServlet</servlet-name>
+    <url-pattern>/articolo</url-pattern>
+</servlet-mapping>
+
+  <!-- RICHIESTE -->
+<servlet>
+    <servlet-name>RichiesteServlet</servlet-name>
+    <servlet-class>controller.RichiesteServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RichiesteServlet</servlet-name>
+    <url-pattern>/richieste-materiale</url-pattern>
+</servlet-mapping>
+
+  <!-- DASHBOARD -->
+<servlet>
+    <servlet-name>DashboardServlet</servlet-name>
+    <servlet-class>controller.DashboardServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>DashboardServlet</servlet-name>
+    <url-pattern>/dashboard</url-pattern>
+</servlet-mapping>
+
+  <!-- IPOSTAZIONI -->
+<servlet>
+    <servlet-name>ImpostazioniServlet</servlet-name>
+    <servlet-class>controller.ImpostazioniServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ImpostazioniServlet</servlet-name>
+    <url-pattern>/impostazioni</url-pattern>
+</servlet-mapping>
+
+  <!-- FORNITORI -->
+<servlet>
+    <servlet-name>fornitoriServlet</servlet-name>
+    <servlet-class>controller.fornitoriServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>fornitoriServlet</servlet-name>
+    <url-pattern>/fornitori</url-pattern>
+</servlet-mapping>
+
+
+  <!-- STATISTICHE -->
+<servlet>
+    <servlet-name>StatisticheServlet</servlet-name>
+    <servlet-class>controller.StatisticheServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>StatisticheServlet</servlet-name>
+    <url-pattern>/statistiche</url-pattern>
+</servlet-mapping>
+
+
+  <!-- LOGOUT -->
+<servlet>
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>controller.LogoutServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/logout</url-pattern>
+</servlet-mapping>
+
+</web-app>
