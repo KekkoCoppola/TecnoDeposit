@@ -13,12 +13,6 @@ Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Ja
 - **Statistiche**: Dashboard con report e contatori real-time
 - **Import/Export**: Import bulk articoli, backup database
 
-## 🔐 Credenziali di accesso per il test
-
-- **Login Admin**: admin;123.
-- **Login Tecnico**: tecnico;123.
-- **Login Magazziniere**: magazziniere;123.
-
 ## 📋 Requisiti
 
 - **Java JDK**: 17 o superiore
@@ -174,9 +168,18 @@ Dopo il deploy, l'applicazione sarà accessibile a:
 http://localhost:8080/TecnoDeposit/
 ```
 
-**Credenziali default** (se configurate nel database):
+**Credenziali default** :
+**Admin**:
 - Username: `admin`
-- Password: Vedere log applicazione o configurazione iniziale
+- Password: `123`
+
+**Teccnico**:
+- Username: `tecnico`
+- Password: `123`
+
+**Magazziniere**:
+- Username: `magazziniere`
+- Password: `123` 
 
 > **⚠️ Cambia immediatamente la password default!**
 
