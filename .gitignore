@@ -43,10 +43,6 @@ desktop.ini
 *.swp
 *~
 
-# Database files
-*.db
-*.sqlite
-
 # Executable files (should be built, not committed)
 *.exe
 
