@@ -22,6 +22,12 @@ Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Ja
 
 ## ⚙️ Setup e Configurazione
 
+### NB. Codice Svuota Magazzino
+Il codice otp per lo svuotamento del magazzino.
+```
+a3D!9fLk7@pQ4zV6m#Y1dR8wK$eJ0tN3cX7zT1wF5hR8uP2sL0vM9gB6dQ3yC4
+```
+
 ### 1. Clone del Repository
 
 ```bash
@@ -40,10 +46,10 @@ GRANT ALL PRIVILEGES ON tecnodeposit.* TO 'tecnodeposit_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Importa lo schema database (se disponibile):
+Importa lo schema database:
 
 ```bash
-mysql -u tecnodeposit_user -p tecnodeposit < path/to/schema.sql
+mysql -u tecnodeposit_user -p tecnodeposit < src/main/resources/DB.sql
 ```
 
 ### 3. Configurazione Applicazione
@@ -162,9 +168,19 @@ Dopo il deploy, l'applicazione sarà accessibile a:
 http://localhost:8080/TecnoDeposit/
 ```
 
-**Credenziali default** (se configurate nel database):
+**Credenziali default** :
+
+**Admin**:
 - Username: `admin`
-- Password: Vedere log applicazione o configurazione iniziale
+- Password: `123`
+
+**Teccnico**:
+- Username: `tecnico`
+- Password: `123`
+
+**Magazziniere**:
+- Username: `magazziniere`
+- Password: `123` 
 
 > **⚠️ Cambia immediatamente la password default!**
 
