@@ -92,7 +92,7 @@
 					         Articolo a = all.get(i);
 					         String nome = a.getNome() != null ? a.getNome().replace("\"","\\\"") : "";
 					         
-					    %>{ id:<%=a.getId()%>, nome:`<%=nome%>`,disponibili:`<%=listaA.countArticoliByNome(nome)%>`  }<%= (i<all.size()-1) ? "," : "" %>
+					    %>{ id:<%=a.getId()%>, nome:`<%=nome%>`,disponibili:`<%=listaA.countArticoliDisponibiliByNome(nome)%>`  }<%= (i<all.size()-1) ? "," : "" %>
 					    <% } %>
 					  ];
 					</script>

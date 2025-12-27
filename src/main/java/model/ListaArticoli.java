@@ -9,19 +9,22 @@ import java.util.stream.Collectors;
 
 import java.util.function.Function;
 
-
 import dao.DBConnection;
 import model.Articolo.Stato;
 
 public class ListaArticoli {
-	public List<Articolo> getAllarticoli() {
+    public List<Articolo> getAllarticoli() {
         List<Articolo> articoli = new ArrayList<>();
-      
-        String query = "SELECT * FROM articolo";
+
+        String query = "SELECT a.* FROM articolo a " +
+                "LEFT JOIN (SELECT id_articolo, MAX(data_modifica) as ultima_modifica " +
+                "           FROM storico_articolo GROUP BY id_articolo) s " +
+                "ON a.id = s.id_articolo " +
+                "ORDER BY COALESCE(s.ultima_modifica, a.id) DESC";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Articolo a = new Articolo();
@@ -35,12 +38,10 @@ public class ListaArticoli {
                 a.setTecnico(rs.getString("tecnico"));
                 a.setPv(rs.getString("pv"));
                 a.setProvenienza(rs.getString("provenienza"));
-                a.setFornitore(rs.getString("fornitore"));             
+                a.setFornitore(rs.getString("fornitore"));
                 a.setImmagine(rs.getString("immagine"));
                 a.setRichiestaGaranzia(rs.getBoolean("richiesta_garanzia"));
-               
-                
-                
+
                 java.sql.Date sqlDate = rs.getDate("data_ricezione");
                 java.sql.Date sqlDate2 = rs.getDate("data_spedizione");
                 java.sql.Date sqlDate3 = rs.getDate("data_garanzia");
@@ -51,27 +52,20 @@ public class ListaArticoli {
                     a.setDataRic_DDT(null); // o gestisci come preferisci
                 }
                 if (sqlDate2 != null) {
-                	LocalDate dataSpe = sqlDate2.toLocalDate();
+                    LocalDate dataSpe = sqlDate2.toLocalDate();
                     a.setDataSpe_DDT(dataSpe);
                 } else {
                     a.setDataSpe_DDT(null); // o gestisci come preferisci
                 }
                 if (sqlDate3 != null) {
-                	LocalDate dataGar = sqlDate3.toLocalDate();
+                    LocalDate dataGar = sqlDate3.toLocalDate();
                     a.setDataGaranzia(dataGar);
                 } else {
                     a.setDataGaranzia(null); // o gestisci come preferisci
                 }
-           
-                
-                
-                
-                
-                
-                
-                
+
                 a.setNote(rs.getString("note"));
-                
+
                 String statoStr = rs.getString("stato");
 
                 if (statoStr != null) {
@@ -80,8 +74,7 @@ public class ListaArticoli {
                 } else {
                     a.setStato(Stato.GUASTO); // oppure un valore di default, tipo Stato.UNKNOWN
                 }
-                
-             
+
                 articoli.add(a);
             }
 
@@ -91,14 +84,15 @@ public class ListaArticoli {
 
         return articoli;
     }
-	public List<String> getAllNomi() {
+
+    public List<String> getAllNomi() {
         List<String> articoli = new ArrayList<>();
-      
+
         String query = "SELECT nome FROM articolo";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 articoli.add(rs.getString("nome"));
@@ -110,16 +104,16 @@ public class ListaArticoli {
 
         return articoli;
     }
-	
-	public static Articolo getArticoloById(int id) {
-		Articolo articolo = new Articolo();
-	      
+
+    public static Articolo getArticoloById(int id) {
+        Articolo articolo = new Articolo();
+
         String query = "SELECT * FROM articolo where id = ?";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
-           	stmt.setInt(1, id);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 articolo = new Articolo();
@@ -154,7 +148,7 @@ public class ListaArticoli {
                     Stato stato = Stato.valueOf(statoStr.replace(" ", "_").toUpperCase());
                     articolo.setStato(stato);
                 } else {
-                	articolo.setStato(Stato.GUASTO); // oppure un valore di default, tipo Stato.UNKNOWN
+                    articolo.setStato(Stato.GUASTO); // oppure un valore di default, tipo Stato.UNKNOWN
                 }
                 articolo.setImmagine(rs.getString("immagine"));
             }
@@ -165,24 +159,23 @@ public class ListaArticoli {
 
         return articolo;
 
-	}
-	
-	
+    }
+
     public void addArticolo(Articolo articolo) {
         String query = "INSERT INTO articolo (matricola, nome, marca, compatibilita,ddt,ddtSpedizione,tecnico,pv,provenienza,fornitore,data_ricezione,data_spedizione,data_garanzia,note,stato,immagine,richiesta_garanzia) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?,?)";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
 
-        	stmt.setString(1, articolo.getMatricola());
+            stmt.setString(1, articolo.getMatricola());
             stmt.setString(2, articolo.getNome());
             stmt.setString(3, articolo.getMarca());
             stmt.setString(4, articolo.getCompatibilita());
-            if (articolo.getDdt() >0) {
+            if (articolo.getDdt() > 0) {
                 stmt.setInt(5, articolo.getDdt());
             } else {
                 stmt.setNull(5, java.sql.Types.INTEGER);
             }
-            if (articolo.getDdtSpedizione() >0) {
+            if (articolo.getDdtSpedizione() > 0) {
                 stmt.setInt(6, articolo.getDdtSpedizione());
             } else {
                 stmt.setNull(6, java.sql.Types.INTEGER);
@@ -216,12 +209,12 @@ public class ListaArticoli {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-      
+
     }
-    
+
     public void updateArticolo(Articolo articolo, String utenteModifica) throws SQLException {
         String queryUpdate = "UPDATE articolo SET matricola = ?, nome = ?, marca = ?, compatibilita = ?, ddt = ?, ddtSpedizione = ?, tecnico = ?, pv = ?, provenienza = ?, fornitore = ?, data_ricezione = ?, data_spedizione = ?, data_garanzia = ?, note = ?, stato = ? ,richiesta_garanzia = ? WHERE id = ?";
-        
+
         String queryStorico = "INSERT INTO storico_articolo (id_articolo, matricola, nome, marca, compatibilita, ddt, ddtSpedizione, tecnico, pv, provenienza, fornitore, data_ricezione, data_spedizione, data_garanzia, note, stato, immagine, utente_modifica, motivazione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection()) {
@@ -337,23 +330,22 @@ public class ListaArticoli {
                     }
                 }
             }
-            NotificationService.createNotificaTemporaneaPerTutti(utenteModifica+" ha modificato un articolo");
+            NotificationService.createNotificaTemporaneaPerTutti(utenteModifica + " ha modificato un articolo");
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    
     public void deleteArticolo(int id) {
         String deleteRichieste = "DELETE FROM richiesta_riga WHERE articolo_id = ?";
         String deleteArticolo = "DELETE FROM articolo WHERE id = ?";
-        
+
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false); // disattiva l'autocommit per la transazione
 
             try (PreparedStatement ps1 = conn.prepareStatement(deleteRichieste);
-                 PreparedStatement ps2 = conn.prepareStatement(deleteArticolo)) {
+                    PreparedStatement ps2 = conn.prepareStatement(deleteArticolo)) {
 
                 // 1️⃣ Elimina tutte le richieste che contengono l’articolo
                 ps1.setInt(1, id);
@@ -380,7 +372,7 @@ public class ListaArticoli {
     public List<Articolo> getArticoliPaginati(int offset, int limit) {
         List<Articolo> lista = new ArrayList<>();
         try {
-            Connection con =  DBConnection.getConnection();
+            Connection con = DBConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("SELECT * FROM articoli LIMIT ? OFFSET ?");
             ps.setInt(1, limit);
             ps.setInt(2, offset);
@@ -397,19 +389,19 @@ public class ListaArticoli {
         }
         return lista;
     }
-    
+
     public List<String> getMarche() {
-    	List<Articolo> articoli = getAllarticoli();
+        List<Articolo> articoli = getAllarticoli();
         return articoli.stream().map(Articolo::getMarca).distinct().collect(Collectors.toList());
     }
-    
+
     public List<String> getCampoFromDb(String column) {
-    	List<String> campo = new ArrayList<>();
+        List<String> campo = new ArrayList<>();
         String sql = "SELECT DISTINCT " + column + (column.equals("matricola") ? "" : ", matricola") + " FROM articolo";
 
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 String value = rs.getString(column);
@@ -427,142 +419,191 @@ public class ListaArticoli {
 
         return campo;
     }
-    
-    
+
     public List<String> getCampo(Function<Articolo, String> fieldExtractor) {
         List<Articolo> articoli = getAllarticoli();
         return articoli.stream()
-                       .map(fieldExtractor)
-                       .filter(Objects::nonNull)
-                       .distinct()
-                       .collect(Collectors.toList());
+                .map(fieldExtractor)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
     }
-    
+
     public List<Articolo> getArticoliPronti() {
         return getAllarticoli().stream()
-                .filter(a -> "In magazzino".equalsIgnoreCase(a.getStato().toString()) 
-                          || "Riparato".equalsIgnoreCase(a.getStato().toString()))
+                .filter(a -> "In magazzino".equalsIgnoreCase(a.getStato().toString())
+                        || "Riparato".equalsIgnoreCase(a.getStato().toString()))
                 .toList();
     }
-    
-    public List<Articolo> filtra(String search, String stato, String marca, String dataRicezione,String nome,String check) {
-    	List<Articolo> articoli = getAllarticoli();
-    	//System.out.println("OTTENUTO: "+search+" | "+stato+" | "+marca+" | "+dataRicezione);
-    	
+
+    /**
+     * Trova tutti gli articoli disponibili (In magazzino o Riparato) con il nome
+     * specificato.
+     * Usato per l'assegnazione di quantità multiple durante l'approvazione
+     * richieste.
+     */
+    public List<Articolo> getArticoliDisponibiliByNome(String nome) {
+        if (nome == null || nome.isBlank())
+            return new java.util.ArrayList<>();
+        return getAllarticoli().stream()
+                .filter(a -> nome.equalsIgnoreCase(a.getNome()))
+                .filter(a -> "In magazzino".equalsIgnoreCase(a.getStato().toString())
+                        || "Riparato".equalsIgnoreCase(a.getStato().toString()))
+                .toList();
+    }
+
+    /**
+     * Trova gli articoli assegnati a un tecnico con il nome specificato.
+     * Usato per il rifiuto di richieste precedentemente approvate.
+     */
+    public List<Articolo> getArticoliAssegnatiByNomeETecnico(String nome, String tecnico) {
+        if (nome == null || nome.isBlank() || tecnico == null || tecnico.isBlank())
+            return new java.util.ArrayList<>();
+        return getAllarticoli().stream()
+                .filter(a -> nome.equalsIgnoreCase(a.getNome()))
+                .filter(a -> tecnico.equalsIgnoreCase(a.getTecnico()))
+                .filter(a -> "Assegnato".equalsIgnoreCase(a.getStato().toString()))
+                .toList();
+    }
+
+    public List<Articolo> filtra(String search, String stato, String marca, String dataRicezione, String nome,
+            String check) {
+        List<Articolo> articoli = getAllarticoli();
+        // System.out.println("OTTENUTO: "+search+" | "+stato+" | "+marca+" |
+        // "+dataRicezione);
+
         return articoli.stream().filter(a -> {
             boolean match = true;
             if (search != null && !search.isEmpty()) {
                 String searchLower = search.toLowerCase();
 
                 match &= (a.getNome() != null && a.getNome().toLowerCase().contains(searchLower)) ||
-                         (a.getMatricola() != null && a.getMatricola().toLowerCase().contains(searchLower)) ||
-                         (a.getFornitore() != null && a.getFornitore().toLowerCase().contains(searchLower)) ||
-                         (a.getTecnico() != null && a.getTecnico().toLowerCase().contains(searchLower));
+                        (a.getMatricola() != null && a.getMatricola().toLowerCase().contains(searchLower)) ||
+                        (a.getFornitore() != null && a.getFornitore().toLowerCase().contains(searchLower)) ||
+                        (a.getTecnico() != null && a.getTecnico().toLowerCase().contains(searchLower));
             }
-            if(check.equals("nascondi"))
-        		match &= !a.getStato().toString().equalsIgnoreCase("installato");
+            if (check.equals("nascondi"))
+                match &= !a.getStato().toString().equalsIgnoreCase("installato");
             if (stato != null && !stato.isEmpty()) {
-            	System.out.println("MATCH TRA |"+a.getStato().name()+"| e |"+stato.trim()+"|");
-            		match &= a.getStato().toString().equalsIgnoreCase(stato.trim());
+                System.out.println("MATCH TRA |" + a.getStato().name() + "| e |" + stato.trim() + "|");
+                match &= a.getStato().toString().equalsIgnoreCase(stato.trim());
 
-            }// Se nessun filtro stato è applicato, escludi gli articoli già installati
+            } // Se nessun filtro stato è applicato, escludi gli articoli già installati
 
             if (marca != null && !marca.isEmpty()) {
                 match &= a.getMarca().equalsIgnoreCase(marca);
             }
-            if (nome != null && !nome.isEmpty() ) {
-            	 if (a.getTecnico() == null || !a.getTecnico().equalsIgnoreCase(nome)) {
-            	        match = false;
-            	    }
+            if (nome != null && !nome.isEmpty()) {
+                if (a.getTecnico() == null || !a.getTecnico().equalsIgnoreCase(nome)) {
+                    match = false;
+                }
             }
             if (dataRicezione != null && !dataRicezione.isEmpty()) {
-            	if(a.getDataRic_DDT()==null) match=false;
-            	else {
-	                match &= a.getDataRic_DDT().toString().equals(dataRicezione);
-            	}
+                if (a.getDataRic_DDT() == null)
+                    match = false;
+                else {
+                    match &= a.getDataRic_DDT().toString().equals(dataRicezione);
+                }
             }
             return match;
         }).collect(Collectors.toList());
     }
-    
+
     public int countArticoli() {
-    	String query = "SELECT COUNT(*) FROM articolo";
-    	int count=-1;
-    	try (Connection conn = DBConnection.getConnection();
-    			Statement stmt = conn.createStatement()){ 
-    	
-    	
-    		ResultSet rs = stmt.executeQuery(query);
-	    	if (rs.next()) {
-	            count = rs.getInt(1);
-	    	}
-    	} catch (SQLException e) {
-                    e.printStackTrace();
-                }
-    	return count;
+        String query = "SELECT COUNT(*) FROM articolo";
+        int count = -1;
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement()) {
+
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
-    
+
     public int countArticoliPerStato(String stato) {
-    	String query = "SELECT COUNT(*) FROM articolo WHERE stato = ?";
-    	int count=-1;
-    
-    	try (Connection conn = DBConnection.getConnection();
-    			PreparedStatement stmt = conn.prepareStatement(query)){ 
-    	
-    		stmt.setString(1, stato);
+        String query = "SELECT COUNT(*) FROM articolo WHERE stato = ?";
+        int count = -1;
 
-    		
-    		ResultSet rs = stmt.executeQuery();
-	    	if (rs.next()) {
-	            count = rs.getInt(1);
-	    	}
-    	} catch (SQLException e) {
-                    e.printStackTrace();
-                }
-    	return count;
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, stato);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
-    
+
     public int countArticoliByNome(String nome) {
-    	String query = "SELECT COUNT(*) FROM articolo WHERE nome = ?";
-    	int count=-1;
+        String query = "SELECT COUNT(*) FROM articolo WHERE nome = ?";
+        int count = -1;
 
-    	try (Connection conn = DBConnection.getConnection();
-    			PreparedStatement stmt = conn.prepareStatement(query)){ 
-    	
-    		stmt.setString(1, nome);
-    		
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
 
-    		
-    		ResultSet rs = stmt.executeQuery();
-	    	if (rs.next()) {
-	            count = rs.getInt(1);
-	    	}
-    	} catch (SQLException e) {
-                    e.printStackTrace();
-                }
-    	return count;
+            stmt.setString(1, nome);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
-    
+
+    public int countArticoliDisponibiliByNome(String nome) {
+        String query = "SELECT COUNT(*) \r\n"
+                + "FROM articolo \r\n"
+                + "WHERE nome = ? \r\n"
+                + "AND stato IN ('Riparato', 'In Magazzino')";
+        int count = -1;
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, nome);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     public int countArticoliScaduti() {
-    	String query = "SELECT COUNT(*) FROM articolo WHERE data_garanzia < CURDATE()";
-    	int count=-1;
-    	try (Connection conn = DBConnection.getConnection();
-    			Statement stmt = conn.createStatement()){ 
-    	
-    	
-    		ResultSet rs = stmt.executeQuery(query);
-	    	if (rs.next()) {
-	            count = rs.getInt(1);
-	    	}
-    	} catch (SQLException e) {
-                    e.printStackTrace();
-                }
-    	if(count==-1)
-    		return count+1;
-    	else
-    		return count;
+        String query = "SELECT COUNT(*) FROM articolo WHERE data_garanzia < CURDATE()";
+        int count = -1;
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement()) {
+
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (count == -1)
+            return count + 1;
+        else
+            return count;
     }
-    
+
     public static List<Articolo> getArticoloByFornitore(int idFornitore) {
         List<Articolo> lista = new ArrayList<>();
 
@@ -587,7 +628,7 @@ public class ListaArticoli {
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                	articolo = new Articolo();
+                    articolo = new Articolo();
                     articolo.setId(rs.getInt("id"));
                     articolo.setMatricola(rs.getString("matricola"));
                     articolo.setNome(rs.getString("nome"));
@@ -619,54 +660,48 @@ public class ListaArticoli {
                         Stato stato = Stato.valueOf(statoStr.replace(" ", "_").toUpperCase());
                         articolo.setStato(stato);
                     } else {
-                    	articolo.setStato(Stato.GUASTO); // oppure un valore di default, tipo Stato.UNKNOWN
+                        articolo.setStato(Stato.GUASTO); // oppure un valore di default, tipo Stato.UNKNOWN
                     }
                     articolo.setImmagine(rs.getString("immagine"));
                     articolo.setRichiestaGaranzia(rs.getBoolean("richiesta_garanzia"));
                     lista.add(articolo);
                 }
 
-                    
-                }
             }
-         catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return lista;
     }
 
-    
     public int countArticoliInAttesa() {
-    	String query = "SELECT COUNT(*) FROM articolo WHERE stato = 'In Attesa'";
-    	int count=-1;
-    	try (Connection conn = DBConnection.getConnection();
-    			Statement stmt = conn.createStatement()){ 
-    	
-    	
-    		ResultSet rs = stmt.executeQuery(query);
-	    	if (rs.next()) {
-	            count = rs.getInt(1);
-	    	}
-    	} catch (SQLException e) {
-                    e.printStackTrace();
-                }
-    	if(count==-1)
-    		return count+1;
-    	else
-    		return count;
+        String query = "SELECT COUNT(*) FROM articolo WHERE stato = 'In Attesa'";
+        int count = -1;
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement()) {
+
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (count == -1)
+            return count + 1;
+        else
+            return count;
     }
-    
-    
-    
+
     public List<String> getNomiTecnici() {
         List<String> tecnici = new ArrayList<>();
         String query = "SELECT DISTINCT tecnico FROM articolo " +
-                       "WHERE tecnico IS NOT NULL AND TRIM(tecnico) <> ''";
+                "WHERE tecnico IS NOT NULL AND TRIM(tecnico) <> ''";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 tecnici.add(rs.getString("tecnico"));
@@ -678,12 +713,13 @@ public class ListaArticoli {
 
         return tecnici;
     }
+
     public List<Integer> countArticoliPerTecnico(List<String> tecnici) {
         List<Integer> counts = new ArrayList<>();
         String query = "SELECT COUNT(*) FROM articolo WHERE tecnico = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
 
             for (String tecnico : tecnici) {
                 stmt.setString(1, tecnico);
@@ -702,8 +738,23 @@ public class ListaArticoli {
 
         return counts;
     }
+
+    }
+
+    
+    
+        
+        
+            
+                
+            
+                
+            
+        
+    
+
+    
     
     
 
-	
-}
+    
