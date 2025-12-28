@@ -213,7 +213,7 @@ public class ListaArticoli {
     }
 
     public void updateArticolo(Articolo articolo, String utenteModifica) throws SQLException {
-        String queryUpdate = "UPDATE articolo SET matricola = ?, nome = ?, marca = ?, compatibilita = ?, ddt = ?, ddtSpedizione = ?, tecnico = ?, pv = ?, provenienza = ?, fornitore = ?, data_ricezione = ?, data_spedizione = ?, data_garanzia = ?, note = ?, stato = ? ,richiesta_garanzia = ? WHERE id = ?";
+        String queryUpdate = "UPDATE articolo SET matricola = ?, nome = ?, marca = ?, compatibilita = ?, ddt = ?, ddtSpedizione = ?, tecnico = ?, pv = ?, provenienza = ?, fornitore = ?, data_ricezione = ?, data_spedizione = ?, data_garanzia = ?, note = ?, stato = ?, richiesta_garanzia = ?, immagine = ? WHERE id = ?";
 
         String queryStorico = "INSERT INTO storico_articolo (id_articolo, matricola, nome, marca, compatibilita, ddt, ddtSpedizione, tecnico, pv, provenienza, fornitore, data_ricezione, data_spedizione, data_garanzia, note, stato, immagine, utente_modifica, motivazione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -295,7 +295,8 @@ public class ListaArticoli {
                 stmtUpdate.setString(14, articolo.getNote());
                 stmtUpdate.setString(15, articolo.getStato().toString());
                 stmtUpdate.setBoolean(16, articolo.getRichiestaGaranzia());
-                stmtUpdate.setInt(17, articolo.getId());
+                stmtUpdate.setString(17, articolo.getImmagine());
+                stmtUpdate.setInt(18, articolo.getId());
 
                 stmtUpdate.executeUpdate();
             }
@@ -739,22 +740,4 @@ public class ListaArticoli {
         return counts;
     }
 
-    }
-
-    
-    
-        
-        
-            
-                
-            
-                
-            
-        
-    
-
-    
-    
-    
-
-    
+}

@@ -398,7 +398,8 @@
                 <br><br><br>
 
                 <!-- Articles Grid -->
-                <div id="risultati" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 p-2">
+                <div id="risultati"
+                  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 p-2">
                   <%@ include file="partials/risultati.jsp" %>
                 </div>
 
@@ -518,7 +519,36 @@
                         <input type="text" id="marcaInput"
                           class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#e52c1f]"
                           name="marca" list="suggerimentiMarche" required>
-
+                        <!-- Indicatore stato immagine -->
+                        <span id="imageStatus" class="text-xs mt-1 block hidden">
+                          <i id="imageStatusIcon" class="fas fa-image mr-1"></i>
+                          <span id="imageStatusText"></span>
+                        </span>
+                        <!-- Pulsante Upload (appare solo se immagine non trovata) -->
+                        <div id="imageUploadContainer" class="mt-2 hidden">
+                          <div class="flex gap-2 flex-wrap">
+                            <!-- Pulsante Scatta Foto -->
+                            <label
+                              class="cursor-pointer inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg text-sm text-blue-700 border border-blue-300">
+                              <i class="fas fa-camera mr-2"></i>
+                              <span>Scatta foto</span>
+                              <input type="file" id="imageCameraInput" accept="image/*" capture="environment"
+                                class="hidden">
+                            </label>
+                            <!-- Pulsante Carica da Galleria -->
+                            <label
+                              class="cursor-pointer inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700 border border-dashed border-gray-400">
+                              <i class="fas fa-images mr-2"></i>
+                              <span>Galleria</span>
+                              <input type="file" id="imageGalleryInput" accept="image/*" class="hidden">
+                            </label>
+                          </div>
+                          <div id="imageSelectedInfo" class="text-xs text-green-600 mt-1 hidden">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            <span id="imageFileName"></span>
+                          </div>
+                          <img id="imagePreview" class="mt-2 max-h-20 rounded hidden" alt="Preview">
+                        </div>
                       </div>
                       <div id="divComp">
 
@@ -799,6 +829,117 @@
                 modal.classList.add('hidden');
               });
 
+              // === CHECK IMMAGINE REAL-TIME + UPLOAD ===
+              let imageCheckTimeout = null;
+              let pendingImageFile = null; // File da uploadare al submit
+
+              function checkImmagineArticolo() {
+                const nome = document.getElementById('nomeInput').value.trim();
+                const marca = document.getElementById('marcaInput').value.trim();
+                const statusSpan = document.getElementById('imageStatus');
+                const statusIcon = document.getElementById('imageStatusIcon');
+                const statusText = document.getElementById('imageStatusText');
+                const uploadContainer = document.getElementById('imageUploadContainer');
+
+                // Nascondi tutto se campi vuoti
+                if (!nome || !marca) {
+                  statusSpan.classList.add('hidden');
+                  uploadContainer.classList.add('hidden');
+                  return;
+                }
+
+                // Debounce 300ms
+                clearTimeout(imageCheckTimeout);
+                imageCheckTimeout = setTimeout(function () {
+                  $.get('api/check-image', { nome: nome, marca: marca }, function (response) {
+                    statusSpan.classList.remove('hidden');
+                    if (response.found) {
+                      statusSpan.className = 'text-xs mt-1 block text-green-600';
+                      statusIcon.className = 'fas fa-check-circle mr-1';
+                      statusText.textContent = 'Immagine trovata';
+                      uploadContainer.classList.add('hidden');
+                    } else {
+                      statusSpan.className = 'text-xs mt-1 block text-gray-500';
+                      statusIcon.className = 'fas fa-image mr-1';
+                      statusText.textContent = 'Nessuna immagine';
+                      uploadContainer.classList.remove('hidden');
+                    }
+                  }).fail(function () {
+                    statusSpan.classList.add('hidden');
+                    uploadContainer.classList.add('hidden');
+                  });
+                }, 300);
+              }
+
+              // Handler per immagine selezionata (sia camera che gallery)
+              function handleImageSelect(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById('imagePreview');
+                const fileInfo = document.getElementById('imageSelectedInfo');
+                const fileName = document.getElementById('imageFileName');
+
+                if (file) {
+                  pendingImageFile = file;
+                  preview.src = URL.createObjectURL(file);
+                  preview.classList.remove('hidden');
+                  fileInfo.classList.remove('hidden');
+                  fileName.textContent = file.name.substring(0, 25) + (file.name.length > 25 ? '...' : '');
+                } else {
+                  pendingImageFile = null;
+                  preview.classList.add('hidden');
+                  fileInfo.classList.add('hidden');
+                }
+              }
+
+              // Listener per entrambi gli input
+              document.getElementById('imageCameraInput').addEventListener('change', handleImageSelect);
+              document.getElementById('imageGalleryInput').addEventListener('change', handleImageSelect);
+
+              // Override form submit per upload immagine prima
+              document.getElementById('article-form').addEventListener('submit', function (e) {
+                if (pendingImageFile) {
+                  e.preventDefault();
+                  const nome = document.getElementById('nomeInput').value.trim();
+                  const marca = document.getElementById('marcaInput').value.trim();
+
+                  const formData = new FormData();
+                  formData.append('image', pendingImageFile);
+                  formData.append('nome', nome);
+                  formData.append('marca', marca);
+
+                  // Upload immagine
+                  $.ajax({
+                    url: 'api/upload-image',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                      pendingImageFile = null;
+                      // Ora submit il form normalmente
+                      document.getElementById('article-form').submit();
+                    },
+                    error: function (xhr) {
+                      alert('Errore upload immagine: ' + (xhr.responseJSON?.error || 'Errore sconosciuto'));
+                    }
+                  });
+                }
+              });
+
+              // Listener sui campi nome e marca
+              document.getElementById('nomeInput').addEventListener('input', checkImmagineArticolo);
+              document.getElementById('marcaInput').addEventListener('input', checkImmagineArticolo);
+
+              // Reset quando si apre il modal
+              document.getElementById('add-article-btn').addEventListener('click', function () {
+                document.getElementById('imageStatus').classList.add('hidden');
+                document.getElementById('imageUploadContainer').classList.add('hidden');
+                document.getElementById('imagePreview').classList.add('hidden');
+                document.getElementById('imageSelectedInfo').classList.add('hidden');
+                document.getElementById('imageCameraInput').value = '';
+                document.getElementById('imageGalleryInput').value = '';
+                pendingImageFile = null;
+              });
 
               function resetta() {
                 document.getElementById('searchInput').value = '';

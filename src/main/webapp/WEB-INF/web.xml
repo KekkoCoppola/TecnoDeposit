@@ -97,6 +97,31 @@
     <url-pattern>/api/notifications</url-pattern>
 </servlet-mapping>
 
+  <!-- IMAGE CHECK -->
+<servlet>
+    <servlet-name>ImageCheckServlet</servlet-name>
+    <servlet-class>controller.ImageCheckServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ImageCheckServlet</servlet-name>
+    <url-pattern>/api/check-image</url-pattern>
+</servlet-mapping>
+
+  <!-- IMAGE UPLOAD -->
+<servlet>
+    <servlet-name>ImageUploadServlet</servlet-name>
+    <servlet-class>controller.ImageUploadServlet</servlet-class>
+    <multipart-config>
+        <max-file-size>5242880</max-file-size>
+        <max-request-size>6291456</max-request-size>
+        <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ImageUploadServlet</servlet-name>
+    <url-pattern>/api/upload-image</url-pattern>
+</servlet-mapping>
+
   <!-- FILTRO -->
 <servlet>
     <servlet-name>FiltroServlet</servlet-name>

@@ -251,6 +251,10 @@ document.addEventListener('click', function(e){
             
             document.getElementById('modal-title').textContent = "Modifica Articolo";
             
+            // Trigger check immagine dopo aver popolato i campi
+            if (typeof checkImmagineArticolo === 'function') {
+                checkImmagineArticolo();
+            }
         });
     });
     //ASSEGNA BUTTON
