@@ -1,0 +1,244 @@
+<%-- Splash Screen PWA - TecnoDeposit --%>
+<div id="splashScreen" class="splash-screen">
+    <div class="splash-content">
+        <!-- Logo container con glow -->
+        <div class="splash-logo-container">
+            <div class="splash-ring"></div>
+            <div class="splash-ring splash-ring-2"></div>
+            <img src="img/Icon.png" alt="TecnoDeposit" class="splash-logo">
+        </div>
+        
+        <!-- Testo brand -->
+        <h1 class="splash-title">TecnoDeposit</h1>
+        <p class="splash-subtitle">Gestione Magazzino</p>
+        
+        <!-- Loader dots -->
+        <div class="splash-loader">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+
+<style>
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e52c1f 0%, #c5271b 50%, #991b1b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 1;
+    transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+}
+
+.splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.splash-content {
+    text-align: center;
+    animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.splash-logo-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.splash-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 24px;
+    background: white;
+    padding: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+}
+
+.splash-ring {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: rgba(255, 255, 255, 0.8);
+    border-right-color: rgba(255, 255, 255, 0.4);
+    animation: spin 1.5s linear infinite;
+}
+
+.splash-ring-2 {
+    width: 160px;
+    height: 160px;
+    border-top-color: rgba(255, 255, 255, 0.4);
+    border-right-color: rgba(255, 255, 255, 0.2);
+    animation-direction: reverse;
+    animation-duration: 2s;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.splash-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(90deg, #fff, #fecaca, #fff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.splash-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 32px 0;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.splash-loader {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.splash-loader span {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite;
+}
+
+.splash-loader span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.splash-loader span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.splash-loader span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Particelle decorative */
+.splash-screen::before,
+.splash-screen::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+
+.splash-screen::before {
+    top: -100px;
+    right: -100px;
+}
+
+.splash-screen::after {
+    bottom: -100px;
+    left: -100px;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(-20px, 20px) scale(1.1);
+    }
+}
+</style>
+
+<script>
+// Splash Screen - nasconde dopo il caricamento
+(function() {
+    function hideSplash() {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+            // Minimo 1.5 secondi di visualizzazione
+            setTimeout(function() {
+                splash.classList.add('fade-out');
+                // Rimuove dal DOM dopo l'animazione
+                setTimeout(function() {
+                    splash.remove();
+                }, 600);
+            }, 1500);
+        }
+    }
+
+    // Nasconde quando la pagina è completamente caricata
+    if (document.readyState === 'complete') {
+        hideSplash();
+    } else {
+        window.addEventListener('load', hideSplash);
+    }
+})();
+</script>
