@@ -1,4 +1,4 @@
-<%
+ï»¿<%
     String mail2 = (String) session.getAttribute("mail");
     String username2 = (String) session.getAttribute("username");
     String titolo = (String) request.getAttribute("pageTitle");
@@ -121,7 +121,16 @@
                                 </div>
                                 <div class="profile-dropdown-divider"></div>
                                 <div class="py-1">
-                                    <a href="mailto:assistenza@tecnodeposit.it?subject=Richiesta%20Assistenza%20TecnoDeposit&body=Salve,%0D%0A%0D%0Aavrei bisogno di assistenza riguardo il servizio TecnoDeposit.%0D%0A[DESCRIVI LA PROBLEMATICA]%0D%0A%0D%0ACordiali saluti,[TUO USERNAME]" class="profile-dropdown-item">
+									<a href="#" class="profile-dropdown-item" id="install-app-btn" onclick="event.preventDefault(); installPWA();" style="display: none;">
+                                        <i class="fas fa-download"></i>
+                                        <span>Installa App</span>
+                                    </a>
+                                    <a href="#" class="profile-dropdown-item" onclick="event.preventDefault(); apriChangelog();">
+                                        <i class="fas fa-clipboard-list"></i>
+                                        <span>Changelog</span>
+                                    </a>
+                                    <div class="profile-dropdown-divider"></div>
+									<a href="mailto:assistenza@tecnodeposit.it?subject=Richiesta%20Assistenza%20TecnoDeposit&body=Salve,%0D%0A%0D%0Aavrei bisogno di assistenza riguardo il servizio TecnoDeposit.%0D%0A[DESCRIVI LA PROBLEMATICA]%0D%0A%0D%0ACordiali saluti,[TUO USERNAME]" class="profile-dropdown-item">
                                         <i class="fas fa-question-circle"></i>
                                         <span>Assistenza</span>
                                     </a>
@@ -129,6 +138,7 @@
                                         <i class="fas fa-info-circle"></i>
                                         <span>Informazioni</span>
                                     </a>
+
                                 </div>
                                 <div class="profile-dropdown-divider"></div>
                                 <div class="py-1">
@@ -260,7 +270,7 @@
                 }
             }
 
-            // Toggle visibilità lista notifiche quando clicchi la campanella
+            // Toggle visibilitï¿½ lista notifiche quando clicchi la campanella
             notificationButton.addEventListener('click', () => {
                 if (notificationList.classList.contains('hidden')) {
                     notificationList.classList.remove('hidden');
@@ -277,9 +287,9 @@
                 }
             });
             document.addEventListener('click', (e) => {
-                // Se il pannello è aperto...
+                // Se il pannello ï¿½ aperto...
                 if (!notificationList.classList.contains('hidden')) {
-                    // Se il click NON è dentro notificationList e non è sul bottone notifiche
+                    // Se il click NON ï¿½ dentro notificationList e non ï¿½ sul bottone notifiche
                     if (!notificationList.contains(e.target) && !notificationButton.contains(e.target)) {
                         notificationList.classList.add('hidden');
                     }
@@ -291,5 +301,48 @@
 
             // Carica notifiche al caricamento pagina
             fetchNotifications();
+
+            // ========== PWA INSTALL ==========
+            let deferredPrompt = null;
+            const installBtn = document.getElementById('install-app-btn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                // Mostra il bottone "Installa App"
+                if (installBtn) {
+                    installBtn.style.display = 'flex';
+                }
+            });
+
+            function installPWA() {
+                if (!deferredPrompt) {
+                    alert('App giÃ  installata o installazione non disponibile');
+                    return;
+                }
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA installata');
+                        if (installBtn) installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+
+            window.addEventListener('appinstalled', () => {
+                console.log('PWA installata con successo');
+                if (installBtn) installBtn.style.display = 'none';
+                deferredPrompt = null;
+            });
+
+            // ========== CHANGELOG MANUALE ==========
+            function apriChangelog() {
+                const modal = document.getElementById('changelogModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
 
             </script>

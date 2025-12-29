@@ -1,0 +1,24 @@
+{
+  "name": "TecnoDeposit",
+  "short_name": "TecnoDeposit",
+  "description": "Gestione magazzino",
+  "start_url": "/TecnoDeposit/login",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#e52c1f",
+  "icons": [
+    {
+      "src": "img/IconApp.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/IconApp.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
