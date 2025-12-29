@@ -148,7 +148,7 @@
               <div class="mb-6 flex justify-between items-center">
                 <div>
                   <h2 class="text-2xl font-bold text-gray-800">Tutti gli Articoli</h2>
-                  <p class="text-gray-600">Gestisci inventario</p>
+                  <p class="text-gray-600">Gestisci l'inventario</p>
                 </div>
 
                 <button id="add-article-btn"
@@ -158,45 +158,53 @@
 
               </div>
               <!-- Filters -->
-              <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-                <div class="flex flex-wrap items-end gap-3 sm:gap-4">
+              <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 sm:p-6 mb-6">
 
+                <!-- Riga principale: Ricerca + Scanner -->
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
                   <!-- Cerca -->
-                  <div class="relative w-full sm:w-auto min-w-[240px]">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Cerca</label>
-                    <input id="searchInput" type="text" placeholder="Cerca per qualsiasi campo"
-                      class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e52c1f]">
-                    <!-- icona centrata verticalmente -->
-                    <i class="fas fa-search absolute left-3 top-9 text-gray-400"></i>
-                  </div>
-
-                  <!-- Scanner -->
-                  <div class="relative w-[calc(50%-0.375rem)] sm:w-auto min-w-[160px]">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Scanner</label>
-                    <button onclick="startScanner()"
-                      class="w-full font-bold py-2 px-4 rounded bg-gray-200 text-black hover:bg-gray-600 hover:text-white">
-                      <i class="fas fa-expand"></i>
-                    </button>
-                  </div>
-
-                  <!-- MODALE SCANNER -->
-                  <div id="scanner-modal"
-                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-                    <div class="bg-white rounded-lg shadow-lg p-6 relative w-full max-w-md mx-3">
-                      <button onclick="chiudiScanner()"
-                        class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-times"></i>
-                      </button>
-                      <h2 class="text-lg font-semibold mb-4">Scanner QR / Barcode</h2>
-                      <div id="reader" style="width: 100%;"></div>
+                  <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <i class="fas fa-search text-gray-400"></i>
                     </div>
+                    <input id="searchInput" type="text" placeholder="Cerca articoli per qualsiasi campo..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200">
                   </div>
+
+                  <!-- Scanner Button -->
+                  <button onclick="startScanner()" class="flex items-center justify-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-900 text-white rounded-xl
+                           transition-all duration-200 shadow-sm hover:shadow-md min-w-[120px]">
+                    <i class="fas fa-qrcode text-lg"></i>
+                    <span class="font-medium">Scan</span>
+                  </button>
+                </div>
+
+                <!-- MODALE SCANNER -->
+                <div id="scanner-modal"
+                  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                  <div class="bg-white rounded-lg shadow-lg p-6 relative w-full max-w-md mx-3">
+                    <button onclick="chiudiScanner()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                      <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="text-lg font-semibold mb-4">Scanner QR / Barcode</h2>
+                    <div id="reader" style="width: 100%;"></div>
+                  </div>
+                </div>
+
+                <!-- Griglia Filtri -->
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-4">
 
                   <!-- Stato -->
-                  <div class="w-[calc(50%-0.375rem)] sm:w-auto min-w-[220px]">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Stato</label>
-                    <select id="statusFilter"
-                      class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e52c1f]">
+                  <div class="col-span-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                      <i class="fas fa-tag mr-1 text-gray-400"></i>Stato
+                    </label>
+                    <select id="statusFilter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-700 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200 cursor-pointer appearance-none
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')]
+                             bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-8">
                       <option>Tutti</option>
                       <option>Riparato</option>
                       <option>In magazzino</option>
@@ -211,10 +219,15 @@
                   </div>
 
                   <!-- Marca -->
-                  <div class="w-[calc(50%-0.375rem)] sm:w-auto min-w-[220px]">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
-                    <select id="brandFilter"
-                      class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e52c1f]">
+                  <div class="col-span-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                      <i class="fas fa-industry mr-1 text-gray-400"></i>Marca
+                    </label>
+                    <select id="brandFilter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-700 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200 cursor-pointer appearance-none
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')]
+                             bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-8">
                       <option>Tutte</option>
                       <% String ruoloUtenteLoggato=(String) session.getAttribute("ruolo"); List<String> marche = (List
                         <String>) request.getAttribute("marche");
@@ -229,173 +242,214 @@
                   </div>
 
                   <!-- Data ricezione -->
-                  <div class="w-[calc(50%-0.375rem)] sm:w-auto min-w-[200px]">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Data ricezione</label>
-                    <input id="dateFilter" type="date"
-                      class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e52c1f]">
+                  <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                      <i class="fas fa-calendar-alt mr-1 text-gray-400"></i>Data
+                    </label>
+                    <input id="dateFilter" type="date" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-700 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200">
                   </div>
 
+                  <!-- Reset (nella griglia su mobile) -->
+                  <div class="col-span-2 sm:col-span-1 flex items-end">
+                    <button
+                      class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 
+                             text-[#e52c1f] rounded-xl border border-red-200 transition-all duration-200 text-sm font-medium"
+                      onclick="resetta()">
+                      <i class="fas fa-undo-alt"></i>
+                      <span>Reset</span>
+                    </button>
+                  </div>
+                </div>
+
+                <input id="installatiCheck" name="installatiCheck" value="indefinito" class="hidden">
+
+                <!-- Azioni rapide -->
+                <div class="flex flex-wrap gap-2">
                   <!-- I miei articoli -->
-                  <button onclick="aggiornaNome(this)" id="Articoli-personali"
-                    class="w-full sm:w-auto mt-2 sm:mt-6 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">
-                    <i class="fas fa-box mr-2"></i> I Miei Articoli
+                  <button onclick="aggiornaNome(this)" id="Articoli-personali" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:border-gray-300 
+                           hover:bg-gray-50 text-gray-700 rounded-xl transition-all duration-200 text-sm font-medium
+                           shadow-sm hover:shadow">
+                    <i class="fas fa-user-circle text-[#e52c1f]"></i>
+                    <span>I Miei</span>
                   </button>
 
-                  <input id="installatiCheck" name="installatiCheck" value="indefinito" class="hidden">
-
                   <!-- Toggle installati -->
-                  <button id="toggleInstallati"
-                    class="w-full sm:w-auto mt-2 sm:mt-6 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">
-                    <i id="iconToggle" class="fas fa-eye-slash mr-2"></i>
-                    <span id="textToggle">Mostra Installati</span>
+                  <button id="toggleInstallati" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:border-gray-300 
+                           hover:bg-gray-50 text-gray-700 rounded-xl transition-all duration-200 text-sm font-medium
+                           shadow-sm hover:shadow">
+                    <i id="iconToggle" class="fas fa-eye-slash text-violet-500"></i>
+                    <span id="textToggle">Installati</span>
                   </button>
 
                   <!-- Toggle ordinamento -->
-                  <button id="toggleOrdinamento"
-                    class="w-full sm:w-auto mt-2 sm:mt-6 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">
-                    <i id="iconOrdinamento" class="fas fa-clock mr-2"></i>
-                    <span id="textOrdinamento">Ultima Modifica</span>
+                  <button id="toggleOrdinamento" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:border-gray-300 
+                           hover:bg-gray-50 text-gray-700 rounded-xl transition-all duration-200 text-sm font-medium
+                           shadow-sm hover:shadow">
+                    <i id="iconOrdinamento" class="fas fa-clock text-blue-500"></i>
+                    <span id="textOrdinamento">Recenti</span>
                   </button>
-
-                  <!-- Reset -->
-                  <button
-                    class="w-full sm:w-auto mt-2 sm:mt-6 bg-[#fce5e3] hover:bg-[#f8b4b0] text-[#e52c1f] px-4 py-2 rounded-lg"
-                    onclick="resetta()">
-                    <i class="fas fa-sync-alt mr-2"></i> Reset
-                  </button>
-
-                  <!-- (questo reader extra resta, ho solo reso il contenitore responsive) -->
-                  <div id="reader" style="width: 100%; max-width: 300px;"></div>
-
                 </div>
+
+                <!-- Reader extra nascosto -->
+                <div id="reader" style="width: 100%; max-width: 300px; display: none;"></div>
+
               </div>
 
               <!-- COUNTERS -->
               <% ListaArticoli ls=new ListaArticoli(); %>
-                <section id="statsBar" aria-live="polite" role="region"
-                  class="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
 
-                  <!-- Totale trovati -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-slate-100 to-white
-              border border-slate-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px]">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-slate-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-layer-group text-slate-500"></i> Articoli trovati
-                    </span>
-                    <span id="count-total" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-slate-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                <!-- Container scrollabile su mobile -->
+                <div class="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
+                  <section id="statsBar" aria-live="polite" role="region"
+                    class="flex gap-2 min-w-max sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-10 sm:min-w-0">
 
-                  <!-- In attesa -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-yellow-50 to-white
-              border border-yellow-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=In%20attesa'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-yellow-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-hourglass-half text-yellow-500"></i> In Attesa
-                    </span>
-                    <span id="count-In_attesa" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-yellow-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- Totale trovati -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-slate-200 
+                              px-4 py-3 min-w-[90px] hover:border-slate-400 hover:shadow-lg transition-all duration-200">
+                      <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-2 
+                                group-hover:bg-slate-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-layer-group text-slate-600 text-lg"></i>
+                      </div>
+                      <span id="count-total" class="text-xl font-bold text-slate-800">0</span>
+                      <span class="text-[10px] font-medium text-slate-500 uppercase tracking-wide">Trovati</span>
+                    </div>
 
-                  <!-- In magazzino -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-green-50 to-white
-              border border-green-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=In%20magazzino'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-green-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-warehouse text-green-500"></i> In Magazzino
-                    </span>
-                    <span id="count-In_magazzino" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-green-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- In attesa -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-yellow-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-yellow-400 hover:shadow-lg hover:shadow-yellow-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=In%20attesa'">
+                      <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center mb-2 
+                                group-hover:bg-yellow-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-hourglass-half text-yellow-600 text-lg"></i>
+                      </div>
+                      <span id="count-In_attesa" class="text-xl font-bold text-yellow-700">0</span>
+                      <span class="text-[10px] font-medium text-yellow-600 uppercase tracking-wide">Attesa</span>
+                    </div>
 
-                  <!-- Installati -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-violet-50 to-white
-              border border-violet-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Installato'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-violet-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-plug text-violet-500"></i> Installati
-                    </span>
-                    <span id="count-Installato" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-violet-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- In magazzino -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-emerald-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=In%20magazzino'">
+                      <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-2 
+                                group-hover:bg-emerald-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-warehouse text-emerald-600 text-lg"></i>
+                      </div>
+                      <span id="count-In_magazzino" class="text-xl font-bold text-emerald-700">0</span>
+                      <span class="text-[10px] font-medium text-emerald-600 uppercase tracking-wide">Magazzino</span>
+                    </div>
 
-                  <!-- Destinati -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-sky-50 to-white
-              border border-sky-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Destinato'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-sky-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-location-arrow text-sky-500"></i> Destinati
-                    </span>
-                    <span id="count-Destinato" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-sky-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- Installati -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-violet-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-violet-400 hover:shadow-lg hover:shadow-violet-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Installato'">
+                      <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-2 
+                                group-hover:bg-violet-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-plug text-violet-600 text-lg"></i>
+                      </div>
+                      <span id="count-Installato" class="text-xl font-bold text-violet-700">0</span>
+                      <span class="text-[10px] font-medium text-violet-600 uppercase tracking-wide">Installati</span>
+                    </div>
 
-                  <!-- Assegnati -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-sky-50 to-white
-              border border-sky-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Assegnato'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-sky-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-user-check text-sky-500"></i> Assegnati
-                    </span>
-                    <span id="count-Assegnato" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-sky-600 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- Destinati -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-sky-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-sky-400 hover:shadow-lg hover:shadow-sky-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Destinato'">
+                      <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center mb-2 
+                                group-hover:bg-sky-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-location-arrow text-sky-600 text-lg"></i>
+                      </div>
+                      <span id="count-Destinato" class="text-xl font-bold text-sky-700">0</span>
+                      <span class="text-[10px] font-medium text-sky-600 uppercase tracking-wide">Destinati</span>
+                    </div>
 
-                  <!-- Guasti -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-red-50 to-white
-              border border-red-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Guasto'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-red-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-exclamation-triangle text-red-600"></i> Guasti
-                    </span>
-                    <span id="count-Guasto" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-red-600 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- Assegnati -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-cyan-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Assegnato'">
+                      <div class="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center mb-2 
+                                group-hover:bg-cyan-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-user-check text-cyan-600 text-lg"></i>
+                      </div>
+                      <span id="count-Assegnato" class="text-xl font-bold text-cyan-700">0</span>
+                      <span class="text-[10px] font-medium text-cyan-600 uppercase tracking-wide">Assegnati</span>
+                    </div>
 
-                  <!-- Riparati -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-blue-50 to-white
-              border border-blue-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Riparato'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-blue-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-wrench text-blue-500"></i> Riparati
-                    </span>
-                    <span id="count-Riparato" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-blue-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- Guasti -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-red-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-red-400 hover:shadow-lg hover:shadow-red-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Guasto'">
+                      <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center mb-2 
+                                group-hover:bg-red-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
+                      </div>
+                      <span id="count-Guasto" class="text-xl font-bold text-red-700">0</span>
+                      <span class="text-[10px] font-medium text-red-600 uppercase tracking-wide">Guasti</span>
+                    </div>
 
-                  <!-- Non Riparati -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-orange-50 to-white
-              border border-orange-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Non%20Riparato'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-orange-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-times-circle text-orange-500"></i> Non Riparati
-                    </span>
-                    <span id="count-Non_Riparato" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-orange-500 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
+                    <!-- Riparati -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-blue-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-blue-400 hover:shadow-lg hover:shadow-blue-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Riparato'">
+                      <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-2 
+                                group-hover:bg-blue-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-wrench text-blue-600 text-lg"></i>
+                      </div>
+                      <span id="count-Riparato" class="text-xl font-bold text-blue-700">0</span>
+                      <span class="text-[10px] font-medium text-blue-600 uppercase tracking-wide">Riparati</span>
+                    </div>
 
-                  <!-- Non Riparabili -->
-                  <div class="flex items-center justify-between rounded-xl bg-gradient-to-r from-gray-50 to-white
-              border border-gray-200 shadow px-3 py-2 sm:px-3 sm:py-2 min-h-[52px] cursor-pointer"
-                    onclick="window.location.href='dashboard?stato=Non%20Riparabile'">
-                    <span
-                      class="text-[13px] sm:text-sm font-semibold text-gray-900 flex items-center gap-2 whitespace-nowrap">
-                      <i class="fas fa-trash-alt text-gray-600"></i> Non Riparabili
-                    </span>
-                    <span id="count-Non_Riparabile" class="inline-flex items-center justify-center min-w-8 h-6 sm:min-w-10 sm:h-7 px-2 rounded-full
-                 bg-gray-600 text-white shadow-md text-[12px] sm:text-sm">0</span>
-                  </div>
-                </section>
+                    <!-- Non Riparati -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-orange-200 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-orange-400 hover:shadow-lg hover:shadow-orange-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Non%20Riparato'">
+                      <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center mb-2 
+                                group-hover:bg-orange-200 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-times-circle text-orange-600 text-lg"></i>
+                      </div>
+                      <span id="count-Non_Riparato" class="text-xl font-bold text-orange-700">0</span>
+                      <span class="text-[10px] font-medium text-orange-600 uppercase tracking-wide">Non Rip.</span>
+                    </div>
 
-                <br><br><br>
+                    <!-- Non Riparabili -->
+                    <div
+                      class="group flex flex-col items-center justify-center rounded-2xl bg-white border-2 border-gray-300 
+                              px-4 py-3 min-w-[90px] cursor-pointer hover:border-gray-400 hover:shadow-lg hover:shadow-gray-100 transition-all duration-200"
+                      onclick="window.location.href='dashboard?stato=Non%20Riparabile'">
+                      <div class="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center mb-2 
+                                group-hover:bg-gray-300 group-hover:scale-110 transition-all duration-200">
+                        <i class="fas fa-ban text-gray-600 text-lg"></i>
+                      </div>
+                      <span id="count-Non_Riparabile" class="text-xl font-bold text-gray-700">0</span>
+                      <span class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Scartati</span>
+                    </div>
+
+                  </section>
+                </div>
+
+                <style>
+                  .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                  }
+
+                  .scrollbar-hide {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                  }
+                </style>
+
+                <div class="h-4"></div>
+
 
                 <!-- Articles Grid -->
                 <div id="risultati"

@@ -1,4 +1,9 @@
-<%-- Splash Screen PWA - TecnoDeposit --%>
+<%-- Splash Screen PWA - TecnoDeposit (solo dopo login) --%>
+<%
+    Boolean showSplash = (Boolean) session.getAttribute("showSplash");
+    if (showSplash != null && showSplash) {
+        session.removeAttribute("showSplash"); // Rimuove il flag dopo averlo usato
+%>
 <div id="splashScreen" class="splash-screen">
     <div class="splash-content">
         <!-- Logo container con glow -->
@@ -10,7 +15,7 @@
         
         <!-- Testo brand -->
         <h1 class="splash-title">TecnoDeposit</h1>
-        <p class="splash-subtitle">Gestione Magazzino</p>
+        <p class="splash-subtitle">Il tuo magazzino digitale</p>
         
         <!-- Loader dots -->
         <div class="splash-loader">
@@ -242,3 +247,4 @@
     }
 })();
 </script>
+<% } %>
