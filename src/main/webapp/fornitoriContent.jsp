@@ -350,7 +350,7 @@
     });
     
     
-    const ruoloUtente = '<%= (String) session.getAttribute("ruolo") %>';
+    const ruoloUtente = '<%=(String) session.getAttribute("ruolo") %>';
     $(document).ready(function() {
     	aggiornaFornitori();  
 	});
