@@ -22,8 +22,8 @@ public class ArticoloServlet extends HttpServlet {
         }
         String action = request.getParameter("action");
         String assegnaAction = request.getParameter("assegnaAction");
-        String nomeCognome = request.getParameter("nomeCognome");
-        String username = request.getParameter("username");
+        String nomeCognome = (String) session.getAttribute("nomeCognome");
+        String username = (String) session.getAttribute("username");
 
         System.out.println("RICEVUTO: " + action);
 
@@ -43,7 +43,7 @@ public class ArticoloServlet extends HttpServlet {
             String note = getValidParam(request, "note");
             boolean garanziaFlag = "SI".equals(request.getParameter("checkGaranzia")) ? true : false;
             System.out.println(
-                    "OTTENUTA RICHIESTA = " + garanziaFlag + " da valore " + request.getParameter("checkGaranzia"));
+                    "OTTENUTA RICHIESTA = " + garanziaFlag + " da valore " + request.getParameter("checkGaranzia")+" con richiedente "+username);
 
             // Usa ImageUtil centralizzato per trovare l'immagine
             String immagine = ImageUtil.trovaImmagineArticolo(nome, marca, getServletContext().getRealPath("/img"),

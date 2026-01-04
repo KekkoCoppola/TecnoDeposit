@@ -790,6 +790,11 @@ section {
     color: #06b6d4;
 }
 
+.feature-icon.orange {
+    background: linear-gradient(135deg, rgba(255, 128, 255, 0.2) 0%, rgba(255, 128, 255, 0.2) 100%);
+    color: #ff80ff;
+}
+
 .feature-title {
     font-size: 1.25rem;
     font-weight: 600;
