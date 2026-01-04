@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="TecnoDeposit - Sistema avanzato di gestione inventario per tecnici e magazzinieri. Gestisci articoli, richieste materiale e fornitori in modo efficiente.">
+    <link rel="icon" type="image/png" href="img/Icon.png">
+    <title>TecnoDeposit - Gestione Inventario Intelligente</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#e52c1f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TecnoDeposit">
+    <link rel="apple-touch-icon" href="img/Icon.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Landing Page CSS -->
+    <link rel="stylesheet" href="css/LandingPage.css">
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Mouse Trail Particle System -->
+    <div class="cursor-trail-container" id="trailContainer"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Dynamic Background -->
+    <div id="vanta-bg"></div>
+    <div class="gradient-overlay"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <img src="img/Icon.png" alt="TecnoDeposit Logo">
+                <span>TecnoDeposit</span>
+            </a>
+            <div class="nav-cta">
+                <a href="#features" class="btn btn-ghost">Funzionalità</a>
+                <a href="login.jsp" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Accedi
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i>
+                    Sistema di Gestione Inventario v2.0
+                </div>
+
+                <!-- LOGO CENTERED -->
+                <div class="hero-logo-container">
+                    <img src="img/Icon.png" alt="TecnoDeposit" class="hero-logo">
+                </div>
+
+                <h1 class="hero-title">
+                    Gestisci il tuo inventario con
+                    <span class="gradient-text">TecnoDeposit</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    La piattaforma completa per la gestione dell'inventario,
+                    richieste materiale e tracking articoli.
+                    Progettata per tecnici e magazzinieri.
+                </p>
+
+                <!-- DUAL CTA BUTTONS -->
+                <div class="hero-cta">
+                    <a href="login.jsp" class="btn btn-primary btn-large">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <div>
+                            Accedi
+                            <span class="btn-text">Sei già cliente?</span>
+                        </div>
+                    </a>
+                    <a href="#richiedi-servizio" class="btn btn-secondary btn-large">
+                        <i class="fas fa-paper-plane"></i>
+                        <div>
+                            Richiedi il Servizio
+                            <span class="btn-text">Inizia ora</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Stati Articolo</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">QR</span>
+                        <span class="stat-label">Scanner Integrato</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Accesso Web</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-indicator"
+                onclick="document.getElementById('video-section').scrollIntoView({behavior: 'smooth'})">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- Video Showcase Section -->
+        <section class="video-showcase" id="video-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Scopri TecnoDeposit</span>
+                    <h2 class="section-title">Guarda come funziona</h2>
+                    <p class="section-subtitle">
+                        Video dimostrativi delle principali funzionalità
+                    </p>
+                </div>
+
+                <div class="video-grid">
+                    <!-- Video 1 -->
+                    <div class="video-card" data-video-src="">
+                        <div class="video-placeholder">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Video in arrivo</span>
+                        </div>
+                        <!-- Uncomment when video is added:
+                        <video muted loop playsinline>
+                            <source src="videos/demo1.mp4" type="video/mp4">
+                        </video>
+                        -->
+                        <div class="video-title">
+                            <h3>Dashboard & Inventario</h3>
+                            <p>Panoramica della gestione articoli</p>
+                        </div>
+                    </div>
+
+                    <!-- Video 2 -->
+                    <div class="video-card" data-video-src="">
+                        <div class="video-placeholder">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Video in arrivo</span>
+                        </div>
+                        <div class="video-title">
+                            <h3>Scanner QR/Barcode</h3>
+                            <p>Ricerca rapida con scansione</p>
+                        </div>
+                    </div>
+
+                    <!-- Video 3 -->
+                    <div class="video-card" data-video-src="">
+                        <div class="video-placeholder">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Video in arrivo</span>
+                        </div>
+                        <div class="video-title">
+                            <h3>Richieste Materiale</h3>
+                            <p>Workflow di approvazione</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Funzionalità</span>
+                    <h2 class="section-title">Tutto ciò di cui hai bisogno</h2>
+                    <p class="section-subtitle">
+                        Strumenti potenti per gestire il tuo magazzino in modo efficiente
+                    </p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon red">
+                            <i class="fas fa-boxes-stacked"></i>
+                        </div>
+                        <h3 class="feature-title">Gestione Inventario</h3>
+                        <p class="feature-desc">
+                            CRUD completo degli articoli con stati, assegnazioni tecnici,
+                            tracking della provenienza e gestione garanzie.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon blue">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3 class="feature-title">Richieste Materiale</h3>
+                        <p class="feature-desc">
+                            Sistema completo di richieste con workflow di approvazione,
+                            notifiche automatiche e storico movimenti.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon green">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="feature-title">Gestione Fornitori</h3>
+                        <p class="feature-desc">
+                            Anagrafica completa fornitori e centri revisione con
+                            catalogo articoli e tracking spedizioni.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon purple">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title">Statistiche Real-time</h3>
+                        <p class="feature-desc">
+                            Dashboard con contatori live, report personalizzati
+                            e visualizzazione dati in tempo reale.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon yellow">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h3 class="feature-title">Scanner QR/Barcode</h3>
+                        <p class="feature-desc">
+                            Ricerca rapida articoli tramite scanner integrato.
+                            Scansiona matricole e codici a barre istantaneamente.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon cyan">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3 class="feature-title">Notifiche Email</h3>
+                        <p class="feature-desc">
+                            Sistema di notifiche automatiche con template HTML
+                            per aggiornamenti su richieste e articoli.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow Section -->
+        <section class="workflow">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Come Funziona</span>
+                    <h2 class="section-title">Semplice ed Efficace</h2>
+                    <p class="section-subtitle">
+                        Inizia a gestire il tuo inventario in pochi passaggi
+                    </p>
+                </div>
+
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Accedi</h3>
+                        <p class="step-desc">
+                            Effettua il login con le credenziali aziendali per accedere alla dashboard
+                        </p>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Gestisci</h3>
+                        <p class="step-desc">
+                            Aggiungi, modifica e traccia gli articoli del magazzino in tempo reale
+                        </p>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Monitora</h3>
+                        <p class="step-desc">
+                            Visualizza statistiche, gestisci richieste e mantieni tutto sotto controllo
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roles Section -->
+        <section class="roles">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Ruoli Utente</span>
+                    <h2 class="section-title">Per Ogni Esigenza</h2>
+                    <p class="section-subtitle">
+                        Permessi personalizzati in base al tuo ruolo
+                    </p>
+                </div>
+
+                <div class="roles-grid">
+                    <div class="role-card">
+                        <div class="role-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3 class="role-title">Amministratore</h3>
+                        <p class="role-desc">
+                            Accesso completo a tutte le funzionalità,
+                            gestione utenti e configurazioni di sistema
+                        </p>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h3 class="role-title">Tecnico</h3>
+                        <p class="role-desc">
+                            Gestione articoli assegnati,
+                            richieste materiale e aggiornamento stati
+                        </p>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <h3 class="role-title">Magazziniere</h3>
+                        <p class="role-desc">
+                            Gestione inventario, ricezione e
+                            spedizione materiale, tracking DDT
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Request Service Form Section -->
+        <section class="request-section" id="richiedi-servizio">
+            <div class="request-container">
+                <div class="request-box">
+                    <div class="request-header">
+                        <h2><i class="fas fa-paper-plane"
+                                style="color: var(--primary); margin-right: 12px;"></i>Richiedi il Servizio</h2>
+                        <p>Compila il form per richiedere informazioni o attivare TecnoDeposit</p>
+                    </div>
+
+                    <form id="request-form" action="#" method="POST">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nome">Nome *</label>
+                                <input type="text" id="nome" name="nome" required placeholder="Il tuo nome">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cognome">Cognome *</label>
+                                <input type="text" id="cognome" name="cognome" required placeholder="Il tuo cognome">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required placeholder="email@azienda.it">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="telefono">Telefono</label>
+                                <input type="tel" id="telefono" name="telefono" placeholder="+39 000 000 0000">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="azienda">Azienda *</label>
+                                <input type="text" id="azienda" name="azienda" required placeholder="Nome azienda">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="settore">Settore</label>
+                                <select id="settore" name="settore">
+                                    <option value="">Seleziona settore</option>
+                                    <option value="carburanti">Distribuzione Carburanti</option>
+                                    <option value="manutenzione">Manutenzione Impianti</option>
+                                    <option value="logistica">Logistica</option>
+                                    <option value="produzione">Produzione</option>
+                                    <option value="altro">Altro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="messaggio">Messaggio</label>
+                                <textarea id="messaggio" name="messaggio"
+                                    placeholder="Descrivi le tue esigenze o richiedi informazioni specifiche..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-submit">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <i class="fas fa-paper-plane"></i>
+                                Invia Richiesta
+                            </button>
+                        </div>
+
+                        <p class="form-note">
+                            Oppure contattaci direttamente: <a
+                                href="mailto:assistenza@tecnodeposit.it">assistenza@tecnodeposit.it</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2 class="cta-title">Pronto a iniziare?</h2>
+                <p class="cta-subtitle">
+                    Accedi ora o richiedi il servizio per ottimizzare la gestione del tuo inventario
+                </p>
+                <div class="cta-buttons">
+                    <a href="login.jsp" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sei già cliente? Accedi
+                    </a>
+                    <a href="#richiedi-servizio" class="btn btn-secondary">
+                        <i class="fas fa-paper-plane"></i>
+                        Richiedi il Servizio
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="img/Icon.png" alt="TecnoDeposit">
+                <span>TecnoDeposit</span>
+            </div>
+
+            <div class="footer-links">
+                <a href="login.jsp">Accedi</a>
+                <a href="#features">Funzionalità</a>
+                <a href="#richiedi-servizio">Richiedi Servizio</a>
+                <a href="mailto:assistenza@tecnodeposit.it">Supporto</a>
+            </div>
+
+            <p class="footer-copy">
+                &copy; 2025 TecnoDeposit. Tutti i diritti riservati.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Vanta.js for animated background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta/dist/vanta.net.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hide loader
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 600);
+
+            // Initialize Vanta.js NET effect
+            let vantaEffect = null;
+            if (typeof VANTA !== 'undefined') {
+                try {
+                    vantaEffect = VANTA.NET({
+                        el: "#vanta-bg",
+                        mouseControls: true,
+                        touchControls: true,
+                        gyroControls: false,
+                        minHeight: 200.00,
+                        minWidth: 200.00,
+                        scale: 1.00,
+                        scaleMobile: 1.00,
+                        color: 0xe52c1f,
+                        backgroundColor: 0x0a0a0a,
+                        points: 10.00,
+                        maxDistance: 20.00,
+                        spacing: 18.00,
+                        showDots: true
+                    });
+                } catch (e) {
+                    console.log('Vanta init error:', e);
+                }
+            }
+
+            // ===== MOUSE TRAIL PARTICLE SYSTEM =====
+            const trailContainer = document.getElementById('trailContainer');
+            const cursorGlow = document.getElementById('cursorGlow');
+            let lastX = 0, lastY = 0;
+            let particleCount = 0;
+            const maxParticles = 50;
+            let lastParticleTime = 0;
+            const particleInterval = 30; // ms between particles
+
+            // Cursor glow follows mouse smoothly
+            let glowX = 0, glowY = 0;
+            let targetGlowX = 0, targetGlowY = 0;
+
+            function animateGlow() {
+                glowX += (targetGlowX - glowX) * 0.15;
+                glowY += (targetGlowY - glowY) * 0.15;
+                cursorGlow.style.left = glowX + 'px';
+                cursorGlow.style.top = glowY + 'px';
+                requestAnimationFrame(animateGlow);
+            }
+            animateGlow();
+
+            function createTrailParticle(x, y, type = 'dot') {
+                if (particleCount >= maxParticles) return;
+
+                const particle = document.createElement('div');
+                particle.className = `trail-particle ${type}`;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+
+                // Add random offset for sparks
+                if (type === 'spark') {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 20 + Math.random() * 30;
+                    particle.style.setProperty('--spark-x', Math.cos(angle) * distance + 'px');
+                    particle.style.setProperty('--spark-y', Math.sin(angle) * distance + 'px');
+                }
+
+                trailContainer.appendChild(particle);
+                particleCount++;
+
+                // Remove particle after animation
+                const duration = type === 'dot' ? 800 : type === 'glow' ? 600 : 500;
+                setTimeout(() => {
+                    particle.remove();
+                    particleCount--;
+                }, duration);
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                const x = e.clientX;
+                const y = e.clientY;
+
+                // Update cursor glow target
+                targetGlowX = x;
+                targetGlowY = y;
+                cursorGlow.classList.add('active');
+
+                // Calculate distance moved
+                const dx = x - lastX;
+                const dy = y - lastY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Create particles based on movement speed and time
+                if (now - lastParticleTime > particleInterval && distance > 3) {
+                    // Main trail dot
+                    createTrailParticle(x, y, 'dot');
+
+                    // Add glow effect occasionally
+                    if (Math.random() > 0.7) {
+                        createTrailParticle(x, y, 'glow');
+                    }
+
+                    // Add sparks on faster movement
+                    if (distance > 15 && Math.random() > 0.5) {
+                        createTrailParticle(x, y, 'spark');
+                    }
+
+                    lastParticleTime = now;
+                }
+
+                lastX = x;
+                lastY = y;
+            }, { passive: true });
+
+            // Hide glow when mouse leaves
+            document.addEventListener('mouseleave', () => {
+                cursorGlow.classList.remove('active');
+            });
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            let lastScroll = 0;
+
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.scrollY;
+                if (currentScroll > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                lastScroll = currentScroll;
+            }, { passive: true });
+
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -50px 0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements with staggered delays
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.08}s`;
+                observer.observe(card);
+            });
+
+            document.querySelectorAll('.workflow-step').forEach((step, index) => {
+                step.style.transitionDelay = `${index * 0.15}s`;
+                observer.observe(step);
+            });
+
+            document.querySelectorAll('.role-card').forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.1}s`;
+                observer.observe(card);
+            });
+
+            document.querySelectorAll('.video-card').forEach((card, index) => {
+                card.style.transitionDelay = `${index * 0.1}s`;
+                observer.observe(card);
+            });
+
+            // Video autoplay on scroll
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target.querySelector('video');
+                    if (video) {
+                        if (entry.isIntersecting) {
+                            video.play().catch(() => { });
+                        } else {
+                            video.pause();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.video-card').forEach(card => {
+                videoObserver.observe(card);
+            });
+
+            // Form submission
+            const form = document.getElementById('request-form');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    alert('Grazie per la tua richiesta! Ti contatteremo presto.');
+                    form.reset();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
