@@ -214,4 +214,19 @@
     <url-pattern>/logout</url-pattern>
 </servlet-mapping>
 
+<!-- CONTACT FORM (Landing Page) -->
+<servlet>
+    <servlet-name>ContactFormServlet</servlet-name>
+    <servlet-class>controller.ContactFormServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ContactFormServlet</servlet-name>
+    <url-pattern>/api/contact-form</url-pattern>
+</servlet-mapping>
+
+<!-- Landing Page come welcome file -->
+<welcome-file-list>
+    <welcome-file>landingPage.html</welcome-file>
+</welcome-file-list>
+
 </web-app>

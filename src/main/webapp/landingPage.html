@@ -65,7 +65,7 @@
             </a>
             <div class="nav-cta">
                 <a href="#features" class="btn btn-ghost">Funzionalità</a>
-                <a href="login.jsp" class="btn btn-primary">
+                <a href="login" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt"></i>
                     Accedi
                 </a>
@@ -100,7 +100,7 @@
 
                 <!-- DUAL CTA BUTTONS -->
                 <div class="hero-cta">
-                    <a href="login.jsp" class="btn btn-primary btn-large">
+                    <a href="login" class="btn btn-primary btn-large">
                         <i class="fas fa-sign-in-alt"></i>
                         <div>
                             Accedi
@@ -373,7 +373,7 @@
                         <p>Compila il form per richiedere informazioni o attivare TecnoDeposit</p>
                     </div>
 
-                    <form id="request-form" action="#" method="POST">
+                    <form id="request-form" action="/api/contact-form" method="POST">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="nome">Nome *</label>
@@ -443,7 +443,7 @@
                     Accedi ora o richiedi il servizio per ottimizzare la gestione del tuo inventario
                 </p>
                 <div class="cta-buttons">
-                    <a href="login.jsp" class="btn btn-primary">
+                    <a href="login" class="btn btn-primary">
                         <i class="fas fa-sign-in-alt"></i>
                         Sei già cliente? Accedi
                     </a>
@@ -465,7 +465,7 @@
             </div>
 
             <div class="footer-links">
-                <a href="login.jsp">Accedi</a>
+                <a href="login">Accedi</a>
                 <a href="#features">Funzionalità</a>
                 <a href="#richiedi-servizio">Richiedi Servizio</a>
                 <a href="mailto:assistenza@tecnodeposit.it">Supporto</a>
@@ -676,10 +676,48 @@
             // Form submission
             const form = document.getElementById('request-form');
             if (form) {
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', async function (e) {
                     e.preventDefault();
-                    alert('Grazie per la tua richiesta! Ti contatteremo presto.');
-                    form.reset();
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnHtml = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Invio...';
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch('api/contact-form', {
+                            method: 'POST',
+                            body: new URLSearchParams(formData)
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Success feedback
+                            submitBtn.innerHTML = '<i class="fas fa-check"></i> Inviato!';
+                            submitBtn.style.background = '#10b981';
+                            form.reset();
+
+                            setTimeout(() => {
+                                submitBtn.innerHTML = originalBtnHtml;
+                                submitBtn.style.background = '';
+                                submitBtn.disabled = false;
+                            }, 3000);
+                        } else {
+                            throw new Error(result.error || 'Errore sconosciuto');
+                        }
+                    } catch (error) {
+                        console.error('Errore:', error);
+                        submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Errore';
+                        submitBtn.style.background = '#ef4444';
+
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalBtnHtml;
+                            submitBtn.style.background = '';
+                            submitBtn.disabled = false;
+                        }, 3000);
+                    }
                 });
             }
         });
