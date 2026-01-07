@@ -12,24 +12,40 @@
                         <% List<Articolo> articoli = (List<Articolo>) request.getAttribute("articoliFornitore");
                                 //System.out.println("CIAO SONO RISULTATI, HO RICEVUTO "+articoli.size()+" ARTICOLI");
                                 if (articoli != null && !articoli.isEmpty()) {
-                                %>
-                                <% StringBuilder body=new StringBuilder(); body.append("Salve,%0D%0A%0D%0ALa seguentelista contiene tutti gli articoli attualmente in attesa di revisione di cui non è stato ricevuto riscontro:%0D%0A%0D%0A");
-                                for (Articolo a : articoli) {
-                                    if("In attesa".equalsIgnoreCase(a.getStato().toString())) {
-                                    	body.append("- ").append(a.getNome()+" marca "+a.getMarca()+" spedito il "+a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))+" con DDT numero "+a.getDdt()).append(" %0D%0A");
-                                    	} 
-                                    }
-                                    body.append("%0D%0AResto in attesa di un vostro riscontro.%0D%0ACordiali saluti,%0D%0ATecnoAGM"); body.append("%0D%0A%0D%0A%0D%0AQuesta mail è stata generata dal software di magazzinaggio TecnoDeposit™."); 
-                                    String mailBody=body.toString(); 
-                                    if(!session.getAttribute("ruolo").equals("Tecnico")){ %>
 
-                                    <div class="mb-6 flex justify-start">
+                                // Conta articoli in attesa
+                                int countInAttesa = 0;
+                                for (Articolo art : articoli) {
+                                if ("In attesa".equalsIgnoreCase(art.getStato().toString())) {
+                                countInAttesa++;
+                                }
+                                }
+                                %>
+                                <% StringBuilder body=new StringBuilder(); body.append("Salve,%0D%0A%0D%0A La seguente lista contiene tutti gli articoli attualmente in attesa di revisione di cui non è stato ricevuto riscontro:%0D%0A%0D%0A");
+                                for (Articolo a : articoli) { 
+                                	if("In attesa".equalsIgnoreCase(a.getStato().toString())) { 
+                                		String dataSpedizione=a.getDataSpe_DDT() !=null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")): "N/D" ;
+                                		body.append("- ").append(a.getNome()+" marca "+a.getMarca()+" spedito il "+dataSpedizione+" con DDT numero "+a.getDdt()).append(" %0D%0A");
+                                		} 
+                                	}
+                                    body.append("%0D%0AResto in attesa di un vostro riscontro.%0D%0ACordiali saluti,%0D%0ATecnoAGM");
+                                    body.append("%0D%0A%0D%0A%0D%0AQuesta mail è stata generata dal software di magazzinaggio TecnoDeposit™.");
+                                    String mailBody=body.toString();
+                                    //Mostra pulsante SOLO se ci sono articoli in attesa E non è un Tecnico
+                                    if(countInAttesa> 0 && !session.getAttribute("ruolo").equals("Tecnico")){ %>
+
+                                    <!-- Pulsante Notifica Tutti - Sticky in basso -->
+                                    <div class="sticky bottom-4 z-40 flex justify-center mb-4">
                                         <a href="mailto:<%=request.getAttribute(" mailFornitore")
                                             %>?subject=Lista%20Articoli%20In%20Attesa%20di%20Revisione&body=<%= mailBody
-                                                %>" class="ml-4 mt-4 mb-4 px-4 py-2 bg-yellow-100 text-yellow-700
-                                                rounded hover:bg-yellow-200">
-                                                <i class="fas fa-envelope mr-2"></i> Notifica <b>Tutti</b> Gli Articoli
-                                                In Attesa Di Revisione
+                                                %>" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r
+                                                from-yellow-400 to-orange-500 text-white font-semibold
+                                                rounded-full shadow-lg hover:shadow-xl hover:from-yellow-500
+                                                hover:to-orange-600 transition-all">
+                                                <i class="fas fa-envelope"></i>
+                                                <span>Notifica <b>
+                                                        <%= countInAttesa %>
+                                                    </b> Articol<%= countInAttesa==1 ? "o" : "i" %> In Attesa</span>
                                         </a>
                                     </div>
                                     <%} %>
@@ -127,20 +143,23 @@
                                                                 <i class="fas fa-eye mr-1.5"></i> Visualizza
                                                             </button>
                                                             <%if(a.getStato().toString().equals("In attesa")&&
-                                                                !session.getAttribute("ruolo").equals("Tecnico")) {%>
+                                                                !session.getAttribute("ruolo").equals("Tecnico")) {
+                                                                String dataSpeSingola=a.getDataSpe_DDT() !=null ?
+                                                                a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                                                                : "N/D" ; %>
                                                                 <a title="Notifica Centro Revisione"
                                                                     aria-label="Notifica Centro Revisione"
                                                                     class="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white hover:from-yellow-500 hover:to-yellow-600 px-3 py-2 rounded-xl text-sm font-medium flex items-center justify-center shadow-sm hover:shadow-md transition-all"
                                                                     href="mailto:<%=request.getAttribute("mailFornitore")%>?subject=Notifica%20Materiale%20In%20Revisione&body=Salve,%0D%0A%0D%0AChiedo
                                                                     ulteriori informazioni sul materiale inviato in
-                                                                    revisione: %0D%0A%0D%0A- <%=a.getNome() %> marca
-                                                                        <%=a.getMarca()%> inviato il giorno <%=
-                                                                                a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                                                                %> con DDT numero <%=a.getDdt() %>
-                                                                                    %0D%0A%0D%0ANon è stato ancora
-                                                                                    ricevuto nessun aggiornamento su
-                                                                                    tale materiale.%0D%0A%0D%0AAttendo
-                                                                                    un vostro riscontro%0D%0ACordiali
+                                                                    revisione:%0D%0A%0D%0A- <%=a.getNome()%> marca
+                                                                        <%=a.getMarca()%> inviato il giorno
+                                                                            <%=dataSpeSingola%> con DDT numero
+                                                                                <%=a.getDdt()%>%0D%0A%0D%0ANon è stato
+                                                                                    ancora ricevuto nessun aggiornamento
+                                                                                    su tale
+                                                                                    materiale.%0D%0A%0D%0AAttendo un
+                                                                                    vostro riscontro%0D%0ACordiali
                                                                                     saluti,%0D%0ATecnoAGM%0D%0A%0D%0A%0D%0AQuesta
                                                                                     mail è stata generata dal software
                                                                                     di magazzinaggio TecnoDeposit™.">
