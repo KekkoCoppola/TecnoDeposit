@@ -104,9 +104,16 @@ cp target/TecnoDeposit.war /path/to/tomcat/webapps/
 
 #### Con IDE (Eclipse):
 
-1. Import progetto come "Existing Project"
-2. Configure Tomcat server nelle impostazioni
-3. Run > Run on Server
+1. File > New Project > Dynamic Web Projecy
+2. Configura il web project come segue
+3. <img width="781" height="669" alt="image" src="https://github.com/user-attachments/assets/8f1d74e3-8a99-499d-80b2-f120f746e5bc" />
+4. Copia Tutto il contenuto della repository nella nuova cartella che hai creato e seleziona "Sostituisci i 2 file"
+4. Inserisci queste 4 librerie nella cartella src>main>webapp>lib
+5. <img width="222" height="167" alt="image" src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" />
+6. Configura Tomcat nella sezione Server > New Server > apache > Tomcat v10.1 > Download And Install > Finish
+7. Aggiungi il progetto a tomcat cliccando con tasto destro su tomcat v10.1 > Add & Remove > seleziona "TecnoDeposit" > Add > Finish
+8. Ora avvia Tomcat e raggiungi tramite web l'indirizzo http:localhost:8080/TecnoDeposit
+
 
 ## 🔐 Configurazione Email (Gmail)
 
