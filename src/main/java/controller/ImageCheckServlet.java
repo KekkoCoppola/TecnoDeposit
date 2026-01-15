@@ -1,6 +1,7 @@
 package controller;
 
 import util.ImageUtil;
+import model.ListaArticoli;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import java.io.PrintWriter;
 /**
  * Endpoint AJAX per verificare l'esistenza di un'immagine articolo.
  * Risposta JSON leggera per feedback real-time nel modal.
+ * Include anche il conteggio degli articoli con stessa marca+nome.
  */
 public class ImageCheckServlet extends HttpServlet {
 
@@ -30,8 +32,15 @@ public class ImageCheckServlet extends HttpServlet {
         boolean found = ImageUtil.esisteImmagine(nome, marca, directoryPath);
         String path = found ? ImageUtil.trovaImmagineArticolo(nome, marca, directoryPath, "img") : "img/Icon.png";
 
+        // Conta quanti articoli condividono questa combinazione nome+marca
+        int count = 0;
+        if (nome != null && !nome.trim().isEmpty()) {
+            ListaArticoli listaArticoli = new ListaArticoli();
+            count = listaArticoli.countArticoliByNome(nome.trim());
+        }
+
         PrintWriter out = response.getWriter();
-        out.print("{\"found\":" + found + ",\"path\":\"" + path + "\"}");
+        out.print("{\"found\":" + found + ",\"path\":\"" + path + "\",\"count\":" + count + "}");
         out.flush();
     }
 }

@@ -96,12 +96,15 @@ public class ImageUtil {
     /**
      * Trova il path dell'immagine per l'articolo specificato.
      * Ritorna l'icona di default se non trovata.
+     * Aggiunge un parametro cache-busting per evitare problemi di cache del
+     * browser.
      * 
      * @param nome          Nome dell'articolo
      * @param marca         Marca dell'articolo
      * @param directoryPath Path assoluto della directory img
      * @param baseUrl       URL base per le immagini (es. "img")
-     * @return Path relativo dell'immagine (es. "img/gilbarcotestata.jpg")
+     * @return Path relativo dell'immagine con cache-buster (es.
+     *         "img/gilbarcotestata.jpg?v=123456")
      */
     public static String trovaImmagineArticolo(String nome, String marca,
             String directoryPath, String baseUrl) {
@@ -121,7 +124,9 @@ public class ImageUtil {
                 if (files != null) {
                     for (File f : files) {
                         if (f.getName().toLowerCase().equals(target)) {
-                            return baseUrl + "/" + f.getName();
+                            // Aggiungi timestamp del file come cache-buster
+                            long lastModified = f.lastModified();
+                            return baseUrl + "/" + f.getName() + "?v=" + lastModified;
                         }
                     }
                 }

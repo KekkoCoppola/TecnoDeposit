@@ -16,6 +16,18 @@
     <dispatcher>REQUEST</dispatcher>
 </filter-mapping>
 
+<!-- FILTRO NO-CACHE IMMAGINI -->
+<filter>
+    <filter-name>ImageCacheFilter</filter-name>
+    <filter-class>controller.ImageCacheFilter</filter-class>
+</filter>
+
+<filter-mapping>
+    <filter-name>ImageCacheFilter</filter-name>
+    <url-pattern>/img/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
 
 
  <!-- 401 -->   

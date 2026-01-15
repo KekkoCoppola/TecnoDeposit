@@ -9,13 +9,13 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-champagne-glasses text-white text-lg"></i>
+                        <i class="fas fa-bell text-white text-lg"></i>
                     </div>
                     <div>
 					<h1 class="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wide mb-3">
-		                    Buone Feste Da TecnoDeposit!
+		                    Novità da TecnoDeposit!
 		                </h1>
-                        <p class="text-red-100 text-sm">Novità v.1.0.2 | Dicembre 2025</p>
+                        <p class="text-red-100 text-sm">Novità  v.1.0.3 | Gennaio 2026</p>
                     </div>
                 </div>
                 <button onclick="chiudiChangelog()" 
@@ -30,36 +30,36 @@
             <!-- Sezione Nuove FunzionalitÃ  -->
             <div class="mb-5">
                 <h3 class="flex items-center gap-2 text-sm font-bold text-green-600 uppercase tracking-wide mb-3">
-                    <i class="fas fa-plus-circle"></i> Nuove Funzionalità
+                    <i class="fas fa-plus-circle"></i> Nuove Funzionalità 
                 </h3>
                 <ul class="space-y-2">
                     <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
                         <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-check text-xs"></i>
+                            <i class="fas fa-bug text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Campi articolo</p>
-                            <p class="text-sm text-gray-600">Ora il tecnico può modificare alcuni campi di un articolo.</p>
+                            <p class="font-medium text-gray-800">App Installabile</p>
+                            <p class="text-sm text-gray-600">Da oggi TecnoDeposit è un app installabile sul tuo dispositivo mobile o PC! clicca installa app nel menu del profilo per provarla.</p>
                         </div>  
                     </li>
                     
                     <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
                         <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-check text-xs"></i>
+                            <i class="fas fa-camera text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Ordinamento Articoli</p>
-                            <p class="text-sm text-gray-600">Pulsante per ordinare gli articoli per ultima modifica o alfabeticamente.</p>
+                            <p class="font-medium text-gray-800">Immagini Articoli</p>
+                            <p class="text-sm text-gray-600">Ora avrai un riscontro visivo se il sistema trova l'immagine corrispondente all'articolo, ma se il sistema non la trova potrai caricarla tu stesso!</p>
                         </div>
                     </li>
                     
 					<li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
                         <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-check text-xs"></i>
+                            <i class="fas fa-clipboard-check text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Inserimento matricola tramite scanner</p>
-                            <p class="text-sm text-gray-600">Da adesso è possibile inserire o modificare la matricola di un articolo con l'utilizzo dello scanner fotocamere.</p>
+                            <p class="font-medium text-gray-800">Visualizza Changelog</p>
+                            <p class="text-sm text-gray-600">Da adesso è possibile visualizzare il changelog dal menu a tendina del profilo.</p>
                         </div>
                     </li>
                 </ul>
@@ -73,31 +73,41 @@
                 <ul class="space-y-2">
                     <li class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
                         <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-star text-xs"></i>
+                            <i class="fas fa-search text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Restyling Articoli</p>
-                            <p class="text-sm text-gray-600">Dato che spesso la card articoli era un pugno in un occhio ho optato per uno stile più tondeggiante fammi sapere cosa ne pensi!.</p>
+                            <p class="font-medium text-gray-800">Restyling Barra di ricerca</p>
+                            <p class="text-sm text-gray-600">La vecchia barra di ricerca è stata sostituita con un design più moderno.</p>
                         </div>
                     </li>
                     
 					<li class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
                         <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-star text-xs"></i>
+                            <i class="fas fa-calculator text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Restyling Dettagli Articoli</p>
-                            <p class="text-sm text-gray-600">Di addio a quella vecchia lista noiosa dei dettagli su un articolo e dai il benvenuto alla lista migliorata con colori e icone, provala subito!.</p>
+                            <p class="font-medium text-gray-800">Restyling Contatore Articoli</p>
+                            <p class="text-sm text-gray-600">Anche i contatori degli articoli hanno ricevuto un restyle che li rende più intuitivi e moderni.</p>
                         </div>
                     </li>
                     
                     <li class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
                         <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-mobile-alt text-xs"></i>
+                            <i class="fas fa-city text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Layout Ottimizzato</p>
-                            <p class="text-sm text-gray-600">Adesso la griglia si adatterà in maniera congrua per ogni dimensione di schermo.</p>
+                            <p class="font-medium text-gray-800">Centri Revisione</p>
+                            <p class="text-sm text-gray-600">Adesso la visualizzazione dei centri revisione è più gradevole.</p>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
+                        <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-ticket text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">Richieste Materiale</p>
+                            <p class="text-sm text-gray-600">Le richieste materiale hanno ricevuto una modifica estetica per renderle mobile-frinedly.</p>
                         </div>
                     </li>
                 </ul>
@@ -111,22 +121,14 @@
                 <ul class="space-y-2">
                     <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
                         <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-wrench text-xs"></i>
+                            <i class="fas fa-qrcode text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Storico Articolo</p>
-                            <p class="text-sm text-gray-600">Risolto il problema dei click vuoti che non portavano a nulla sui pulsanti per lo storico di un articolo.</p>
+                            <p class="font-medium text-gray-800">QR Code vuoto</p>
+                            <p class="text-sm text-gray-600">Risolto un bug che mostrava un qr code vuoto quando l'articolo non aveva la matricola.</p>
                         </div>                   
                     </li>
-                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
-                        <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-wrench text-xs"></i>
-                        </span>
-                        <div>
-                            <p class="font-medium text-gray-800">Gestione Quantità  Richieste</p>
-                            <p class="text-sm text-gray-600">Ora le richieste materiale assegnano correttamente la quantità  richiesta di articoli.</p>
-						</div>                    
-                    </li>
+                    
                 </ul>
             </div>
         </div>
@@ -144,7 +146,7 @@
 <script>
 // Changelog - Gestione versione con localStorage
 (function() {
-    const CURRENT_VERSION = "1.0.2";  // âda Aggiornare ad ogni release
+    const CURRENT_VERSION = "1.0.3";  // ï¿½da Aggiornare ad ogni release
     
     document.addEventListener('DOMContentLoaded', function() {
         const seenVersion = localStorage.getItem('tecnodeposit_version');

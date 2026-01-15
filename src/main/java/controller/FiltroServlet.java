@@ -17,6 +17,11 @@ import java.util.List;
 public class FiltroServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		// Disabilita cache browser per garantire contenuto sempre aggiornato
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
+		response.setDateHeader("Expires", 0);
+
 		StringBuffer url = request.getRequestURL(); // es: http://localhost:8080/TecnoDeposit/dashboard
 		String query = request.getQueryString(); // es: stato=In%20attesa
 

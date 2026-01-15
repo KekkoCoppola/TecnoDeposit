@@ -577,8 +577,16 @@
                         <span id="imageStatus" class="text-xs mt-1 block hidden">
                           <i id="imageStatusIcon" class="fas fa-image mr-1"></i>
                           <span id="imageStatusText"></span>
+                          <!-- Pulsante per mostrare le opzioni di modifica immagine -->
+                          <button type="button" id="showImageUploadBtn"
+                            class="ml-2 text-blue-600 hover:text-blue-800 underline hidden"
+                            onclick="document.getElementById('imageUploadContainer').classList.toggle('hidden')">
+                            Modifica immagine
+                          </button>
                         </span>
-                        <!-- Pulsante Upload (appare solo se immagine non trovata) -->
+                        <!-- Input nascosto per il conteggio articoli condivisi -->
+                        <input type="hidden" id="sharedImageCount" value="0">
+                        <!-- Pulsante Upload -->
                         <div id="imageUploadContainer" class="mt-2 hidden">
                           <div class="flex gap-2 flex-wrap">
                             <!-- Pulsante Scatta Foto -->
@@ -751,6 +759,34 @@
               </div>
             </div>
 
+            <!-- MODALE CONFERMA MODIFICA IMMAGINE CONDIVISA -->
+            <div id="image-confirm-modal"
+              class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] hidden">
+              <div class="bg-white rounded-lg shadow-xl w-full max-w-md fade-in">
+                <div class="p-6">
+                  <div class="flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                      <i class="fas fa-images text-orange-600 text-xl"></i>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-semibold text-center mb-2">Modifica immagine condivisa</h3>
+                  <p id="image-confirm-message" class="text-gray-600 text-center mb-6">
+                    Questa immagine è condivisa con altri articoli. Vuoi modificarla per tutti?
+                  </p>
+                  <div class="flex justify-center space-x-4">
+                    <button id="cancel-image-change" type="button"
+                      class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                      Annulla
+                    </button>
+                    <button id="confirm-image-change" type="button"
+                      class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg">
+                      <i class="fas fa-check mr-1"></i> Modifica per tutti
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
 
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -894,11 +930,15 @@
                 const statusIcon = document.getElementById('imageStatusIcon');
                 const statusText = document.getElementById('imageStatusText');
                 const uploadContainer = document.getElementById('imageUploadContainer');
+                const showUploadBtn = document.getElementById('showImageUploadBtn');
+                const sharedCountInput = document.getElementById('sharedImageCount');
 
                 // Nascondi tutto se campi vuoti
                 if (!nome || !marca) {
                   statusSpan.classList.add('hidden');
                   uploadContainer.classList.add('hidden');
+                  showUploadBtn.classList.add('hidden');
+                  sharedCountInput.value = '0';
                   return;
                 }
 
@@ -907,20 +947,27 @@
                 imageCheckTimeout = setTimeout(function () {
                   $.get('api/check-image', { nome: nome, marca: marca }, function (response) {
                     statusSpan.classList.remove('hidden');
+                    // Salva il conteggio degli articoli condivisi
+                    sharedCountInput.value = response.count || 0;
+
                     if (response.found) {
                       statusSpan.className = 'text-xs mt-1 block text-green-600';
                       statusIcon.className = 'fas fa-check-circle mr-1';
                       statusText.textContent = 'Immagine trovata';
+                      // Nascondi container upload ma mostra pulsante per modificare
                       uploadContainer.classList.add('hidden');
+                      showUploadBtn.classList.remove('hidden');
                     } else {
                       statusSpan.className = 'text-xs mt-1 block text-gray-500';
                       statusIcon.className = 'fas fa-image mr-1';
                       statusText.textContent = 'Nessuna immagine';
                       uploadContainer.classList.remove('hidden');
+                      showUploadBtn.classList.add('hidden');
                     }
                   }).fail(function () {
                     statusSpan.classList.add('hidden');
                     uploadContainer.classList.add('hidden');
+                    showUploadBtn.classList.add('hidden');
                   });
                 }, 300);
               }
@@ -955,30 +1002,93 @@
                   e.preventDefault();
                   const nome = document.getElementById('nomeInput').value.trim();
                   const marca = document.getElementById('marcaInput').value.trim();
+                  const sharedCount = parseInt(document.getElementById('sharedImageCount').value) || 0;
 
-                  const formData = new FormData();
-                  formData.append('image', pendingImageFile);
-                  formData.append('nome', nome);
-                  formData.append('marca', marca);
+                  // Se l'immagine è condivisa con più articoli, mostra modal di conferma
+                  if (sharedCount > 1) {
+                    // Aggiorna messaggio nel modal
+                    document.getElementById('image-confirm-message').innerHTML =
+                      'Questa immagine è condivisa con <strong>' + sharedCount + ' articoli</strong> con stesso nome e marca.<br><br>Vuoi modificarla per tutti?';
+                    // Mostra modal
+                    document.getElementById('image-confirm-modal').classList.remove('hidden');
+                    return;
+                  }
 
-                  // Upload immagine
-                  $.ajax({
-                    url: 'api/upload-image',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                      pendingImageFile = null;
-                      // Ora submit il form normalmente
-                      document.getElementById('article-form').submit();
-                    },
-                    error: function (xhr) {
-                      alert('Errore upload immagine: ' + (xhr.responseJSON?.error || 'Errore sconosciuto'));
-                    }
-                  });
+                  // Se non condivisa o già confermato, procedi con upload
+                  eseguiUploadImmagine(nome, marca);
                 }
               });
+
+              // Handler conferma modifica immagine
+              document.getElementById('confirm-image-change').addEventListener('click', function () {
+                document.getElementById('image-confirm-modal').classList.add('hidden');
+                const nome = document.getElementById('nomeInput').value.trim();
+                const marca = document.getElementById('marcaInput').value.trim();
+
+                console.log('🔍 Conferma cliccata. pendingImageFile:', pendingImageFile);
+
+                if (!pendingImageFile) {
+                  console.error('❌ pendingImageFile è null! Impossibile procedere.');
+                  alert('Errore: nessun file immagine selezionato.');
+                  return;
+                }
+
+                eseguiUploadImmagine(nome, marca);
+              });
+
+              // Handler annulla modifica immagine
+              document.getElementById('cancel-image-change').addEventListener('click', function () {
+                document.getElementById('image-confirm-modal').classList.add('hidden');
+                // Resetta il file selezionato
+                pendingImageFile = null;
+                document.getElementById('imagePreview').classList.add('hidden');
+                document.getElementById('imageSelectedInfo').classList.add('hidden');
+                document.getElementById('imageCameraInput').value = '';
+                document.getElementById('imageGalleryInput').value = '';
+              });
+
+              // Click fuori dal modal lo chiude
+              document.getElementById('image-confirm-modal').addEventListener('click', function (e) {
+                if (e.target === this) {
+                  document.getElementById('cancel-image-change').click();
+                }
+              });
+
+              // Funzione per eseguire l'upload dell'immagine
+              function eseguiUploadImmagine(nome, marca) {
+                console.log('📷 Inizio upload immagine per:', nome, marca);
+                console.log('📦 File da caricare:', pendingImageFile);
+
+                if (!pendingImageFile) {
+                  console.error('❌ Nessun file da caricare!');
+                  alert('Errore: nessun file immagine da caricare.');
+                  return;
+                }
+
+                const formData = new FormData();
+                formData.append('image', pendingImageFile);
+                formData.append('nome', nome);
+                formData.append('marca', marca);
+
+                // Upload immagine
+                $.ajax({
+                  url: 'api/upload-image',
+                  type: 'POST',
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  success: function (response) {
+                    console.log('✅ Upload completato:', response);
+                    pendingImageFile = null;
+                    // Ora submit il form normalmente
+                    document.getElementById('article-form').submit();
+                  },
+                  error: function (xhr) {
+                    console.error('❌ Errore upload:', xhr);
+                    alert('Errore upload immagine: ' + (xhr.responseJSON?.error || 'Errore sconosciuto'));
+                  }
+                });
+              }
 
               // Listener sui campi nome e marca
               document.getElementById('nomeInput').addEventListener('input', checkImmagineArticolo);
@@ -988,6 +1098,8 @@
               document.getElementById('add-article-btn').addEventListener('click', function () {
                 document.getElementById('imageStatus').classList.add('hidden');
                 document.getElementById('imageUploadContainer').classList.add('hidden');
+                document.getElementById('showImageUploadBtn').classList.add('hidden');
+                document.getElementById('sharedImageCount').value = '0';
                 document.getElementById('imagePreview').classList.add('hidden');
                 document.getElementById('imageSelectedInfo').classList.add('hidden');
                 document.getElementById('imageCameraInput').value = '';

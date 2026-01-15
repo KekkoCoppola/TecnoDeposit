@@ -43,11 +43,17 @@ public class ArticoloServlet extends HttpServlet {
             String note = getValidParam(request, "note");
             boolean garanziaFlag = "SI".equals(request.getParameter("checkGaranzia")) ? true : false;
             System.out.println(
-                    "OTTENUTA RICHIESTA = " + garanziaFlag + " da valore " + request.getParameter("checkGaranzia")+" con richiedente "+username);
+                    "OTTENUTA RICHIESTA = " + garanziaFlag + " da valore " + request.getParameter("checkGaranzia")
+                            + " con richiedente " + username);
+
+            // Invalida cache prima di cercare l'immagine (assicura che immagini appena
+            // caricate siano trovate)
+            ImageUtil.invalidateCache();
 
             // Usa ImageUtil centralizzato per trovare l'immagine
             String immagine = ImageUtil.trovaImmagineArticolo(nome, marca, getServletContext().getRealPath("/img"),
                     "img");
+            System.out.println("📷 Immagine trovata per " + nome + "/" + marca + ": " + immagine);
 
             int ddt = -1;
             int ddtSpedizione = -1;

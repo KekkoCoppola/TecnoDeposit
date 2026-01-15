@@ -13,13 +13,13 @@ import model.ListaArticoli;
 import model.ListaFornitori;
 import model.UserService;
 
-public class DashboardServlet extends HttpServlet{
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+public class DashboardServlet extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		ListaArticoli lista = new ListaArticoli();
 		UserService us = new UserService();
-		
-		
+
 		List<String> nomi = lista.getCampo(Articolo::getNome);
 		List<String> marche = lista.getCampo(Articolo::getMarca);
 		List<String> compatibilita = lista.getCampo(Articolo::getCompatibilita);
@@ -28,7 +28,7 @@ public class DashboardServlet extends HttpServlet{
 		List<String> pv = lista.getCampo(Articolo::getPv);
 		List<String> fornitori = listaF.getAllfornitoriNames();
 		List<String> tecnici = us.getAllTecnici();
-	
+
 		request.setAttribute("nomi", nomi);
 		request.setAttribute("marche", marche);
 		request.setAttribute("compatibilita", compatibilita);
@@ -36,13 +36,19 @@ public class DashboardServlet extends HttpServlet{
 		request.setAttribute("pvs", pv);
 		request.setAttribute("fornitori", fornitori);
 		request.setAttribute("tecnici", tecnici);
-        
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("username") == null) { 
-            response.sendRedirect("login"); 
-            return;
-        }
-        request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
-    }
-	
+
+		HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("username") == null) {
+			response.sendRedirect("login");
+			return;
+		}
+
+		// Disabilita cache browser per garantire immagini sempre aggiornate
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
+		response.setDateHeader("Expires", 0);
+
+		request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
+	}
+
 }
