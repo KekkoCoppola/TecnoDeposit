@@ -65,8 +65,8 @@ public class ImageUploadServlet extends HttpServlet {
                 return;
             }
 
-            // Leggi immagine
-            BufferedImage originalImage = ImageIO.read(filePart.getInputStream());
+            // Leggi immagine con correzione orientamento EXIF
+            BufferedImage originalImage = ImageUtil.readImageWithExifCorrection(filePart.getInputStream());
             if (originalImage == null) {
                 sendError(response, "Impossibile leggere l'immagine");
                 return;

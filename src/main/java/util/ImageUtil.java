@@ -1,8 +1,15 @@
 package util;
 
 import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
 
 /**
  * Utility centralizzata per la gestione delle immagini articolo.
@@ -212,5 +219,194 @@ public class ImageUtil {
         invalidateCache();
 
         return "img/" + fileName;
+    }
+
+    /**
+     * Legge l'orientamento EXIF da un array di byte JPEG.
+     * Ritorna un valore da 1 a 8, dove 1 = normale.
+     * 
+     * Orientamenti comuni:
+     * 1 = Normale
+     * 3 = Ruotato 180°
+     * 6 = Ruotato 90° orario (comune su smartphone)
+     * 8 = Ruotato 90° antiorario
+     */
+    public static int getExifOrientation(byte[] imageData) {
+        try {
+            // Cerca marker EXIF nei primi bytes del JPEG
+            if (imageData == null || imageData.length < 12)
+                return 1;
+
+            // Verifica che sia un JPEG (inizia con FFD8)
+            if ((imageData[0] & 0xFF) != 0xFF || (imageData[1] & 0xFF) != 0xD8) {
+                return 1; // Non è JPEG, nessuna rotazione
+            }
+
+            int offset = 2;
+            while (offset < imageData.length - 2) {
+                // Cerca marker APP1 (EXIF)
+                if ((imageData[offset] & 0xFF) != 0xFF)
+                    break;
+
+                int marker = imageData[offset + 1] & 0xFF;
+
+                // APP1 marker (0xE1) contiene EXIF
+                if (marker == 0xE1) {
+                    int segmentLength = ((imageData[offset + 2] & 0xFF) << 8) | (imageData[offset + 3] & 0xFF);
+
+                    // Verifica "Exif\0\0"
+                    if (offset + 10 < imageData.length &&
+                            imageData[offset + 4] == 'E' && imageData[offset + 5] == 'x' &&
+                            imageData[offset + 6] == 'i' && imageData[offset + 7] == 'f') {
+
+                        int tiffStart = offset + 10;
+                        boolean littleEndian = (imageData[tiffStart] == 'I');
+
+                        // Salta all'IFD0
+                        int ifdOffset = readInt(imageData, tiffStart + 4, littleEndian);
+                        int ifdStart = tiffStart + ifdOffset;
+
+                        if (ifdStart >= imageData.length - 2)
+                            return 1;
+
+                        int numEntries = readShort(imageData, ifdStart, littleEndian);
+
+                        // Cerca tag Orientation (0x0112)
+                        for (int i = 0; i < numEntries && ifdStart + 2 + i * 12 + 12 <= imageData.length; i++) {
+                            int entryOffset = ifdStart + 2 + i * 12;
+                            int tag = readShort(imageData, entryOffset, littleEndian);
+
+                            if (tag == 0x0112) { // Orientation tag
+                                return readShort(imageData, entryOffset + 8, littleEndian);
+                            }
+                        }
+                    }
+                    break;
+                }
+
+                // Passa al prossimo segmento
+                if (marker >= 0xE0 && marker <= 0xEF) {
+                    int segmentLength = ((imageData[offset + 2] & 0xFF) << 8) | (imageData[offset + 3] & 0xFF);
+                    offset += 2 + segmentLength;
+                } else {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // In caso di errore, assume orientamento normale
+        }
+        return 1;
+    }
+
+    private static int readShort(byte[] data, int offset, boolean littleEndian) {
+        if (offset + 1 >= data.length)
+            return 0;
+        if (littleEndian) {
+            return (data[offset] & 0xFF) | ((data[offset + 1] & 0xFF) << 8);
+        } else {
+            return ((data[offset] & 0xFF) << 8) | (data[offset + 1] & 0xFF);
+        }
+    }
+
+    private static int readInt(byte[] data, int offset, boolean littleEndian) {
+        if (offset + 3 >= data.length)
+            return 0;
+        if (littleEndian) {
+            return (data[offset] & 0xFF) | ((data[offset + 1] & 0xFF) << 8) |
+                    ((data[offset + 2] & 0xFF) << 16) | ((data[offset + 3] & 0xFF) << 24);
+        } else {
+            return ((data[offset] & 0xFF) << 24) | ((data[offset + 1] & 0xFF) << 16) |
+                    ((data[offset + 2] & 0xFF) << 8) | (data[offset + 3] & 0xFF);
+        }
+    }
+
+    /**
+     * Ruota un'immagine in base all'orientamento EXIF.
+     */
+    public static BufferedImage applyExifOrientation(BufferedImage image, int orientation) {
+        if (orientation == 1 || orientation < 1 || orientation > 8) {
+            return image; // Nessuna rotazione necessaria
+        }
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        AffineTransform transform = new AffineTransform();
+        int newWidth = width;
+        int newHeight = height;
+
+        switch (orientation) {
+            case 2: // Flip orizzontale
+                transform.scale(-1, 1);
+                transform.translate(-width, 0);
+                break;
+            case 3: // Ruota 180°
+                transform.rotate(Math.PI, width / 2.0, height / 2.0);
+                break;
+            case 4: // Flip verticale
+                transform.scale(1, -1);
+                transform.translate(0, -height);
+                break;
+            case 5: // Flip + Ruota 90° antiorario
+                newWidth = height;
+                newHeight = width;
+                transform.rotate(Math.PI / 2);
+                transform.scale(1, -1);
+                break;
+            case 6: // Ruota 90° orario (MOLTO COMUNE su smartphone!)
+                newWidth = height;
+                newHeight = width;
+                transform.rotate(Math.PI / 2);
+                transform.translate(0, -height);
+                break;
+            case 7: // Flip + Ruota 90° orario
+                newWidth = height;
+                newHeight = width;
+                transform.rotate(-Math.PI / 2);
+                transform.scale(1, -1);
+                transform.translate(-width, 0);
+                break;
+            case 8: // Ruota 90° antiorario
+                newWidth = height;
+                newHeight = width;
+                transform.rotate(-Math.PI / 2);
+                transform.translate(-width, 0);
+                break;
+        }
+
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = rotated.createGraphics();
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, newWidth, newHeight);
+        g.drawImage(image, transform, null);
+        g.dispose();
+
+        return rotated;
+    }
+
+    /**
+     * Legge un'immagine da InputStream applicando la correzione dell'orientamento
+     * EXIF.
+     */
+    public static BufferedImage readImageWithExifCorrection(InputStream inputStream) throws java.io.IOException {
+        // Leggi tutti i byte per poter analizzare l'EXIF
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] temp = new byte[8192];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(temp)) != -1) {
+            buffer.write(temp, 0, bytesRead);
+        }
+        byte[] imageData = buffer.toByteArray();
+
+        // Leggi orientamento EXIF
+        int orientation = getExifOrientation(imageData);
+
+        // Leggi immagine
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
+        if (image == null)
+            return null;
+
+        // Applica rotazione se necessaria
+        return applyExifOrientation(image, orientation);
     }
 }

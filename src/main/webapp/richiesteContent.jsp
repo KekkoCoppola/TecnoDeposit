@@ -262,7 +262,7 @@
 					                      peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:text-green-700
 					                      hover:border-gray-300">
 																							<i
-																								class="fas fa-check mr-1"></i>Bassa
+																								class="fas fa-angle-down mr-1"></i>Bassa
 																						</div>
 																					</label>
 																				</div>
@@ -330,21 +330,18 @@
 																	String urg = (r.getUrgenza() != null ?
 																	r.getUrgenza() : "media").toLowerCase();
 																	String urgCls, urgIcon;
-																	switch (urg) {
-																	case "alta": urgCls = "bg-red-100 text-red-700 border border-red-200"; urgIcon = "fa-fire"; break;
-																	case "bassa": urgCls = "bg-green-100 text-green-700 border border-green-200"; urgIcon =
-																	"fa-check-circle"; break;
-																	default: urgCls = "bg-orange-100 text-orange-700 border border-orange-200"; urgIcon =
-																	"fa-exclamation-triangle";
+																	switch (urg) {case "alta": urgCls = "bg-red-100 text-red-700 border border-red-200"; urgIcon = "fa-fire";
+																	break;
+																	case "bassa": urgCls = "bg-green-100 text-green-700 border border-green-200"; urgIcon ="fas fa-angle-down"; break;
+																	default: urgCls = "bg-orange-100 text-orange-700 border border-orange-200"; urgIcon ="fa-exclamation-triangle";
 																	}
 
 																	// ---- mapping stile/icone STATO ----
-																	String stato = (r.getStato() != null ? r.getStato()
-																	: "in_attesa");
+																	String stato = (r.getStato() != null ? r.getStato(): "in_attesa");
 																	String stCls, stIcon;
 																	switch (stato) {
-																	case "approvata": stCls = "bg-emerald-100 text-emerald-700 border border-emerald-200"; stIcon
-																	= "fa-check"; break;
+																	case "approvata": stCls = "bg-emerald-100 text-emerald-700 border border-emerald-200"; stIcon=
+																	"fa-check"; break;
 																	case "rifiutata": stCls = "bg-red-100 text-red-700 border border-red-200"; stIcon = "fa-times"; break;
 																	case "evasa": stCls = "bg-gray-100 text-gray-700 border border-gray-200"; stIcon = "fa-box"; break;
 																	default: stCls = "bg-yellow-100 text-yellow-700 border border-yellow-200"; stIcon =
@@ -517,67 +514,77 @@
 																	switch (urg) {
 																	case "alta": urgCls = "bg-red-100 text-red-700 border border-red-200"; urgIcon = "fa-fire"; break;
 																	case "bassa": urgCls = "bg-green-100 text-green-700 border border-green-200"; urgIcon =
-																	"fa-check-circle"; break;
+																	"fas fa-angle-down"; break;
 																	default: urgCls = "bg-orange-100 text-orange-700 border border-orange-200"; urgIcon =
 																	"fa-exclamation-triangle";
 																	}
 
-																	// ---- mapping stile/icone STATO ----
+																	// ---- mapping stile/icone STATO + sfondo card ----
 																	String stato = (r.getStato() != null ? r.getStato()
 																	: "in_attesa");
-																	String stCls, stIcon;
+																	String stCls, stIcon, cardBg;
 																	switch (stato) {
 																	case "approvata": stCls = "bg-emerald-100 text-emerald-700 border border-emerald-200"; stIcon
-																	= "fa-check"; break;
-																	case "rifiutata": stCls = "bg-red-100 text-red-700 border border-red-200"; stIcon = "fa-times"; break;
-																	case "evasa": stCls = "bg-gray-100 text-gray-700 border border-gray-200"; stIcon = "fa-box"; break;
+																	= "fa-check"; cardBg = "bg-emerald-50/50"; break;
+																	case "rifiutata": stCls = "bg-red-100 text-red-700 border border-red-200"; stIcon = "fa-times"; cardBg
+																	= "bg-red-50/50"; break;
+																	case "evasa": stCls = "bg-gray-100 text-gray-700 border border-gray-200"; stIcon = "fa-box"; cardBg =
+																	"bg-gray-100/50"; break;
 																	default: stCls = "bg-yellow-100 text-yellow-700 border border-yellow-200"; stIcon =
-																	"fa-hourglass-half";
+																	"fa-hourglass-half"; cardBg = "bg-white";
 																	}
-
-																	// ---- motivo (badge secondario) ----
+																	// ---- bordo sinistro priorità ----
+																	String borderLeft;
+																	switch (urg) {
+																	case "alta": borderLeft = "border-l-4 border-l-red-500"; break;
+																	case "bassa": borderLeft = "border-l-4 border-l-green-500"; break;
+																	default: borderLeft = "border-l-4 border-l-orange-400";
+																	}
+																	// ---- motivo ----
 																	String motivo = (r.getMotivo() != null ?
 																	r.getMotivo() : "-");
 																	%>
 
-																	<!-- Request Card -->
+																	<!-- Request Card con bordo sinistro priorità -->
 																	<div
-																		class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200">
+																		class="<%= cardBg %> <%= borderLeft %> rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200">
 
-																		<!-- Header con badge + richiedente -->
+																		<!-- RIGA 1: Priorità grande + Richiedente -->
 																		<div
-																			class="flex flex-wrap items-center justify-between gap-2 p-4 bg-white border-b border-gray-100">
-																			<div
-																				class="flex flex-wrap items-center gap-2">
-																				<!-- URGENZA -->
+																			class="flex items-center justify-between p-4 border-b border-gray-100">
+																			<div class="flex items-center gap-3">
 																				<span
-																					class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold <%= urgCls %>">
+																					class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold <%= urgCls %> shadow-sm">
 																					<i class="fas <%= urgIcon %>"></i>
 																					<%= urg.toUpperCase() %>
 																				</span>
-																				<!-- STATO -->
 																				<span
-																					class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold <%= stCls %>">
-																					<i class="fas <%= stIcon %>"></i>
-																					<%= stato.replace("_"," ").toUpperCase() %>
-									            </span>
-									            <!-- MOTIVO -->
-									            <span class=" inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
-																						bg-blue-50 text-blue-700 border
-																						border-blue-200">
-																						<i class="fas fa-tag"></i>
-																						<%= motivo %>
+																					class="text-lg font-semibold text-gray-800">
+																					<i
+																						class="fas fa-user text-violet-500 mr-1"></i>
+																					<%= UserService.getNomeById(r.getRichiedenteId())
+																						%>
 																				</span>
 																			</div>
-																			<!-- Richiedente -->
-																			<span
-																				class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
-																				<i class="fas fa-user"></i>
-																				<%= UserService.getNomeById(r.getRichiedenteId())
-																					%>
+																			<span class="text-xs text-gray-400">
+																				<i class="fas fa-clock mr-1"></i>
+																				<%= r.getDataRichiesta().format(DateTimeFormatter.ofPattern("dd/MMHH:mm")) %>
 																			</span>
 																		</div>
 
+																		<!-- RIGA 2: Stato prominente + Motivo piccolo -->
+																		<div
+																			class="flex items-center gap-3 px-4 py-2 bg-white/60">
+																			<span
+																				class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold <%= stCls %>">
+																				<i class="fas <%= stIcon %>"></i>
+																				<%= stato.replace("_"," ").toUpperCase() %>
+										</span>
+										<span class=" text-xs text-gray-500">
+																					<i class="fas fa-tag mr-1"></i>
+																					<%= motivo %>
+																			</span>
+																		</div>
 																		<!-- Articoli richiesti -->
 																		<div class="p-4">
 																			<p
