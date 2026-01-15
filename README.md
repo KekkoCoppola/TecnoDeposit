@@ -201,15 +201,6 @@ http://localhost:8080/TecnoDeposit/
 
 **Soluzione**: Aggiungi MySQL Connector/J alle dipendenze:
 
-```xml
-<!-- pom.xml -->
-<dependency>
-    <groupId>com.mysql</groupId>
-    <artifactId>mysql-connector-j</artifactId>
-    <version>8.0.33</version>
-</dependency>
-```
-
 ### config.properties not found
 
 ```
