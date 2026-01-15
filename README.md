@@ -248,7 +248,7 @@ Questo progetto è proprietario. Tutti i diritti riservati.
 
 Per assistenza:
 - Email: assistenza@tecnodeposit.it
-- Website: [www.tecnodeposit.it](https://www.tecnodeposit.it)
+- Website: app.tecnodeposit.it
 
 ---
 
