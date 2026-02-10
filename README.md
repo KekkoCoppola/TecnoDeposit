@@ -8,8 +8,9 @@
   <p align="center">
     <a href="#-funzionalità-principali">Descrizione</a> •
     <a href="#-requisiti">Requisiti</a> •
-    <a href="#-setup-e-econfigutazione">Setup</a> •
+    <a href="#-setup-e-configurazione">Setup</a> •
     <a href="#-struttura-progetto">Struttura</a> •
+    <a href="#-contribuire">Contribuire</a> 
   </p>
 </div>
 
@@ -27,8 +28,6 @@
   <img src="https://github.com/KekkoCoppola.png" width="30" style="border-radius: 50%; vertical-align: middle;" />
   <strong>Francesco Coppola</strong>
 </a>
-
-Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Jakarta EE e MySQL.
 
 ## 🚀 Funzionalità Principali
 
