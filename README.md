@@ -14,11 +14,8 @@
 </div>
 
 ![Java](https://img.shields.io/badge/Java-17%2B-%23ED8B00?style=flat&logo=openjdk&logoColor=white)
-
 ![Tomcat](https://img.shields.io/badge/Apache%20Tomcat-10.1%2B-%23F8DC75?style=flat&logo=apachetomcat&logoColor=black)
-
 ![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-%234479A1?style=flat&logo=mysql&logoColor=white)
-
 ![Maven](https://img.shields.io/badge/Apache%20Maven-Build-C71A36?style=flat&logo=apachemaven&logoColor=white)
 ![Ant](https://img.shields.io/badge/Apache%20Ant-Build-A42E2B?style=flat&logo=apacheant&logoColor=white)
 
