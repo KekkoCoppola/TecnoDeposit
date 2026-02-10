@@ -1,5 +1,33 @@
 # TecnoDeposit
 
+<div align="center">
+  <img src="src/img/MainLogo.png" alt="DealHunter Logo" width="400" />
+  
+  <h3>Il tuo magazzino digitale</h3>
+  
+  <p align="center">
+    <a href="#-descrizione">Descrizione</a> •
+    <a href="#-come-funziona">Come Funziona</a> •
+    <a href="#-installazione">Installazione</a> •
+    <a href="#-struttura">Struttura</a> •
+    <a href="#-risultati">Risultati</a> •
+    <a href="#-limiti">Limiti</a>
+  </p>
+</div>
+
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
+![ML](https://img.shields.io/badge/ML-Logistic%20Regression-green)
+
+---
+
+## 👤 Autore
+
+<a href="https://github.com/KekkoCoppola">
+  <img src="https://github.com/KekkoCoppola.png" width="30" style="border-radius: 50%; vertical-align: middle;" />
+  <strong>Francesco Coppola</strong>
+</a>
+
 Sistema web di gestione dell'inventario e richieste materiale, sviluppato con Jakarta EE e MySQL.
 
 ## 🚀 Funzionalità Principali
