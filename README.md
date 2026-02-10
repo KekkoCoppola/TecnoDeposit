@@ -6,18 +6,21 @@
   <h3>Il tuo magazzino digitale</h3>
   
   <p align="center">
-    <a href="#-descrizione">Descrizione</a> •
-    <a href="#-come-funziona">Come Funziona</a> •
-    <a href="#-installazione">Installazione</a> •
-    <a href="#-struttura">Struttura</a> •
-    <a href="#-risultati">Risultati</a> •
-    <a href="#-limiti">Limiti</a>
+    <a href="#-funzionalità-principali">Descrizione</a> •
+    <a href="#-requisiti">Requisiti</a> •
+    <a href="#-setup-e-econfigutazione">Setup</a> •
+    <a href="#-struttura-progetto">Struttura</a> •
   </p>
 </div>
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
-![ML](https://img.shields.io/badge/ML-Logistic%20Regression-green)
+![Java](https://img.shields.io/badge/Java-17%2B-%23ED8B00?style=flat&logo=openjdk&logoColor=white)
+
+![Tomcat](https://img.shields.io/badge/Apache%20Tomcat-10.1%2B-%23F8DC75?style=flat&logo=apachetomcat&logoColor=black)
+
+![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-%234479A1?style=flat&logo=mysql&logoColor=white)
+
+![Maven](https://img.shields.io/badge/Apache%20Maven-Build-C71A36?style=flat&logo=apachemaven&logoColor=white)
+![Ant](https://img.shields.io/badge/Apache%20Ant-Build-A42E2B?style=flat&logo=apacheant&logoColor=white)
 
 ---
 
