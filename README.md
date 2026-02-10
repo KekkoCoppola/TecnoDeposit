@@ -4,8 +4,11 @@
   <img src="src/main/webapp/img/Icon.png" alt="TecnoDeposit Logo" width="400" />
   
   <h3>Il tuo magazzino digitale</h3>
-  
-  <p align="center">
+  <a href="https://app.tecnodeposit.it">
+    <img src="https://img.shields.io/badge/Live_Demo-Guarda_il_sito-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" />
+  </a>
+  <br><br> <p align="center">
+    <a href="https://app.tecnodeposit.it">Live Demo</a> •
     <a href="#-funzionalità-principali">Descrizione</a> •
     <a href="#-requisiti">Requisiti</a> •
     <a href="#-setup-e-configurazione">Setup</a> •
@@ -13,6 +16,7 @@
     <a href="#-contribuire">Contribuire</a> 
   </p>
 </div>
+
 
 ![Java](https://img.shields.io/badge/Java-17%2B-%23ED8B00?style=flat&logo=openjdk&logoColor=white)
 ![Tomcat](https://img.shields.io/badge/Apache%20Tomcat-10.1%2B-%23F8DC75?style=flat&logo=apachetomcat&logoColor=black)
