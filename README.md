@@ -1,7 +1,7 @@
 # TecnoDeposit
 
 <div align="center">
-  <img src="src/img/MainLogo.png" alt="DealHunter Logo" width="400" />
+  <img src="src/main/webapp/img/Icon.png" alt="TecnoDeposit Logo" width="400" />
   
   <h3>Il tuo magazzino digitale</h3>
   
