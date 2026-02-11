@@ -28,6 +28,16 @@
     <dispatcher>REQUEST</dispatcher>
 </filter-mapping>
 
+<!-- SERVLET IMMAGINI ESTERNE -->
+<servlet>
+    <servlet-name>ImageServlet</servlet-name>
+    <servlet-class>controller.ImageServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ImageServlet</servlet-name>
+    <url-pattern>/ext-img/*</url-pattern>
+</servlet-mapping>
+
 
 
  <!-- 401 -->   

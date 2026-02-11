@@ -4,6 +4,7 @@ import model.Articolo;
 import model.Articolo.Stato;
 import model.ListaArticoli;
 import util.ImageUtil;
+import util.ImageStorageConfig;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
@@ -50,9 +51,9 @@ public class ArticoloServlet extends HttpServlet {
             // caricate siano trovate)
             ImageUtil.invalidateCache();
 
-            // Usa ImageUtil centralizzato per trovare l'immagine
-            String immagine = ImageUtil.trovaImmagineArticolo(nome, marca, getServletContext().getRealPath("/img"),
-                    "img");
+            // Usa ImageUtil centralizzato per trovare l'immagine (directory esterna)
+            String immagine = ImageUtil.trovaImmagineArticolo(nome, marca,
+                    ImageStorageConfig.getImageDirectory(getServletContext()), "ext-img");
             System.out.println("📷 Immagine trovata per " + nome + "/" + marca + ": " + immagine);
 
             int ddt = -1;

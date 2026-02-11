@@ -3,6 +3,7 @@ package controller;
 import model.Articolo;
 import model.ListaArticoli;
 import util.ImageUtil;
+import util.ImageStorageConfig;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -100,7 +101,7 @@ public class FiltroServlet extends HttpServlet {
 				if (a.getImmagine() == null || a.getImmagine().isEmpty()) {
 					a.setImmagine(ImageUtil.trovaImmagineArticolo(
 							a.getNome(), a.getMarca(),
-							getServletContext().getRealPath("/img"), "img"));
+							ImageStorageConfig.getImageDirectory(getServletContext()), "ext-img"));
 				}
 			}
 

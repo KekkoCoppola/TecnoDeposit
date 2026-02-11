@@ -1,6 +1,7 @@
 package controller;
 
 import util.ImageUtil;
+import util.ImageStorageConfig;
 import model.ListaArticoli;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -28,9 +29,9 @@ public class ImageCheckServlet extends HttpServlet {
         String nome = request.getParameter("nome");
         String marca = request.getParameter("marca");
 
-        String directoryPath = getServletContext().getRealPath("/img");
+        String directoryPath = ImageStorageConfig.getImageDirectory(getServletContext());
         boolean found = ImageUtil.esisteImmagine(nome, marca, directoryPath);
-        String path = found ? ImageUtil.trovaImmagineArticolo(nome, marca, directoryPath, "img") : "img/Icon.png";
+        String path = found ? ImageUtil.trovaImmagineArticolo(nome, marca, directoryPath, "ext-img") : "img/Icon.png";
 
         // Conta quanti articoli condividono questa combinazione nome+marca
         int count = 0;

@@ -34,7 +34,7 @@ public class AuthFilter implements Filter {
 
     // Prefissi “aperti” per statici
     private static final String[] WHITELIST_PREFIX = {
-            "/css/", "/js/", "/img/", "/images/", "/fonts/", "/static/", "/assets/"
+            "/css/", "/js/", "/img/", "/ext-img/", "/images/", "/fonts/", "/static/", "/assets/"
     };
 
     // Estensioni statiche da lasciare passare

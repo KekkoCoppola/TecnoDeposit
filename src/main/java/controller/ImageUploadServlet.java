@@ -1,6 +1,7 @@
 package controller;
 
 import util.ImageUtil;
+import util.ImageStorageConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -72,15 +73,18 @@ public class ImageUploadServlet extends HttpServlet {
                 return;
             }
 
-            // Comprimi e salva
+            // Comprimi e salva nella directory esterna
             String outputPath = ImageUtil.compressAndSave(
                     originalImage,
                     nome,
                     marca,
-                    getServletContext().getRealPath("/img"),
+                    ImageStorageConfig.getImageDirectory(getServletContext()),
                     MAX_WIDTH,
                     MAX_HEIGHT,
                     JPEG_QUALITY);
+
+            // Cambia il path da "img/" a "ext-img/" per usare la nuova servlet
+            outputPath = outputPath.replace("img/", "ext-img/");
 
             // Risposta JSON
             PrintWriter out = response.getWriter();

@@ -163,6 +163,19 @@ public class ImageUtil {
             int maxWidth, int maxHeight,
             float quality) throws java.io.IOException {
 
+        // VERIFICA DIRECTORY - crea se non esiste
+        File outputDirFile = new File(outputDir);
+        if (!outputDirFile.exists()) {
+            boolean created = outputDirFile.mkdirs();
+            if (!created) {
+                throw new java.io.IOException("Impossibile creare directory: " + outputDir);
+            }
+            System.out.println("✅ [ImageUtil] Creata directory: " + outputDir);
+        }
+
+        System.out
+                .println("📁 [ImageUtil] Directory output: " + outputDir + " (exists: " + outputDirFile.exists() + ")");
+
         // Calcola nuove dimensioni mantenendo aspect ratio
         int originalWidth = image.getWidth();
         int originalHeight = image.getHeight();
@@ -201,6 +214,8 @@ public class ImageUtil {
         String fileName = baseName + ".jpg";
         java.io.File outputFile = new java.io.File(outputDir, fileName);
 
+        System.out.println("📷 [ImageUtil] Salvataggio immagine: " + outputFile.getAbsolutePath());
+
         // Salva come JPEG con qualità specificata
         java.util.Iterator<javax.imageio.ImageWriter> writers = javax.imageio.ImageIO
                 .getImageWritersByFormatName("jpg");
@@ -213,12 +228,25 @@ public class ImageUtil {
         param.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
         param.setCompressionQuality(quality);
 
-        try (javax.imageio.stream.ImageOutputStream ios = javax.imageio.ImageIO.createImageOutputStream(outputFile)) {
+        // Usa FileOutputStream diretto per evitare problemi con
+        // ImageIO.createImageOutputStream
+        try (java.io.FileOutputStream fos = new java.io.FileOutputStream(outputFile);
+                javax.imageio.stream.ImageOutputStream ios = javax.imageio.ImageIO.createImageOutputStream(fos)) {
+
+            if (ios == null) {
+                throw new java.io.IOException(
+                        "Impossibile creare ImageOutputStream per: " + outputFile.getAbsolutePath());
+            }
+
             writer.setOutput(ios);
             writer.write(null, new javax.imageio.IIOImage(resized, null, null), param);
+            ios.flush();
         } finally {
             writer.dispose();
         }
+
+        System.out.println("✅ [ImageUtil] Immagine salvata: " + outputFile.getAbsolutePath() + " ("
+                + outputFile.length() + " bytes)");
 
         // Invalida cache per vedere nuova immagine
         invalidateCache();

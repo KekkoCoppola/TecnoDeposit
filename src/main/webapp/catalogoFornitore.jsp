@@ -121,7 +121,7 @@
                                                                     </span>
                                                                     <% }else{ %>
                                                                         <span class="font-medium text-gray-700">
-                                                                            <%= a.getDdt() %> &bull;N/D
+                                                                            <%= a.getDdtSpedizione() %> &bull;N/D
                                                                         </span>
                                                                         <% } %>
                                                             </div>
@@ -155,7 +155,7 @@
                                                                     revisione:%0D%0A%0D%0A- <%=a.getNome()%> marca
                                                                         <%=a.getMarca()%> inviato il giorno
                                                                             <%=dataSpeSingola%> con DDT numero
-                                                                                <%=a.getDdt()%>%0D%0A%0D%0ANon è stato
+                                                                                <%=a.getDdtSpedizione()%>%0D%0A%0D%0ANon è stato
                                                                                     ancora ricevuto nessun aggiornamento
                                                                                     su tale
                                                                                     materiale.%0D%0A%0D%0AAttendo un
