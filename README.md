@@ -170,9 +170,9 @@ cp target/TecnoDeposit.war /path/to/tomcat/webapps/
 3.  <img src="https://github.com/user-attachments/assets/8f1d74e3-8a99-499d-80b2-f120f746e5bc" width="400" alt="Configurazione Eclipse" />
 4.  Copia il contenuto della repository nella cartella del progetto (**Sostituisci tutto**).
 5.  Aggiungi le librerie in `src/main/webapp/WEB-INF/lib` al Build Path.
-   <img src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" width="200" alt="Librerie" />
-6.  Aggiungi il progetto al Server Tomcat (`Add & Remove`).
-7.  Avvia Tomcat.
+6.  <img src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" width="200" alt="Librerie" />
+7.  Aggiungi il progetto al Server Tomcat (`Add & Remove`).
+8.  Avvia Tomcat.
 
 🌐 **Accesso**: `http://localhost:8080/TecnoDeposit`
 
