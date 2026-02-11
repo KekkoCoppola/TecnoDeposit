@@ -1,74 +1,105 @@
-# TecnoDeposit
+# 📦 TecnoDeposit
 
 <div align="center">
-  <img src="src/main/webapp/img/Icon.png" alt="TecnoDeposit Logo" width="400" />
-  
-  <h3>Il tuo magazzino digitale</h3>
-  <a href="https://app.tecnodeposit.it">
-    <img src="https://img.shields.io/badge/Live_Demo-Guarda_il_sito-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Sito" />
-  </a>
-  <br><br> <p align="center">
-    <a href="https://app.tecnodeposit.it">Live Demo</a> •
-    <a href="#-funzionalità-principali">Descrizione</a> •
-    <a href="#-requisiti">Requisiti</a> •
-    <a href="#-setup-e-configurazione">Setup</a> •
-    <a href="#-struttura-progetto">Struttura</a> •
-    <a href="#-contribuire">Contribuire</a> 
+  <br />
+  <img src="src/main/webapp/img/Icon.png" alt="TecnoDeposit Logo" width="180" />
+  <br /><br />
+
+  <h1 align="center">TecnoDeposit</h1>
+  <h3 align="center">✨ Il Tuo Magazzino Digitale Intelligente ✨</h3>
+
+  <p align="center">
+    <a href="https://app.tecnodeposit.it">
+      <img src="https://img.shields.io/badge/LIVE_DEMO-APP.TECNODEPOSIT.IT-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=1a1a1a" alt="Live Demo" />
+    </a>
   </p>
+
+  <p align="center">
+    <a href="https://app.tecnodeposit.it" style="text-decoration: none;">Live Demo</a> •
+    <a href="#-funzionalità-principali" style="text-decoration: none;">Funzionalità</a> •
+    <a href="#-requisiti" style="text-decoration: none;">Requisiti</a> •
+    <a href="#-setup-e-configurazione" style="text-decoration: none;">Setup</a> •
+    <a href="#-struttura-progetto" style="text-decoration: none;">Struttura</a> •
+    <a href="#-contribuire" style="text-decoration: none;">Contribuire</a>
+  </p>
+  
+  <div align="center">
+    <img src="https://img.shields.io/badge/Java-17%2B-orange?style=flat-square&logo=openjdk&logoColor=white" alt="Java" />
+    <img src="https://img.shields.io/badge/Apache%20Tomcat-10.1%2B-F8DC75?style=flat-square&logo=apachetomcat&logoColor=black" alt="Tomcat" />
+    <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL" />
+    <img src="https://img.shields.io/badge/Eclipse-IDE-2C2255?style=flat-square&logo=eclipse&logoColor=white" alt="Eclipse" />
+    <img src="https://img.shields.io/badge/Maven-Build-C71A36?style=flat-square&logo=apachemaven&logoColor=white" alt="Maven" />
+    <img src="https://img.shields.io/badge/Ant-Build-A42E2B?style=flat-square&logo=apacheant&logoColor=white" alt="Ant" />
+  </div>
 </div>
 
-
-![Java](https://img.shields.io/badge/Java-17%2B-%23ED8B00?style=flat&logo=openjdk&logoColor=white)
-![Tomcat](https://img.shields.io/badge/Apache%20Tomcat-10.1%2B-%23F8DC75?style=flat&logo=apachetomcat&logoColor=black)
-![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-%234479A1?style=flat&logo=mysql&logoColor=white)
-![Maven](https://img.shields.io/badge/Apache%20Maven-Build-C71A36?style=flat&logo=apachemaven&logoColor=white)
-![Ant](https://img.shields.io/badge/Apache%20Ant-Build-A42E2B?style=flat&logo=apacheant&logoColor=white)
+<br />
 
 ---
 
 ## 👤 Autore
 
-<a href="https://github.com/KekkoCoppola">
-  <img src="https://github.com/KekkoCoppola.png" width="30" style="border-radius: 50%; vertical-align: middle;" />
+<div align="center">
+  <a href="https://github.com/KekkoCoppola">
+    <img src="https://github.com/KekkoCoppola.png" width="60" style="border-radius: 50%; border: 3px solid #2ea44f;" alt="Avatar" />
+  </a>
+  <br />
   <strong>Francesco Coppola</strong>
-</a>
+</div>
+
+---
 
 ## 🚀 Funzionalità Principali
 
-- **Gestione Inventario**: CRUD completo articoli con stati, assegnazioni tecnici, tracking garanzie
-- **Richieste Materiale**: Sistema di richieste con workflow approvazione
-- **Gestione Fornitori**: Anagrafica fornitori e centri revisione
-- **Autenticazione**: Login sicuro con gestione ruoli (Admin/Tecnico)
-- **Notifiche**: Sistema notifiche email con template HTML
-- **Scanner QR/Barcode**: Ricerca rapida articoli tramite scanner
-- **Statistiche**: Dashboard con report e contatori real-time
-- **Import/Export**: Import bulk articoli, backup database
+<div align="center">
+
+| Funzionalità | Descrizione |
+| :--- | :--- |
+| 📦 **Gestione Inventario** | CRUD completo articoli con stati, assegnazioni tecnici, tracking garanzie. |
+| 📋 **Richieste Materiale** | Sistema di richieste con workflow approvazione avanzato. |
+| 🏭 **Gestione Fornitori** | Anagrafica completa fornitori e centri revisione. |
+| 🔐 **Autenticazione** | Login sicuro con gestione ruoli (Admin/Tecnico). |
+| 📧 **Notifiche** | Sistema notifiche email automatiche con template HTML. |
+| 📱 **Scanner QR/Barcode** | Ricerca rapida articoli tramite scanner integrato. |
+| 📊 **Statistiche** | Dashboard con report e contatori real-time. |
+| 💾 **Import/Export** | Import bulk articoli e backup database. |
+
+</div>
+
+<br />
 
 ## 📋 Requisiti
 
-- **Java JDK**: 17 o superiore
-- **Application Server**: Apache Tomcat 10.1+ o compatibile Jakarta EE
-- **Database**: MySQL 8.0+
-- **Build Tool**: Maven o Ant (a seconda della configurazione)
+Assicurati di avere il seguente ambiente configurato:
+
+> [!NOTE]
+> Il progetto richiede **Java 17** o superiore per funzionare correttamente.
+
+*   ☕ **Java JDK**: `17` o superiore
+*   🚀 **Application Server**: Apache Tomcat `10.1+` (o compatibile Jakarta EE)
+*   🗄️ **Database**: MySQL `8.0+`
+*   🛠️ **Build Tool**: Maven o Ant (a seconda della configurazione)
+
+---
 
 ## ⚙️ Setup e Configurazione
 
-### NB. Codice Svuota Magazzino
-Il codice otp per lo svuotamento del magazzino.
-```
-a3D!9fLk7@pQ4zV6m#Y1dR8wK$eJ0tN3cX7zT1wF5hR8uP2sL0vM9gB6dQ3yC4
-```
+> [!IMPORTANT]
+> **Codice Svuota Magazzino** (OTP per svuotamento):
+> ```text
+> a3D!9fLk7@pQ4zV6m#Y1dR8wK$eJ0tN3cX7zT1wF5hR8uP2sL0vM9gB6dQ3yC4
+> ```
 
-### 1. Clone del Repository
+### 1️⃣ Clone del Repository
 
 ```bash
 git clone https://github.com/yourusername/TecnoDeposit.git
 cd TecnoDeposit
 ```
 
-### 2. Configurazione Database
+### 2️⃣ Configurazione Database
 
-Crea il database MySQL:
+Esegui i comandi nel tuo client MySQL per inizializzare il DB:
 
 ```sql
 CREATE DATABASE tecnodeposit CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -77,199 +108,192 @@ GRANT ALL PRIVILEGES ON tecnodeposit.* TO 'tecnodeposit_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Importa lo schema database:
+Importa lo schema:
 
 ```bash
 mysql -u tecnodeposit_user -p tecnodeposit < src/main/resources/DB.sql
 ```
 
-### 3. Configurazione Applicazione
+### 3️⃣ Configurazione Applicazione
 
-1. Copia il file template di configurazione:
+Copia il template e configura le credenziali:
 
 ```bash
 cp src/main/resources/config.properties.template src/main/resources/config.properties
 ```
 
-2. Modifica `config.properties` con le tue credenziali:
+Modifica `config.properties`:
 
 ```properties
-# Database
+# 🗄️ Database
 db.url=jdbc:mysql://localhost:3306/tecnodeposit
 db.username=tecnodeposit_user
 db.password=your_secure_password
 
-# Email SMTP (per invio notifiche)
+# 📧 Email SMTP (Notifiche)
 email.smtp.host=smtp.gmail.com
 email.smtp.port=587
 email.smtp.username=your-email@gmail.com
 email.smtp.password=your-app-password
 email.smtp.from=noreply@tecnodeposit.it
 
-# AES Key per crittografia (genera nuova chiave)
+# 🔒 AES Key (Crittografia)
 crypto.aes.key.b64=YOUR_BASE64_KEY_HERE
 ```
 
-### 4. Generare Chiave AES
+### 4️⃣ Generare Chiave AES
 
-Per la crittografia dei dati sensibili, genera una chiave AES-256:
+Per la sicurezza dei dati, genera una chiave **AES-256**:
 
+**Linux/Mac:**
 ```bash
-# Linux/Mac
 openssl rand -base64 32
-
-# Windows (PowerShell)
-$bytes = New-Object byte[] 32; (New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes); [Convert]::ToBase64String($bytes)
 ```
 
-Copia il risultato in `crypto.aes.key.b64` nel file `config.properties`.
+**Windows (PowerShell):**
+```powershell
+$bytes = New-Object byte[] 32; (New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes); [Convert]::ToBase64String($bytes)
+```
+*Incolla il risultato in `crypto.aes.key.b64` nel file config.*
 
-### 5. Build e Deploy
+### 5️⃣ Build e Deploy
 
-#### Con Maven:
-
+#### 🦁 Con Maven
 ```bash
 mvn clean package
 cp target/TecnoDeposit.war /path/to/tomcat/webapps/
 ```
 
-#### Con IDE (Eclipse):
+#### 🌑 Con Eclipse IDE
+1.  **File > New Project > Dynamic Web Project**
+2.  Configura il progetto seguendo la procedura standard.
+3.  <img src="https://github.com/user-attachments/assets/8f1d74e3-8a99-499d-80b2-f120f746e5bc" width="400" alt="Configurazione Eclipse" />
+4.  Copia il contenuto della repository nella cartella del progetto (**Sostituisci tutto**).
+5.  Aggiungi le librerie in `src/main/webapp/WEB-INF/lib` al Build Path.
+    <img src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" width="200" alt="Librerie" />
+6.  Aggiungi il progetto al Server Tomcat (`Add & Remove`).
+7.  Avvia Tomcat.
 
-1. File > New Project > Dynamic Web Projecy
-2. Configura il web project come segue
-3. <img width="781" height="669" alt="image" src="https://github.com/user-attachments/assets/8f1d74e3-8a99-499d-80b2-f120f746e5bc" />
-4. Copia Tutto il contenuto della repository nella nuova cartella che hai creato e seleziona "Sostituisci i 2 file"
-4. Inserisci queste 4 librerie nella cartella src>main>webapp>lib
-5. <img width="222" height="167" alt="image" src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" />
-6. Configura Tomcat nella sezione Server > New Server > apache > Tomcat v10.1 > Download And Install > Finish
-7. Aggiungi il progetto a tomcat cliccando con tasto destro su tomcat v10.1 > Add & Remove > seleziona "TecnoDeposit" > Add > Finish
-8. Ora avvia Tomcat e raggiungi tramite web l'indirizzo http:localhost:8080/TecnoDeposit
+🌐 **Accesso**: `http://localhost:8080/TecnoDeposit`
 
+---
 
 ## 🔐 Configurazione Email (Gmail)
 
-Se usi Gmail per SMTP:
+Se utilizzi Gmail per l'SMTP:
 
-1. Vai su [Google Account Security](https://myaccount.google.com/security)
-2. Abilita "2-Step Verification"
-3. Genera "App Password" per TecnoDeposit
-4. Usa l'App Password nel file `config.properties`
+1.  Vai su [Google Account Security](https://myaccount.google.com/security)
+2.  Abilita **2-Step Verification**
+3.  Genera una **App Password** per "TecnoDeposit"
+4.  Usa quella password in `config.properties`
+
+---
 
 ## 🛡️ Sicurezza
 
-> **⚠️ IMPORTANTE**: Non committare mai il file `config.properties` nel repository!
+> [!CAUTION]
+> **NON committare mai** il file `config.properties`!
 
-Il file `.gitignore` è configurato per escludere:
-- `config.properties` (credenziali)
-- File di build (`*.class`, `*.war`)
-- File IDE (`.idea`, `.settings`)
-- Log files
+Il file `.gitignore` protegge automaticamente:
+*   `config.properties`
+*   File di build (`*.class`, `*.war`)
+*   File IDE (`.idea`, `.settings`)
+*   Log files
 
-### Best Practices
+**Best Practices:**
+*   ✅ Cambia tutte le password di default.
+*   ✅ Usa password complesse.
+*   ✅ In produzione, configura HTTPS.
+*   ✅ Esegui backup regolari.
 
-- Cambia tutte le password di default
-- Usa password forti per database e admin
-- Configura HTTPS in produzione
-- Limita accesso database solo da localhost (o IP fidati)
-- Esegui backup regolari del database
+---
 
 ## 📁 Struttura Progetto
 
+```mermaid
+graph TD;
+    src-->main;
+    main-->java;
+    main-->webapp;
+    main-->resources;
+    java-->controller["📡 controller (Servlet)"];
+    java-->model["📦 model (Entità & Logic)"];
+    java-->dao["💾 dao (Data Access)"];
+    java-->util["⚙️ util (Common)"];
+    webapp-->WEB-INF;
+    webapp-->scripts["📜 scripts (JS)"];
+    webapp-->css["🎨 css (Styles)"];
+    webapp-->JSP["📄 *.jsp (Views)"];
+    resources-->Config["⚙️ config.properties"];
 ```
-TecnoDeposit/
-├── src/
-│   └── main/
-│       ├── java/
-│       │   ├── controller/      # Servlet controller
-│       │   ├── model/           # Entità e business logic
-│       │   ├── dao/             # Data Access Objects
-│       │   └── util/            # Utility (Email, Crypto, etc.)
-│       ├── webapp/
-│       │   ├── WEB-INF/
-│       │   │   └── web.xml      # Configurazione servlet
-│       │   ├── partials/        # JSP parziali
-│       │   ├── scripts/         # JavaScript
-│       │   ├── css/             # Stylesheet
-│       │   └── *.jsp            # Pagine JSP
-│       └── resources/
-│           └── config.properties.template
-├── build/                       # File compilati (ignorato)
-├── .gitignore
-└── README.md
-```
+
+---
 
 ## 🚀 Primo Accesso
 
-Dopo il deploy, l'applicazione sarà accessibile a:
+Una volta avviato, accedi a: `http://localhost:8080/TecnoDeposit/`
 
-```
-http://localhost:8080/TecnoDeposit/
-```
+| Ruolo | Username | Password (Default) |
+| :--- | :--- | :--- |
+| 👑 **Admin** | `admin` | `123` |
+| 🔧 **Tecnico** | `tecnico` | `123` |
+| 📦 **Magazziniere** | `magazziniere` | `123` |
 
-**Credenziali default** :
+> [!WARNING]
+> Cambia immediatamente queste password dopo il primo login!
 
-**Admin**:
-- Username: `admin`
-- Password: `123`
-
-**Teccnico**:
-- Username: `tecnico`
-- Password: `123`
-
-**Magazziniere**:
-- Username: `magazziniere`
-- Password: `123` 
-
-> **⚠️ Cambia immediatamente la password default!**
+---
 
 ## 🐛 Troubleshooting
 
-### Errore connessione database
+<details>
+<summary><strong>❌ MySQL JDBC Driver not found!</strong></summary>
 
-```
-❌ MySQL JDBC Driver not found!
-```
+**Soluzione**: Assicurati di aver aggiunto `mysql-connector-j-*.jar` nel Build Path o nella cartella `lib` di Tomcat.
+</details>
 
-**Soluzione**: Aggiungi MySQL Connector/J alle dipendenze:
-
-### config.properties not found
-
-```
-⚠️ config.properties not found, using environment variables
-```
+<details>
+<summary><strong>⚠️ config.properties not found</strong></summary>
 
 **Soluzione**: 
-1. Verifica che `config.properties` sia in `src/main/resources/`
-2. Assicurati che il file sia incluso nel build
-3. In alternativa, configura variabili ambiente
+1. Verifica che il file esista in `src/main/resources/`.
+2. Assicurati che sia incluso nel classpath/build.
+</details>
 
-### Email non inviate
+<details>
+<summary><strong>📧 Email non inviate</strong></summary>
 
-- Verifica credenziali SMTP in `config.properties`
-- Controlla che "App Password" sia configurata (se Gmail)
-- Verifica firewall/antivirus non blocchi porta 587
+*   Controlla credenziali in `config.properties`.
+*   Verifica che l'App Password sia corretta.
+*   Controlla firewall/blocchi porta 587.
+</details>
+
+---
 
 ## 📊 Features Roadmap
 
-- [x] Gestione inventario completa
-- [x] Sistema autenticazione e ruoli
-- [x] Notifiche email
-- [x] Scanner QR/Barcode
-- [ ] API REST per integrazione
-- [ ] Dashboard analytics avanzata
-- [ ] Mobile app (React Native)
-- [ ] Export PDF report
+- [x] ✅ Gestione inventario completa
+- [x] ✅ Sistema autenticazione e ruoli
+- [x] ✅ Notifiche email
+- [x] ✅ Scanner QR/Barcode
+- [ ] 🚧 API REST per integrazione
+- [ ] 🚧 Dashboard analytics avanzata
+- [ ] 📱 Mobile app (React Native)
+- [ ] 📄 Export PDF report
+
+---
 
 ## 🤝 Contribuire
 
-Le Pull Request sono benvenute! Per cambiamenti importanti:
+Siamo aperti a contributi! 
 
-1. Apri prima una Issue per discutere le modifiche
-2. Fork il progetto
-3. Crea un feature branch (`git checkout -b feature/AmazingFeature`)
-4. Commit le modifiche (`git commit -m 'Add AmazingFeature'`)
-5. Push al branch (`git push origin feature/AmazingFeature`)
-6. Apri una Pull Request
+1.  Fork il progetto
+2.  Crea branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit (`git commit -m 'Add AmazingFeature'`)
+4.  Push (`git push origin feature/AmazingFeature`)
+5.  Apri una Pull Request
+
+---
 
 ## 📝 License
 
@@ -277,10 +301,11 @@ Questo progetto è proprietario. Tutti i diritti riservati.
 
 ## 📞 Supporto
 
-Per assistenza:
-- Email: assistenza@tecnodeposit.it
-- Website: [app.tecnodeposit.it](https://app.tecnodeposit.it)
+📧 **Email**: assistenza@tecnodeposit.it
+🌐 **Web**: [app.tecnodeposit.it](https://app.tecnodeposit.it)
 
----
+<br />
 
-**Powered by TecnoDeposit © 2025**
+<div align="center">
+  <strong>Powered by TecnoDeposit © 2025</strong>
+</div>
