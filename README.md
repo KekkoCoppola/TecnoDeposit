@@ -169,10 +169,15 @@ cp target/TecnoDeposit.war /path/to/tomcat/webapps/
 2.  Configura il progetto seguendo la procedura standard.
 3.  <img src="https://github.com/user-attachments/assets/8f1d74e3-8a99-499d-80b2-f120f746e5bc" width="400" alt="Configurazione Eclipse" />
 4.  Copia il contenuto della repository nella cartella del progetto (**Sostituisci tutto**).
-5.  Aggiungi le librerie in `src/main/webapp/WEB-INF/lib` al Build Path.
-6.  <img src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" width="200" alt="Librerie" />
-7.  Aggiungi il progetto al Server Tomcat (`Add & Remove`).
-8.  Avvia Tomcat.
+5.  Scarica le librerie:
+    *   🔗 **SQL Connector**: [link](https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/9.2.0/mysql-connector-j-9.2.0.jar)
+    *   🔐 **JBCrypt**: [link](https://repo1.maven.org/maven2/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar)
+    *   📩 **Jakarta Mail**: [link](https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.2/jakarta.mail-2.0.2.jar)
+    *   ✔️ **Jakarta Activation**: [link](https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar)
+6.  Aggiungi le librerie in `src/main/webapp/WEB-INF/lib` al Build Path.
+7.  <img src="https://github.com/user-attachments/assets/0e7bd2b4-8ce8-4021-9440-375b91ad19be" width="200" alt="Librerie" />
+8.  Aggiungi il progetto al Server Tomcat (`Add & Remove`).
+9.  Avvia Tomcat.
 
 🌐 **Accesso**: `http://localhost:8080/TecnoDeposit`
 
