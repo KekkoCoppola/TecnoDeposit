@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (ruoloUtente === "Tecnico") {
     //CAMPI FORM
     document.getElementById('divNome').style.display = 'none';
-    document.getElementById('divNote').style.display = 'none';
     document.getElementById('divMatricola').style.display = 'none';
     document.getElementById('divComp').style.display = 'none';
     document.getElementById('divDatagar').style.display = 'none';

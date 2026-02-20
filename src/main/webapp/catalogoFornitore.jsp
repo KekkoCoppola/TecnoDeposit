@@ -24,13 +24,13 @@
                                 <% StringBuilder body=new StringBuilder(); body.append("Salve,%0D%0A%0D%0A La seguente lista contiene tutti gli articoli attualmente in attesa di revisione di cui non è stato ricevuto riscontro:%0D%0A%0D%0A");
                                 for (Articolo a : articoli) { 
                                 	if("In attesa".equalsIgnoreCase(a.getStato().toString())) { 
-                                		String dataSpedizione=a.getDataSpe_DDT() !=null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")): "N/D" ;
-                                		body.append("- ").append(a.getNome()+" marca "+a.getMarca()+" spedito il "+dataSpedizione+" con DDT numero "+a.getDdt()).append(" %0D%0A");
+                                		String dataSpedizione=a.getDataSpe_DDT() !=null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")): "N/D"; 
+                                		body.append("- ").append(a.getNome()+" marca "+a.getMarca()+" spedito il "+dataSpedizione+" con DDT numero "+a.getDdtSpedizione()).append(" %0D%0A"); 
                                 		} 
                                 	}
-                                    body.append("%0D%0AResto in attesa di un vostro riscontro.%0D%0ACordiali saluti,%0D%0ATecnoAGM");
-                                    body.append("%0D%0A%0D%0A%0D%0AQuesta mail è stata generata dal software di magazzinaggio TecnoDeposit™.");
-                                    String mailBody=body.toString();
+                                body.append("%0D%0AResto in attesa di un vostro riscontro.%0D%0ACordiali saluti,%0D%0ATecnoAGM");
+                                body.append("%0D%0A%0D%0A%0D%0AQuesta mail è stata generata dal software di magazzinaggio TecnoDeposit™.");
+                                String mailBody=body.toString();
                                     //Mostra pulsante SOLO se ci sono articoli in attesa E non è un Tecnico
                                     if(countInAttesa> 0 && !session.getAttribute("ruolo").equals("Tecnico")){ %>
 
@@ -155,7 +155,8 @@
                                                                     revisione:%0D%0A%0D%0A- <%=a.getNome()%> marca
                                                                         <%=a.getMarca()%> inviato il giorno
                                                                             <%=dataSpeSingola%> con DDT numero
-                                                                                <%=a.getDdtSpedizione()%>%0D%0A%0D%0ANon è stato
+                                                                                <%=a.getDdtSpedizione()%>%0D%0A%0D%0ANon
+                                                                                    è stato
                                                                                     ancora ricevuto nessun aggiornamento
                                                                                     su tale
                                                                                     materiale.%0D%0A%0D%0AAttendo un

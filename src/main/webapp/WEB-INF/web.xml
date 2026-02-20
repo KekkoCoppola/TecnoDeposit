@@ -144,6 +144,16 @@
     <url-pattern>/api/upload-image</url-pattern>
 </servlet-mapping>
 
+  <!-- IMAGE REFRESH -->
+<servlet>
+    <servlet-name>ImageRefreshServlet</servlet-name>
+    <servlet-class>controller.ImageRefreshServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ImageRefreshServlet</servlet-name>
+    <url-pattern>/api/refresh-images</url-pattern>
+</servlet-mapping>
+
   <!-- FILTRO -->
 <servlet>
     <servlet-name>FiltroServlet</servlet-name>

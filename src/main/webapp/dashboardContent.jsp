@@ -167,7 +167,8 @@
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <i class="fas fa-search text-gray-400"></i>
                     </div>
-                    <input id="searchInput" type="text" placeholder="Cerca articoli per qualsiasi campo..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
+                    <input id="searchInput" type="text"
+                      placeholder="Cerca per nome, matricola, compatibilità, tecnico..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
                              focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
                              transition-all duration-200">
                   </div>
@@ -193,7 +194,7 @@
                 </div>
 
                 <!-- Griglia Filtri -->
-                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-3 mb-4">
 
                   <!-- Stato -->
                   <div class="col-span-1">
@@ -236,6 +237,28 @@
                           %>
                           <option value="<%= marca %>">
                             <%= marca %>
+                          </option>
+                          <% } %>
+                    </select>
+                  </div>
+
+                  <!-- Centro Revisione -->
+                  <div class="col-span-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                      <i class="fas fa-building mr-1 text-gray-400"></i>Centro Rev.
+                    </label>
+                    <select id="fornitoreFilter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-700 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200 cursor-pointer appearance-none
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')]
+                             bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-8">
+                      <option>Tutti</option>
+                      <% List<String> fornitoriList = (List<String>) request.getAttribute("fornitori");
+                          if (fornitoriList != null)
+                          for (String fornitoreItem : fornitoriList) {
+                          %>
+                          <option value="<%= fornitoreItem %>">
+                            <%= fornitoreItem %>
                           </option>
                           <% } %>
                     </select>
@@ -822,6 +845,7 @@
 
                 var search = $("#searchInput").val();
                 var marca = $("#brandFilter").val();
+                var fornitore = $("#fornitoreFilter").val();
                 var stato = $("#statusFilter").val();
                 var data = $("#dateFilter").val();
 
@@ -836,6 +860,7 @@
                 $.get("filtro", {
                   search: search,
                   marca: marca,
+                  fornitore: fornitore,
                   stato: stato,
                   data: data,
                   nome: nomeCompletoUtente,
@@ -855,6 +880,7 @@
               $("#Articoli-personali").on("click", aggiornaArticoli);
               $("#searchInput").on("input", aggiornaArticoli);
               $("#brandFilter").on("change", aggiornaArticoli);
+              $("#fornitoreFilter").on("change", aggiornaArticoli);
               $("#statusFilter").on("change", aggiornaArticoli);
               $("#dateFilter").on("change", aggiornaArticoli);
 
@@ -1111,6 +1137,7 @@
                 document.getElementById('searchInput').value = '';
                 document.getElementById('statusFilter').value = 'Tutti';
                 document.getElementById('brandFilter').value = 'Tutte';
+                document.getElementById('fornitoreFilter').value = 'Tutti';
                 document.getElementById('dateFilter').value = '';
                 nomeCompletoUtente = "";
                 window.history.replaceState(null, "", "dashboard");

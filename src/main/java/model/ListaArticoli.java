@@ -468,10 +468,8 @@ public class ListaArticoli {
     }
 
     public List<Articolo> filtra(String search, String stato, String marca, String dataRicezione, String nome,
-            String check) {
+            String check, String fornitore) {
         List<Articolo> articoli = getAllarticoli();
-        // System.out.println("OTTENUTO: "+search+" | "+stato+" | "+marca+" |
-        // "+dataRicezione);
 
         return articoli.stream().filter(a -> {
             boolean match = true;
@@ -480,7 +478,7 @@ public class ListaArticoli {
 
                 match &= (a.getNome() != null && a.getNome().toLowerCase().contains(searchLower)) ||
                         (a.getMatricola() != null && a.getMatricola().toLowerCase().contains(searchLower)) ||
-                        (a.getFornitore() != null && a.getFornitore().toLowerCase().contains(searchLower)) ||
+                        (a.getCompatibilita() != null && a.getCompatibilita().toLowerCase().contains(searchLower)) ||
                         (a.getTecnico() != null && a.getTecnico().toLowerCase().contains(searchLower));
             }
             if (check.equals("nascondi"))
@@ -493,6 +491,9 @@ public class ListaArticoli {
 
             if (marca != null && !marca.isEmpty()) {
                 match &= a.getMarca().equalsIgnoreCase(marca);
+            }
+            if (fornitore != null && !fornitore.isEmpty()) {
+                match &= a.getFornitore() != null && a.getFornitore().equalsIgnoreCase(fornitore);
             }
             if (nome != null && !nome.isEmpty()) {
                 if (a.getTecnico() == null || !a.getTecnico().equalsIgnoreCase(nome)) {

@@ -38,7 +38,7 @@
                             <i class="fas fa-bug text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">App Installabile</p>
+                            <p class="font-medium text-gray-800">Note Per il tecnico</p>
                             <p class="text-sm text-gray-600">Da oggi TecnoDeposit è un app installabile sul tuo dispositivo mobile o PC! clicca installa app nel menu del profilo per provarla.</p>
                         </div>  
                     </li>
@@ -124,8 +124,20 @@
                             <i class="fas fa-qrcode text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">QR Code vuoto</p>
-                            <p class="text-sm text-gray-600">Risolto un bug che mostrava un qr code vuoto quando l'articolo non aveva la matricola.</p>
+                            <p class="font-medium text-gray-800">Note Per Il Tecnico</p>
+                            <p class="text-sm text-gray-600">Adesso anche il tecnico può inserire le note quando modifica un articolo.</p>
+                        </div>                   
+                    </li>
+                    
+                </ul>
+				<ul class="space-y-2">
+                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
+                        <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-qrcode text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">DDT Nelle Mail</p>
+                            <p class="text-sm text-gray-600">Risolto un bug che impostava DDT=0 nella mail di notifica per i centri revisione.</p>
                         </div>                   
                     </li>
                     
