@@ -15,7 +15,7 @@
   </p>
 
   <p align="center">
-    <a href="https://tecnodeposit.it" style="text-decoration: none;">Live Demo</a> •
+    <a href="https://tecnodeposit.it/" style="text-decoration: none;">Live Demo</a> •
     <a href="#-funzionalità-principali" style="text-decoration: none;">Funzionalità</a> •
     <a href="#-requisiti" style="text-decoration: none;">Requisiti</a> •
     <a href="#-setup-e-configurazione" style="text-decoration: none;">Setup</a> •
