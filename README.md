@@ -9,8 +9,8 @@
   <h3 align="center">✨ Il Tuo Magazzino Digitale Intelligente ✨</h3>
 
   <p align="center">
-    <a href="[https://app.tecnodeposit.it](https://tecnodeposit.it/)">
-      <img src="https://img.shields.io/badge/LIVE_DEMO-APP.TECNODEPOSIT.IT-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=1a1a1a" alt="Live Demo" />
+    <a href="https://tecnodeposit.it/">
+      <img src="https://img.shields.io/badge/LIVE_DEMO-TECNODEPOSIT.IT-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=1a1a1a" alt="Live Demo" />
     </a>
   </p>
 
