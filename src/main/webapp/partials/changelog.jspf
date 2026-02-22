@@ -15,7 +15,7 @@
 					<h1 class="flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wide mb-3">
 		                    Novità da TecnoDeposit!
 		                </h1>
-                        <p class="text-red-100 text-sm">Novità  v.1.0.3 | Gennaio 2026</p>
+                        <p class="text-red-100 text-sm">Novità  v.1.0.4 | Febbraio 2026</p>
                     </div>
                 </div>
                 <button onclick="chiudiChangelog()" 
@@ -33,54 +33,65 @@
                     <i class="fas fa-plus-circle"></i> Nuove Funzionalità 
                 </h3>
                 <ul class="space-y-2">
-                    <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+				<li class="flex items-start gap-3 p-3 bg-green-100 rounded-xl">
                         <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-bug text-xs"></i>
+                            <i class="fas fa-link text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Note Per il tecnico</p>
-                            <p class="text-sm text-gray-600">Da oggi TecnoDeposit è un app installabile sul tuo dispositivo mobile o PC! clicca installa app nel menu del profilo per provarla.</p>
+                            <p class="font-medium text-gray-800">Nuovo Dominio!</p>
+                            <p class="text-sm text-gray-600">La migrazione ora è ufficiale, il nuovo servizio è disponibile al link tecnodeposit.it.</p>
+                            <p class="text-sm text-gray-600">Tale modifica è stata fatta per coerenza di sistema e soprattutto per migliorare le performance.</p>
+                        </div>
+                    </li>
+                <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-qrcode text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">Nuove Etichette!</p>
+                            <p class="text-sm text-gray-600">Da adesso è in fase di test una nuova versione delle etichette compatibile con la stampante di magazzino.</p>
+                            <p class="text-sm text-orange-600"><i class="fas fa-warning"></i> è consigliato scaricare prima l'etichetta e stamparla in seguito, il tool di stampa è ancora in fase di lavorazione.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-clipboard text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">Filtraggio Catalogo Fornitori</p>
+                            <p class="text-sm text-gray-600">Nel catalogo del centro revisione è ora possibile filtrare gli articoli per stato.</p>
                         </div>  
                     </li>
                     
                     <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
                         <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-camera text-xs"></i>
+                            <i class="fas fa-search text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Immagini Articoli</p>
-                            <p class="text-sm text-gray-600">Ora avrai un riscontro visivo se il sistema trova l'immagine corrispondente all'articolo, ma se il sistema non la trova potrai caricarla tu stesso!</p>
+                            <p class="font-medium text-gray-800">Aggiunti Filtri Di Ricerca</p>
+                            <p class="text-sm text-gray-600">Ora è possibile filtrare per Compatibilità e Centro Revisione</p>
                         </div>
                     </li>
                     
-					<li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
-                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-clipboard-check text-xs"></i>
-                        </span>
-                        <div>
-                            <p class="font-medium text-gray-800">Visualizza Changelog</p>
-                            <p class="text-sm text-gray-600">Da adesso è possibile visualizzare il changelog dal menu a tendina del profilo.</p>
-                        </div>
-                    </li>
                 </ul>
             </div>
             
             <!-- Sezione Miglioramenti -->
             <div class="mb-5">
                 <h3 class="flex items-center gap-2 text-sm font-bold text-blue-600 uppercase tracking-wide mb-3">
-                    <i class="fas fa-paint-brush"></i> Miglioramenti Grafici
+                    <i class="fas fa-paint-brush"></i> Miglioramenti 
                 </h3>
                 <ul class="space-y-2">
                     <li class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
                         <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-search text-xs"></i>
+                            <i class="fas fa-clone text-xs"></i>
                         </span>
                         <div>
-                            <p class="font-medium text-gray-800">Restyling Barra di ricerca</p>
-                            <p class="text-sm text-gray-600">La vecchia barra di ricerca è stata sostituita con un design più moderno.</p>
+                            <p class="font-medium text-gray-800">Matricole Duplicate</p>
+                            <p class="text-sm text-gray-600">Da oggi non è più possibile inserire matricole già esistenti nel sistema, ogni articolo ha quindi una matricola univoca.</p>
                         </div>
                     </li>
-                    
+                    <!-- 
 					<li class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
                         <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                             <i class="fas fa-calculator text-xs"></i>
@@ -109,7 +120,7 @@
                             <p class="font-medium text-gray-800">Richieste Materiale</p>
                             <p class="text-sm text-gray-600">Le richieste materiale hanno ricevuto una modifica estetica per renderle mobile-frinedly.</p>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             
@@ -121,7 +132,7 @@
                 <ul class="space-y-2">
                     <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
                         <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <i class="fas fa-qrcode text-xs"></i>
+                            <i class="fas fa-note-sticky text-xs"></i>
                         </span>
                         <div>
                             <p class="font-medium text-gray-800">Note Per Il Tecnico</p>
@@ -129,11 +140,39 @@
                         </div>                   
                     </li>
                     
-                </ul>
-				<ul class="space-y-2">
                     <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
                         <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                             <i class="fas fa-qrcode text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">Ricerca Con Qr Scadente</p>
+                            <p class="text-sm text-gray-600">Adesso la ricerca tramite scansione funziona correttamente.</p>
+                        </div>                   
+                    </li>
+
+                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
+                        <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-file text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">Paginazione sovrapposta</p>
+                            <p class="text-sm text-gray-600">Adesso i tasti di paginazione non si sovrappongono più sulle altre sezioni della pagina.</p>
+                        </div>                   
+                    </li>    
+
+                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
+                        <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-gear text-xs"></i>
+                        </span>
+                        <div>
+                            <p class="font-medium text-gray-800">Pagina impostazioni non cliccabile</p>
+                            <p class="text-sm text-gray-600">Adesso la pagina impostazioni è tornata funzionante.</p>
+                        </div>                   
+                    </li>
+                    
+                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl">
+                        <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-file-circle-check text-xs"></i>
                         </span>
                         <div>
                             <p class="font-medium text-gray-800">DDT Nelle Mail</p>
@@ -158,7 +197,7 @@
 <script>
 // Changelog - Gestione versione con localStorage
 (function() {
-    const CURRENT_VERSION = "1.0.3";  // ï¿½da Aggiornare ad ogni release
+    const CURRENT_VERSION = "1.0.4";  // ï¿½da Aggiornare ad ogni release
     
     document.addEventListener('DOMContentLoaded', function() {
         const seenVersion = localStorage.getItem('tecnodeposit_version');
