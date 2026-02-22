@@ -31,7 +31,7 @@
                                     data-note="<%= a.getNote() %>" data-stato="<%= a.getStato() %>"
                                     data-immagine="<%= a.getImmagine() %>"
                                     data-richiesta-garanzia="<%= a.getRichiestaGaranzia() %>">
-                                    <div class="relative group">
+                                    <div class="relative group overflow-hidden">
                                         <img loading="lazy"
                                             src="<%= (a.getImmagine() != null && !a.getImmagine().isEmpty()) && !a.getImmagine().equals("null") ? a.getImmagine() : "img/Icon.png" %> " alt="Articolo" class="w-full
                                         aspect-[4/3] object-cover transition-transform duration-300
@@ -464,33 +464,34 @@
                                                 size=(Integer) request.getAttribute("size"); Integer total=(Integer)
                                                 request.getAttribute("total"); if (pagina==null) pagina=1; if
                                                 (size==null) size=24; if (total==null) total=0; int maxPage=(int)
-                                                Math.ceil(total / (double) size); 
-                                                String qSearch=request.getParameter("search")
-                                                !=null ? request.getParameter("search") : "" ; 
-                                                String qStato=request.getParameter("stato") !=null ?
-                                                request.getParameter("stato") : "" ;
-                                                
-                                                String qMarca=request.getParameter("marca") !=null ?
-                                                request.getParameter("marca") : "" ; 
-                                                
-                                                String qData=request.getParameter("data") !=null ? request.getParameter("data")
-                                                : "" ; 
-                                                
-                                                String qNome=request.getParameter("nome") !=null ? request.getParameter("nome") : "" ;
-                                                
-                                                String qInst=request.getParameter("installatiCheck") !=null ? request.getParameter("installatiCheck") : "nascondi" ;
-                                                String baseQuery="search=" + java.net.URLEncoder.encode(qSearch, "UTF-8" ) + "&stato=" + java.net.URLEncoder.encode(qStato, "UTF-8" ) + "&marca=" +java.net.URLEncoder.encode(qMarca, "UTF-8" ) + "&data=" +java.net.URLEncoder.encode(qData, "UTF-8" ) + "&nome=" +java.net.URLEncoder.encode(qNome, "UTF-8" ) + "&installatiCheck=" +java.net.URLEncoder.encode(qInst, "UTF-8" ) + "&size=" + size; %>
+                                                Math.ceil(total / (double) size); String
+                                                qSearch=request.getParameter("search") !=null ?
+                                                request.getParameter("search") : "" ; String
+                                                qStato=request.getParameter("stato") !=null ?
+                                                request.getParameter("stato") : "" ; String
+                                                qMarca=request.getParameter("marca") !=null ?
+                                                request.getParameter("marca") : "" ; String
+                                                qData=request.getParameter("data") !=null ? request.getParameter("data")
+                                                : "" ; String qNome=request.getParameter("nome") !=null ?
+                                                request.getParameter("nome") : "" ; String
+                                                qInst=request.getParameter("installatiCheck") !=null ?
+                                                request.getParameter("installatiCheck") : "nascondi" ; String
+                                                baseQuery="search=" + java.net.URLEncoder.encode(qSearch, "UTF-8" )
+                                                + "&stato=" + java.net.URLEncoder.encode(qStato, "UTF-8" ) + "&marca="
+                                                +java.net.URLEncoder.encode(qMarca, "UTF-8" ) + "&data="
+                                                +java.net.URLEncoder.encode(qData, "UTF-8" ) + "&nome="
+                                                +java.net.URLEncoder.encode(qNome, "UTF-8" ) + "&installatiCheck="
+                                                +java.net.URLEncoder.encode(qInst, "UTF-8" ) + "&size=" + size; %>
 
-                                                <!-- Paginazione sticky, estetica migliorata -->
-                                                <!-- Spacer per evitare overlap su desktop (mostrato solo da md in su) -->
-                                                <div aria-hidden="true" class="hidden md:block h-16"></div>
+                                                <!-- Spacer per evitare overlap della paginazione fixed -->
+                                                <div aria-hidden="true" class="h-28 md:h-20"></div>
 
-                                                <nav role="navigation" aria-label="Paginazione risultati" class="no-print sticky bottom-0 z-50 px-3
-            md:fixed md:inset-x-0" style="bottom: max(1rem, env(safe-area-inset-bottom));">
+                                                <nav role="navigation" aria-label="Paginazione risultati"
+                                                    class="no-print fixed bottom-[4.5rem] md:bottom-0 inset-x-0 z-40 px-3 pb-2 md:pb-4 pointer-events-none">
                                                     <div class="mx-auto w-full flex justify-center">
                                                         <div class="inline-flex items-center gap-1 sm:gap-2 rounded-full border border-gray-200
-                bg-white/85 backdrop-blur-sm shadow-lg supports-[backdrop-filter]:bg-white/60
-                px-2 py-1.5 sm:px-3 sm:py-2">
+                bg-white/90 backdrop-blur-md shadow-lg
+                px-2 py-1.5 sm:px-3 sm:py-2 pointer-events-auto">
 
                                                             <!-- PRECEDENTE -->
                                                             <a class="group inline-flex items-center gap-1 sm:gap-2 rounded-full text-xs sm:text-sm font-medium

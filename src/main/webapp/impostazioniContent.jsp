@@ -765,6 +765,18 @@
 												document.body.style.overflow = 'auto';
 												document.getElementById('titolo').textContent = "Modifica Utente";
 
+												// Reset readOnly/disabled da eventuale view precedente
+												document.getElementById('username').readOnly = false;
+												document.getElementById('email').readOnly = false;
+												document.getElementById('phone').readOnly = false;
+												document.getElementById('password').readOnly = false;
+												document.getElementById('nome').readOnly = false;
+												document.getElementById('cognome').readOnly = false;
+												document.getElementById('role').disabled = false;
+												// Ripristina pulsanti nascosti dal view
+												document.getElementById('saveBtn').classList.remove('hidden');
+												document.getElementById('cancelBtn').classList.remove('hidden');
+
 												const card = button.closest('.userCard');
 
 												const id = card.dataset.id;
@@ -782,11 +794,24 @@
 												if (ruoloUtente === "Tecnico") {
 													document.getElementById('password').readOnly = true;
 													document.getElementById('role').disabled = true;
+													// Assicura che il ruolo venga inviato anche con select disabled
+													let hiddenRuolo = document.getElementById('hiddenRuolo');
+													if (!hiddenRuolo) {
+														hiddenRuolo = document.createElement('input');
+														hiddenRuolo.type = 'hidden';
+														hiddenRuolo.name = 'ruolo';
+														hiddenRuolo.id = 'hiddenRuolo';
+														document.getElementById('profileForm').appendChild(hiddenRuolo);
+													}
+													hiddenRuolo.value = ruolo;
+												} else {
+													// Admin: rimuovi hidden ruolo se presente (il select funziona)
+													const oldHidden = document.getElementById('hiddenRuolo');
+													if (oldHidden) oldHidden.remove();
 												}
 												document.getElementById('username').value = username;
 												document.getElementById('nome').value = nome;
 												document.getElementById('cognome').value = cognome;
-												//document.getElementById('password').textContent  = "Matricola: "+ matricola;
 												document.getElementById('email').value = mail;
 
 												document.getElementById('phone').value = telefono;

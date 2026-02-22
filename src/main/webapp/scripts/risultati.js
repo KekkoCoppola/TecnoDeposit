@@ -163,6 +163,8 @@ document.addEventListener('click', function (e) {
     document.getElementById('marcaInput').value = marca;
     document.getElementById('compatibilitaInput').value = compatibilita;
     document.getElementById('matricolaInput').value = matricola;
+    // Salva matricola originale per validazione duplicati in edit
+    if (typeof matricolaOriginale !== 'undefined') matricolaOriginale = matricola;
     document.getElementById('ddtInput').value = ddt;
     document.getElementById('ddtSpedizioneInput').value = ddtSpedizione;
     document.getElementById('provenienzaInput').value = provenienza;
@@ -261,6 +263,13 @@ document.addEventListener('click', function (e) {
     if (modal) modal.classList.remove('hidden');
     document.getElementById('formAction').value = 'add';
     document.getElementById('modal-title').textContent = "Aggiungi Nuovo Articolo";
+    // Reset validazione matricola per nuovi articoli
+    if (typeof matricolaOriginale !== 'undefined') matricolaOriginale = null;
+    if (typeof matricolaDuplicata !== 'undefined') matricolaDuplicata = false;
+    var warnEl = document.getElementById('matricolaWarning');
+    if (warnEl) warnEl.classList.add('hidden');
+    var mInput = document.getElementById('matricolaInput');
+    if (mInput) mInput.classList.remove('border-orange-500');
     return;
   }
 
@@ -275,6 +284,13 @@ window.addEventListener('click', function (e) {
 
   if (modal && e.target === modal) {
     modal.classList.add('hidden');
+    // Reset validazione matricola alla chiusura
+    if (typeof matricolaOriginale !== 'undefined') matricolaOriginale = null;
+    if (typeof matricolaDuplicata !== 'undefined') matricolaDuplicata = false;
+    var warnEl = document.getElementById('matricolaWarning');
+    if (warnEl) warnEl.classList.add('hidden');
+    var mInput = document.getElementById('matricolaInput');
+    if (mInput) mInput.classList.remove('border-orange-500');
   }
   if (deleteModal && e.target === deleteModal) {
     deleteModal.classList.add('hidden');

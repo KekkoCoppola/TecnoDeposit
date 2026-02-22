@@ -23,6 +23,7 @@ public class DashboardServlet extends HttpServlet {
 		List<String> nomi = lista.getCampo(Articolo::getNome);
 		List<String> marche = lista.getCampo(Articolo::getMarca);
 		List<String> compatibilita = lista.getCampo(Articolo::getCompatibilita);
+		List<String> matricole = lista.getCampo(Articolo::getMatricola);
 		List<String> provenienza = lista.getCampo(Articolo::getProvenienza);
 		ListaFornitori listaF = new ListaFornitori();
 		List<String> pv = lista.getCampo(Articolo::getPv);
@@ -32,6 +33,7 @@ public class DashboardServlet extends HttpServlet {
 		request.setAttribute("nomi", nomi);
 		request.setAttribute("marche", marche);
 		request.setAttribute("compatibilita", compatibilita);
+		request.setAttribute("matricole", matricole);
 		request.setAttribute("provenienze", provenienza);
 		request.setAttribute("pvs", pv);
 		request.setAttribute("fornitori", fornitori);

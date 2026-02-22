@@ -468,7 +468,7 @@ public class ListaArticoli {
     }
 
     public List<Articolo> filtra(String search, String stato, String marca, String dataRicezione, String nome,
-            String check, String fornitore) {
+            String check, String fornitore, String compatibilita) {
         List<Articolo> articoli = getAllarticoli();
 
         return articoli.stream().filter(a -> {
@@ -478,7 +478,6 @@ public class ListaArticoli {
 
                 match &= (a.getNome() != null && a.getNome().toLowerCase().contains(searchLower)) ||
                         (a.getMatricola() != null && a.getMatricola().toLowerCase().contains(searchLower)) ||
-                        (a.getCompatibilita() != null && a.getCompatibilita().toLowerCase().contains(searchLower)) ||
                         (a.getTecnico() != null && a.getTecnico().toLowerCase().contains(searchLower));
             }
             if (check.equals("nascondi"))
@@ -494,6 +493,9 @@ public class ListaArticoli {
             }
             if (fornitore != null && !fornitore.isEmpty()) {
                 match &= a.getFornitore() != null && a.getFornitore().equalsIgnoreCase(fornitore);
+            }
+            if (compatibilita != null && !compatibilita.isEmpty()) {
+                match &= a.getCompatibilita() != null && a.getCompatibilita().equalsIgnoreCase(compatibilita);
             }
             if (nome != null && !nome.isEmpty()) {
                 if (a.getTecnico() == null || !a.getTecnico().equalsIgnoreCase(nome)) {

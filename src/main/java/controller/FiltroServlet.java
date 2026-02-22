@@ -52,6 +52,7 @@ public class FiltroServlet extends HttpServlet {
 			String fornitore = request.getParameter("fornitore");
 			String data = request.getParameter("data");
 			String nome = request.getParameter("nome");
+			String compatibilita = request.getParameter("compatibilita");
 			String checkInstallati = request.getParameter("installatiCheck");
 
 			HttpSession session = request.getSession();
@@ -70,10 +71,12 @@ public class FiltroServlet extends HttpServlet {
 				marca = "";
 			if (fornitore != null && "Tutti".equals(fornitore))
 				fornitore = "";
+			if (compatibilita != null && "Tutte".equals(compatibilita))
+				compatibilita = "";
 
 			List<Articolo> filtrata = lista.filtra(
 					search, stato, marca, data, nome,
-					(String) session.getAttribute("installatiCheck"), fornitore);
+					(String) session.getAttribute("installatiCheck"), fornitore, compatibilita);
 			String[] stati = {
 					"In attesa", "In magazzino", "Installato",
 					"Destinato", "Assegnato", "Guasto",
