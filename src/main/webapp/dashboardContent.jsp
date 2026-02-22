@@ -167,7 +167,7 @@
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <i class="fas fa-search text-gray-400"></i>
                     </div>
-                    <input id="searchInput" type="text" placeholder="Cerca articoli per qualsiasi campo..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
+                    <input id="searchInput" type="text" placeholder="Cerca per nome, matricola, tecnico..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
                              focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
                              transition-all duration-200">
                   </div>
@@ -193,7 +193,7 @@
                 </div>
 
                 <!-- Griglia Filtri -->
-                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-3 mb-4">
 
                   <!-- Stato -->
                   <div class="col-span-1">
@@ -236,6 +236,50 @@
                           %>
                           <option value="<%= marca %>">
                             <%= marca %>
+                          </option>
+                          <% } %>
+                    </select>
+                  </div>
+
+                  <!-- Compatibilità -->
+                  <div class="col-span-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                      <i class="fas fa-puzzle-piece mr-1 text-gray-400"></i>Compatibilità
+                    </label>
+                    <select id="compatibilitaFilter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-700 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200 cursor-pointer appearance-none
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')]
+                             bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-8">
+                      <option>Tutte</option>
+                      <%List<String> compatibilita = (List<String>) request.getAttribute("compatibilita");
+                          if (compatibilita != null)
+                          for (String comp : compatibilita) {
+                          %>
+                          <option value="<%= comp %>">
+                            <%= comp %>
+                          </option>
+                          <% } %>
+                    </select>
+                  </div>
+
+                  <!-- Centro Revisione -->
+                  <div class="col-span-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                      <i class="fas fa-building mr-1 text-gray-400"></i>Centro Rev.
+                    </label>
+                    <select id="fornitoreFilter" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-700 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                             transition-all duration-200 cursor-pointer appearance-none
+                             bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')]
+                             bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-8">
+                      <option>Tutti</option>
+                      <% List<String> fornitoriList = (List<String>) request.getAttribute("fornitori");
+                          if (fornitoriList != null)
+                          for (String fornitoreItem : fornitoriList) {
+                          %>
+                          <option value="<%= fornitoreItem %>">
+                            <%= fornitoreItem %>
                           </option>
                           <% } %>
                     </select>
@@ -476,14 +520,11 @@
 		    
 		</datalist>-->
             <datalist id="suggerimentiCompatibilita">
-              <% List<String> compatibilita = (List<String>) request.getAttribute("compatibilita");
-                  if (compatibilita != null)
-                  for (String compatibilit : compatibilita) {
-                  %>
-                  <option value="<%= compatibilit %>">
-                    <%= compatibilit %>
-                  </option>
-                  <% } %>
+              <% if (compatibilita !=null) for (String compatibilit : compatibilita) { %>
+                <option value="<%= compatibilit %>">
+                  <%= compatibilit %>
+                </option>
+                <% } %>
             </datalist>
 
             <datalist id="suggerimentiProvenienza">
@@ -631,6 +672,10 @@
                             <i class="fas fa-expand"></i>
                           </button>
                         </div>
+                        <span id="matricolaWarning" class="text-xs mt-1 block hidden text-orange-600">
+                          <i class="fas fa-exclamation-triangle mr-1"></i>
+                          <span id="matricolaWarningText"></span>
+                        </span>
                       </div>
                       <!-- MODALE SCANNER MATRICOLA -->
                       <div id="matricola-scanner-modal"
@@ -822,6 +867,8 @@
 
                 var search = $("#searchInput").val();
                 var marca = $("#brandFilter").val();
+                var fornitore = $("#fornitoreFilter").val();
+                var compatibilita = $("#compatibilitaFilter").val();
                 var stato = $("#statusFilter").val();
                 var data = $("#dateFilter").val();
 
@@ -836,10 +883,12 @@
                 $.get("filtro", {
                   search: search,
                   marca: marca,
+                  fornitore: fornitore,
+                  compatibilita: compatibilita,
                   stato: stato,
                   data: data,
                   nome: nomeCompletoUtente,
-                  installatiCheck: $("#installatiCheck").val() // <-- aggiunto qui!
+                  installatiCheck: $("#installatiCheck").val()
                 }, function (data) {
                   $("#risultati").html(data);
                   // Applica ordinamento se alfabetico
@@ -855,6 +904,8 @@
               $("#Articoli-personali").on("click", aggiornaArticoli);
               $("#searchInput").on("input", aggiornaArticoli);
               $("#brandFilter").on("change", aggiornaArticoli);
+              $("#fornitoreFilter").on("change", aggiornaArticoli);
+              $("#compatibilitaFilter").on("change", aggiornaArticoli);
               $("#statusFilter").on("change", aggiornaArticoli);
               $("#dateFilter").on("change", aggiornaArticoli);
 
@@ -891,6 +942,52 @@
               const ruoloUtente = "<%= ruoloUtenteLoggato %>";
               const form = document.getElementById("hiddenForm");
               const modal = document.getElementById('article-modal');
+
+              // === VALIDAZIONE MATRICOLA DUPLICATA ===
+              <% List < String > matricole = (List < String >) request.getAttribute("matricole"); %>
+              const matricoleEsistenti = new Set([
+                <% if (matricole != null) for (int mi = 0; mi < matricole.size(); mi++) { %>
+                "<%= matricole.get(mi).replace("\"", "\\\"") %> ".trim().toLowerCase()<%= (mi < matricole.size() - 1) ? ", " : "" %>
+                  <% } %>
+              ]);
+              let matricolaOriginale = null; // per edit: la matricola corrente dell'articolo
+              let matricolaDuplicata = false;
+
+              document.getElementById('matricolaInput').addEventListener('input', function () {
+                const val = this.value.trim().toLowerCase();
+                const warning = document.getElementById('matricolaWarning');
+                const warningText = document.getElementById('matricolaWarningText');
+                const input = this;
+
+                // Se vuoto, nessun warning
+                if (!val) {
+                  warning.classList.add('hidden');
+                  input.classList.remove('border-orange-500');
+                  matricolaDuplicata = false;
+                  return;
+                }
+
+                // Se stiamo editando e la matricola non è cambiata, OK
+                if (matricolaOriginale && val === matricolaOriginale.trim().toLowerCase()) {
+                  warning.classList.add('hidden');
+                  input.classList.remove('border-orange-500');
+                  matricolaDuplicata = false;
+                  return;
+                }
+
+                // Controlla se esiste già
+                if (matricoleEsistenti.has(val)) {
+                  warningText.textContent = 'Questa matricola è già presente nel magazzino!';
+                  warning.classList.remove('hidden');
+                  input.classList.add('border-orange-500');
+                  matricolaDuplicata = true;
+                } else {
+                  warning.classList.add('hidden');
+                  input.classList.remove('border-orange-500');
+                  matricolaDuplicata = false;
+                }
+              });
+
 
               //const addBtn = document.getElementById('add-article-btn');
               const closeBtn = document.getElementById('close-modal');
@@ -998,6 +1095,12 @@
 
               // Override form submit per upload immagine prima
               document.getElementById('article-form').addEventListener('submit', function (e) {
+                // Blocca submit se matricola duplicata
+                if (matricolaDuplicata) {
+                  e.preventDefault();
+                  alert('⚠️ Impossibile salvare: la matricola inserita è già presente nel magazzino.');
+                  return;
+                }
                 if (pendingImageFile) {
                   e.preventDefault();
                   const nome = document.getElementById('nomeInput').value.trim();
@@ -1111,6 +1214,8 @@
                 document.getElementById('searchInput').value = '';
                 document.getElementById('statusFilter').value = 'Tutti';
                 document.getElementById('brandFilter').value = 'Tutte';
+                document.getElementById('fornitoreFilter').value = 'Tutti';
+                document.getElementById('compatibilitaFilter').value = 'Tutte';
                 document.getElementById('dateFilter').value = '';
                 nomeCompletoUtente = "";
                 window.history.replaceState(null, "", "dashboard");
@@ -1132,9 +1237,16 @@
                   { facingMode: "environment" },
                   { fps: 10, qrbox: 250 },
                   (decodedText, decodedResult) => {
-                    resetta();
+                    // Reset filtri senza ricaricare (resetta() chiamerebbe aggiornaArticoli con search vuoto)
+                    document.getElementById('statusFilter').value = 'Tutti';
+                    document.getElementById('brandFilter').value = 'Tutte';
+                    document.getElementById('fornitoreFilter').value = 'Tutti';
+                    document.getElementById('compatibilitaFilter').value = 'Tutte';
+                    document.getElementById('dateFilter').value = '';
+                    nomeCompletoUtente = "";
+                    window.history.replaceState(null, "", "dashboard");
+                    // Imposta la matricola scannerizzata e ricarica
                     document.getElementById("searchInput").value = decodedText;
-                    aggiornaArticoli();
                     aggiornaArticoli();
                     html5QrCode.stop().then(() => {
                       html5QrCode.clear();
@@ -1164,6 +1276,7 @@
                   { fps: 10, qrbox: 250 },
                   (decodedText, decodedResult) => {
                     document.getElementById("matricolaInput").value = decodedText;
+                    document.getElementById("matricolaInput").dispatchEvent(new Event('input'));
                     html5QrCodeMatricola.stop().then(() => {
                       html5QrCodeMatricola.clear();
                       chiudiMatricolaScanner();

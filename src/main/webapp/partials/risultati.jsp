@@ -11,6 +11,7 @@
                         }
                     </style>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+                    <script src="scripts/labelUtils.js"></script>
                     <script src="scripts/risultati.js"></script>
 
                     <% List<Articolo> articoli = (List<Articolo>) request.getAttribute("articoli");
@@ -30,7 +31,7 @@
                                     data-note="<%= a.getNote() %>" data-stato="<%= a.getStato() %>"
                                     data-immagine="<%= a.getImmagine() %>"
                                     data-richiesta-garanzia="<%= a.getRichiestaGaranzia() %>">
-                                    <div class="relative group">
+                                    <div class="relative group overflow-hidden">
                                         <img loading="lazy"
                                             src="<%= (a.getImmagine() != null && !a.getImmagine().isEmpty()) && !a.getImmagine().equals("null") ? a.getImmagine() : "img/Icon.png" %> " alt="Articolo" class="w-full
                                         aspect-[4/3] object-cover transition-transform duration-300
@@ -38,12 +39,12 @@
                                         <div
                                             class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent">
                                         </div>
-                                                        <% String stato=a.getStato().toString(); String
-                                                            statoCss="status-" + stato.toLowerCase().replace(" ", "-").replace("à", "a" ); %>
-                                                            <span
-                                                                class="status-badge <%= statoCss %> absolute top-3 right-3 backdrop-blur-md bg-white/80 px-3 py-1 rounded-full text-xs font-semibold shadow-lg border border-white/50">
-                                                                <%= a.getStato() %>
-                                                            </span>
+                                        <% String stato=a.getStato().toString(); String statoCss="status-" +
+                                            stato.toLowerCase().replace(" ", " -").replace("à", "a" ); %>
+                                            <span
+                                                class="status-badge <%= statoCss %> absolute top-3 right-3 backdrop-blur-md bg-white/80 px-3 py-1 rounded-full text-xs font-semibold shadow-lg border border-white/50">
+                                                <%= a.getStato() %>
+                                            </span>
                                     </div>
                                     <div class="p-4 bg-gradient-to-b from-gray-50/50 to-white">
                                         <div class="flex justify-between items-start mb-3">
@@ -62,7 +63,6 @@
                                                     class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 transition-colors"><i
                                                         class="fas fa-history text-sm"></i></button>
                                                 <button title="Etichetta QR" aria-label="Etichetta QR"
-                                                    onclick="event.stopPropagation()"
                                                     class="openQrModal w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 transition-colors"><i
                                                         class="fas fa-qrcode text-sm"></i></button>
                                             </div>
@@ -165,34 +165,28 @@
                                     <% } else { %>
                                         <p>Nessun articolo trovato.</p>
                                         <% } %>
-                                            <!-- Modale QRCODE-->
+                                            <!-- Modale Etichetta QR -->
                                             <div id="qrModal"
                                                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-                                                <div class="bg-white rounded-lg p-6 relative w-80">
+                                                <div class="bg-white rounded-xl p-5 relative shadow-2xl"
+                                                    style="max-width: 420px; width: 95%;">
                                                     <button id="closeQrModal"
                                                         class="no-print absolute top-2 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
-                                                    <h2 class="no-print text-lg font-semibold mb-4">QR Code</h2>
-                                                    <div
-                                                        style="position: relative; width: 200px; height: 200px; margin: auto;">
-                                                        <div id="qrcode" style="position: absolute; top: 0; left: 0;">
-                                                        </div>
-                                                        <img id="qrLogo" src="img/IconBN.png"
-                                                            style="position: absolute; top: 75px; left: 75px; width: 50px; height: 50px;" />
-
+                                                    <h2 class="no-print text-lg font-semibold mb-4">Anteprima Etichetta
+                                                    </h2>
+                                                    <div class="flex justify-center">
+                                                        <canvas id="labelCanvas"
+                                                            style="width: 100%; max-width: 380px; border: 1px solid #e5e7eb; border-radius: 8px;"></canvas>
                                                     </div>
-                                                    <span id="nomeQr"
-                                                        class="block text-center mt-4 font-medium text-gray-700"></span>
-                                                    <span id="matricolaQr"
-                                                        class="block text-center mt-4 font-medium text-gray-700"></span>
+                                                    <img id="qrLogo" src="img/IconBN.png" style="display:none;" />
                                                     <div class="flex justify-center gap-4 mt-4">
-                                                        <button onclick="scaricaQR()"
-                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"><i
+                                                        <button id="btnScaricaLabel"
+                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors"><i
                                                                 class="fas fa-download"></i> Scarica PNG</button>
-                                                        <button onclick="stampaQR()"
-                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"><i
+                                                        <button id="btnStampaLabel"
+                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors"><i
                                                                 class="fas fa-print"></i> Stampa</button>
                                                     </div>
-
                                                 </div>
                                             </div>
                                             <!-- MODALE STORICO ARTICOLO -->
@@ -470,9 +464,9 @@
                                                 size=(Integer) request.getAttribute("size"); Integer total=(Integer)
                                                 request.getAttribute("total"); if (pagina==null) pagina=1; if
                                                 (size==null) size=24; if (total==null) total=0; int maxPage=(int)
-                                                Math.ceil(total / (double) size); // ricostruisco i filtricorrentipernonperderli tra le pagine 
-                                                String qSearch=request.getParameter("search")
-                                                !=null ? request.getParameter("search") : "" ; String
+                                                Math.ceil(total / (double) size); String
+                                                qSearch=request.getParameter("search") !=null ?
+                                                request.getParameter("search") : "" ; String
                                                 qStato=request.getParameter("stato") !=null ?
                                                 request.getParameter("stato") : "" ; String
                                                 qMarca=request.getParameter("marca") !=null ?
@@ -483,22 +477,21 @@
                                                 qInst=request.getParameter("installatiCheck") !=null ?
                                                 request.getParameter("installatiCheck") : "nascondi" ; String
                                                 baseQuery="search=" + java.net.URLEncoder.encode(qSearch, "UTF-8" )
-                                                + "&stato=" + java.net.URLEncoder.encode(qStato, "UTF-8" ) + "&marca=" +
-                                                java.net.URLEncoder.encode(qMarca, "UTF-8" ) + "&data=" +
-                                                java.net.URLEncoder.encode(qData, "UTF-8" ) + "&nome=" +
-                                                java.net.URLEncoder.encode(qNome, "UTF-8" ) + "&installatiCheck=" +
-                                                java.net.URLEncoder.encode(qInst, "UTF-8" ) + "&size=" + size; %>
+                                                + "&stato=" + java.net.URLEncoder.encode(qStato, "UTF-8" ) + "&marca="
+                                                +java.net.URLEncoder.encode(qMarca, "UTF-8" ) + "&data="
+                                                +java.net.URLEncoder.encode(qData, "UTF-8" ) + "&nome="
+                                                +java.net.URLEncoder.encode(qNome, "UTF-8" ) + "&installatiCheck="
+                                                +java.net.URLEncoder.encode(qInst, "UTF-8" ) + "&size=" + size; %>
 
-                                                <!-- Paginazione sticky, estetica migliorata -->
-                                                <!-- Spacer per evitare overlap su desktop (mostrato solo da md in su) -->
-                                                <div aria-hidden="true" class="hidden md:block h-16"></div>
+                                                <!-- Spacer per evitare overlap della paginazione fixed -->
+                                                <div aria-hidden="true" class="h-28 md:h-20"></div>
 
-                                                <nav role="navigation" aria-label="Paginazione risultati" class="no-print sticky bottom-0 z-50 px-3
-            md:fixed md:inset-x-0" style="bottom: max(1rem, env(safe-area-inset-bottom));">
+                                                <nav role="navigation" aria-label="Paginazione risultati"
+                                                    class="no-print fixed bottom-[4.5rem] md:bottom-0 inset-x-0 z-40 px-3 pb-2 md:pb-4 pointer-events-none">
                                                     <div class="mx-auto w-full flex justify-center">
                                                         <div class="inline-flex items-center gap-1 sm:gap-2 rounded-full border border-gray-200
-                bg-white/85 backdrop-blur-sm shadow-lg supports-[backdrop-filter]:bg-white/60
-                px-2 py-1.5 sm:px-3 sm:py-2">
+                bg-white/90 backdrop-blur-md shadow-lg
+                px-2 py-1.5 sm:px-3 sm:py-2 pointer-events-auto">
 
                                                             <!-- PRECEDENTE -->
                                                             <a class="group inline-flex items-center gap-1 sm:gap-2 rounded-full text-xs sm:text-sm font-medium

@@ -21,22 +21,22 @@
                                 }
                                 }
                                 %>
-                                <% StringBuilder body=new StringBuilder(); body.append("Salve,%0D%0A%0D%0A La seguente lista contiene tutti gli articoli attualmente in attesa di revisione di cui non è stato ricevuto riscontro:%0D%0A%0D%0A");
+                                <% StringBuilder body=new StringBuilder(); body.append("Salve,%0D%0A%0D%0A La seguente lista contiene tutti gli articoli attualmente in attesa di revisione di cui non è stato ricevuto riscontro:%0D%0A%0D%0A"); 
                                 for (Articolo a : articoli) { 
                                 	if("In attesa".equalsIgnoreCase(a.getStato().toString())) { 
-                                		String dataSpedizione=a.getDataSpe_DDT() !=null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")): "N/D" ;
-                                		body.append("- ").append(a.getNome()+" marca "+a.getMarca()+" spedito il "+dataSpedizione+" con DDT numero "+a.getDdt()).append(" %0D%0A");
+                                		String dataSpedizione=a.getDataSpe_DDT() !=null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")): "N/D";
+                                		body.append("- ").append(a.getNome()+" marca "+a.getMarca()+" spedito il "+dataSpedizione+" con DDT numero "+a.getDdtSpedizione()).append(" %0D%0A"); 
                                 		} 
                                 	}
-                                    body.append("%0D%0AResto in attesa di un vostro riscontro.%0D%0ACordiali saluti,%0D%0ATecnoAGM");
-                                    body.append("%0D%0A%0D%0A%0D%0AQuesta mail è stata generata dal software di magazzinaggio TecnoDeposit™.");
-                                    String mailBody=body.toString();
+                                body.append("%0D%0AResto in attesa di un vostro riscontro.%0D%0ACordiali saluti,%0D%0ATecnoAGM"); 
+                                body.append("%0D%0A%0D%0A%0D%0AQuesta mail è stata generata dal software di magazzinaggio TecnoDeposit™."); 
+                                String mailBody=body.toString();
                                     //Mostra pulsante SOLO se ci sono articoli in attesa E non è un Tecnico
                                     if(countInAttesa> 0 && !session.getAttribute("ruolo").equals("Tecnico")){ %>
 
                                     <!-- Pulsante Notifica Tutti - Sticky in basso -->
                                     <div class="sticky bottom-4 z-40 flex justify-center mb-4">
-                                        <a href="mailto:<%=request.getAttribute(" mailFornitore")
+                                        <a href="mailto:<%=request.getAttribute("mailFornitore")
                                             %>?subject=Lista%20Articoli%20In%20Attesa%20di%20Revisione&body=<%= mailBody
                                                 %>" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r
                                                 from-yellow-400 to-orange-500 text-white font-semibold
@@ -49,11 +49,47 @@
                                         </a>
                                     </div>
                                     <%} %>
-                                        <div
+
+                                        <!-- Barra Filtri Catalogo -->
+                                        <div class="px-4 pt-4 pb-2 flex flex-wrap items-center gap-3">
+                                            <!-- Dropdown Stato -->
+                                            <div class="flex items-center gap-2">
+                                                <label
+                                                    class="text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                                                    <i class="fas fa-tag mr-1 text-gray-400"></i>Stato
+                                                </label>
+                                                <select id="catalogoStatoFilter" class="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-gray-700 text-sm
+                                                    focus:outline-none focus:ring-2 focus:ring-[#e52c1f] focus:border-transparent focus:bg-white
+                                                    transition-all duration-200 cursor-pointer appearance-none
+                                                    bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')]
+                                                    bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-8">
+                                                    <option>Tutti</option>
+                                                    <option>Riparato</option>
+                                                    <option>In magazzino</option>
+                                                    <option>Installato</option>
+                                                    <option>Destinato</option>
+                                                    <option>Assegnato</option>
+                                                    <option>In attesa</option>
+                                                    <option>Guasto</option>
+                                                    <option>Non Riparato</option>
+                                                    <option>Non Riparabile</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Toggle Installati -->
+                                            <button id="catalogoToggleInstallati"
+                                                class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:border-gray-300 
+                                                hover:bg-gray-50 text-gray-700 rounded-xl transition-all duration-200 text-sm font-medium shadow-sm hover:shadow">
+                                                <i id="catalogoIconToggle" class="fas fa-eye-slash text-violet-500"></i>
+                                                <span id="catalogoTextToggle">Installati</span>
+                                            </button>
+                                        </div>
+
+                                        <div id="catalogoArticoliGrid"
                                             class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                             <% for (int i=0; i < articoli.size(); i++) { Articolo a=articoli.get(i); %>
-                                                <div
-                                                    class="article-card bg-white rounded-2xl shadow-md hover:shadow-2xl overflow-hidden transition-all duration-300 w-full max-w-sm flex flex-col justify-between h-full hover:-translate-y-1 border border-gray-100">
+                                                <div data-stato="<%= a.getStato() %>"
+                                                    class="catalogo-article-card article-card bg-white rounded-2xl shadow-md hover:shadow-2xl overflow-hidden transition-all duration-300 w-full max-w-sm flex flex-col justify-between h-full hover:-translate-y-1 border border-gray-100">
                                                     <div class="relative group">
                                                         <img loading="lazy"
                                                             src="<%= (a.getImmagine() != null && !a.getImmagine().isEmpty()) && !a.getImmagine().equals("null") ? a.getImmagine() : "img/Icon.png" %>" alt="Articolo"
@@ -121,7 +157,7 @@
                                                                     </span>
                                                                     <% }else{ %>
                                                                         <span class="font-medium text-gray-700">
-                                                                            <%= a.getDdtSpedizione() %> &bull;N/D
+                                                                            <%= a.getDdt() %> &bull;N/D
                                                                         </span>
                                                                         <% } %>
                                                             </div>
@@ -155,7 +191,8 @@
                                                                     revisione:%0D%0A%0D%0A- <%=a.getNome()%> marca
                                                                         <%=a.getMarca()%> inviato il giorno
                                                                             <%=dataSpeSingola%> con DDT numero
-                                                                                <%=a.getDdtSpedizione()%>%0D%0A%0D%0ANon è stato
+                                                                                <%=a.getDdtSpedizione()%>%0D%0A%0D%0ANon
+                                                                                    è stato
                                                                                     ancora ricevuto nessun aggiornamento
                                                                                     su tale
                                                                                     materiale.%0D%0A%0D%0AAttendo un
