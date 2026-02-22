@@ -11,6 +11,7 @@
                         }
                     </style>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+                    <script src="scripts/labelUtils.js"></script>
                     <script src="scripts/risultati.js"></script>
 
                     <% List<Articolo> articoli = (List<Articolo>) request.getAttribute("articoli");
@@ -38,12 +39,12 @@
                                         <div
                                             class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent">
                                         </div>
-                                                        <% String stato=a.getStato().toString(); String
-                                                            statoCss="status-" + stato.toLowerCase().replace(" ", "-").replace("à", "a" ); %>
-                                                            <span
-                                                                class="status-badge <%= statoCss %> absolute top-3 right-3 backdrop-blur-md bg-white/80 px-3 py-1 rounded-full text-xs font-semibold shadow-lg border border-white/50">
-                                                                <%= a.getStato() %>
-                                                            </span>
+                                        <% String stato=a.getStato().toString(); String statoCss="status-" +
+                                            stato.toLowerCase().replace(" ", " -").replace("à", "a" ); %>
+                                            <span
+                                                class="status-badge <%= statoCss %> absolute top-3 right-3 backdrop-blur-md bg-white/80 px-3 py-1 rounded-full text-xs font-semibold shadow-lg border border-white/50">
+                                                <%= a.getStato() %>
+                                            </span>
                                     </div>
                                     <div class="p-4 bg-gradient-to-b from-gray-50/50 to-white">
                                         <div class="flex justify-between items-start mb-3">
@@ -62,7 +63,6 @@
                                                     class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 transition-colors"><i
                                                         class="fas fa-history text-sm"></i></button>
                                                 <button title="Etichetta QR" aria-label="Etichetta QR"
-                                                    onclick="event.stopPropagation()"
                                                     class="openQrModal w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-600 transition-colors"><i
                                                         class="fas fa-qrcode text-sm"></i></button>
                                             </div>
@@ -165,34 +165,28 @@
                                     <% } else { %>
                                         <p>Nessun articolo trovato.</p>
                                         <% } %>
-                                            <!-- Modale QRCODE-->
+                                            <!-- Modale Etichetta QR -->
                                             <div id="qrModal"
                                                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-                                                <div class="bg-white rounded-lg p-6 relative w-80">
+                                                <div class="bg-white rounded-xl p-5 relative shadow-2xl"
+                                                    style="max-width: 420px; width: 95%;">
                                                     <button id="closeQrModal"
                                                         class="no-print absolute top-2 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
-                                                    <h2 class="no-print text-lg font-semibold mb-4">QR Code</h2>
-                                                    <div
-                                                        style="position: relative; width: 200px; height: 200px; margin: auto;">
-                                                        <div id="qrcode" style="position: absolute; top: 0; left: 0;">
-                                                        </div>
-                                                        <img id="qrLogo" src="img/IconBN.png"
-                                                            style="position: absolute; top: 75px; left: 75px; width: 50px; height: 50px;" />
-
+                                                    <h2 class="no-print text-lg font-semibold mb-4">Anteprima Etichetta
+                                                    </h2>
+                                                    <div class="flex justify-center">
+                                                        <canvas id="labelCanvas"
+                                                            style="width: 100%; max-width: 380px; border: 1px solid #e5e7eb; border-radius: 8px;"></canvas>
                                                     </div>
-                                                    <span id="nomeQr"
-                                                        class="block text-center mt-4 font-medium text-gray-700"></span>
-                                                    <span id="matricolaQr"
-                                                        class="block text-center mt-4 font-medium text-gray-700"></span>
+                                                    <img id="qrLogo" src="img/IconBN.png" style="display:none;" />
                                                     <div class="flex justify-center gap-4 mt-4">
-                                                        <button onclick="scaricaQR()"
-                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"><i
+                                                        <button id="btnScaricaLabel"
+                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors"><i
                                                                 class="fas fa-download"></i> Scarica PNG</button>
-                                                        <button onclick="stampaQR()"
-                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800"><i
+                                                        <button id="btnStampaLabel"
+                                                            class="no-print px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors"><i
                                                                 class="fas fa-print"></i> Stampa</button>
                                                     </div>
-
                                                 </div>
                                             </div>
                                             <!-- MODALE STORICO ARTICOLO -->
@@ -470,24 +464,22 @@
                                                 size=(Integer) request.getAttribute("size"); Integer total=(Integer)
                                                 request.getAttribute("total"); if (pagina==null) pagina=1; if
                                                 (size==null) size=24; if (total==null) total=0; int maxPage=(int)
-                                                Math.ceil(total / (double) size); // ricostruisco i filtricorrentipernonperderli tra le pagine 
+                                                Math.ceil(total / (double) size); 
                                                 String qSearch=request.getParameter("search")
-                                                !=null ? request.getParameter("search") : "" ; String
-                                                qStato=request.getParameter("stato") !=null ?
-                                                request.getParameter("stato") : "" ; String
-                                                qMarca=request.getParameter("marca") !=null ?
-                                                request.getParameter("marca") : "" ; String
-                                                qData=request.getParameter("data") !=null ? request.getParameter("data")
-                                                : "" ; String qNome=request.getParameter("nome") !=null ?
-                                                request.getParameter("nome") : "" ; String
-                                                qInst=request.getParameter("installatiCheck") !=null ?
-                                                request.getParameter("installatiCheck") : "nascondi" ; String
-                                                baseQuery="search=" + java.net.URLEncoder.encode(qSearch, "UTF-8" )
-                                                + "&stato=" + java.net.URLEncoder.encode(qStato, "UTF-8" ) + "&marca=" +
-                                                java.net.URLEncoder.encode(qMarca, "UTF-8" ) + "&data=" +
-                                                java.net.URLEncoder.encode(qData, "UTF-8" ) + "&nome=" +
-                                                java.net.URLEncoder.encode(qNome, "UTF-8" ) + "&installatiCheck=" +
-                                                java.net.URLEncoder.encode(qInst, "UTF-8" ) + "&size=" + size; %>
+                                                !=null ? request.getParameter("search") : "" ; 
+                                                String qStato=request.getParameter("stato") !=null ?
+                                                request.getParameter("stato") : "" ;
+                                                
+                                                String qMarca=request.getParameter("marca") !=null ?
+                                                request.getParameter("marca") : "" ; 
+                                                
+                                                String qData=request.getParameter("data") !=null ? request.getParameter("data")
+                                                : "" ; 
+                                                
+                                                String qNome=request.getParameter("nome") !=null ? request.getParameter("nome") : "" ;
+                                                
+                                                String qInst=request.getParameter("installatiCheck") !=null ? request.getParameter("installatiCheck") : "nascondi" ;
+                                                String baseQuery="search=" + java.net.URLEncoder.encode(qSearch, "UTF-8" ) + "&stato=" + java.net.URLEncoder.encode(qStato, "UTF-8" ) + "&marca=" +java.net.URLEncoder.encode(qMarca, "UTF-8" ) + "&data=" +java.net.URLEncoder.encode(qData, "UTF-8" ) + "&nome=" +java.net.URLEncoder.encode(qNome, "UTF-8" ) + "&installatiCheck=" +java.net.URLEncoder.encode(qInst, "UTF-8" ) + "&size=" + size; %>
 
                                                 <!-- Paginazione sticky, estetica migliorata -->
                                                 <!-- Spacer per evitare overlap su desktop (mostrato solo da md in su) -->

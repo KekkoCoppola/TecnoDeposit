@@ -1159,9 +1159,15 @@
                   { facingMode: "environment" },
                   { fps: 10, qrbox: 250 },
                   (decodedText, decodedResult) => {
-                    resetta();
+                    // Reset filtri senza ricaricare (resetta() chiamerebbe aggiornaArticoli con search vuoto)
+                    document.getElementById('statusFilter').value = 'Tutti';
+                    document.getElementById('brandFilter').value = 'Tutte';
+                    document.getElementById('fornitoreFilter').value = 'Tutti';
+                    document.getElementById('dateFilter').value = '';
+                    nomeCompletoUtente = "";
+                    window.history.replaceState(null, "", "dashboard");
+                    // Imposta la matricola scannerizzata e ricarica
                     document.getElementById("searchInput").value = decodedText;
-                    aggiornaArticoli();
                     aggiornaArticoli();
                     html5QrCode.stop().then(() => {
                       html5QrCode.clear();

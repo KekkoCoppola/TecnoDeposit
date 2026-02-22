@@ -610,529 +610,453 @@
 
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+						<script src="scripts/labelUtils.js"></script>
 						<script src="scripts/impostazioniScript.js"></script>
 
 
 						<% ListaArticoli lista=new ListaArticoli(); List<String> matricole =
 							lista.getCampoFromDb("matricola");
 							List<String> nomi = lista.getCampoFromDb("nome");
-								int size = Math.min(matricole.size(), nomi.size());
+								List<String> dateSpe = lista.getCampoFromDb("data_spedizione");
+									int size = Math.min(matricole.size(), Math.min(nomi.size(), dateSpe.size()));
 
-								%>
-								<script>
-									let currentUserId = null;
-									const ruoloUtente = "<%= ruoloUtenteLoggato %>";
-									//VIEW IN BASE ALL'UTENTE
-									document.addEventListener('DOMContentLoaded', function () {
-										if (ruoloUtente === "Tecnico" || ruoloUtente === "Magazziniere") {
-											//PULSANTE ADD
-											addUser.style.display = 'none';
-										}
-									});
-									const addUser = document.getElementById('addUserBtn');
-									const editUser = document.querySelectorAll('.editUser');
-									const deleteUser = document.getElementById('deleteAccountBtn');
-									const viewUser = document.querySelectorAll('.viewUser');
-									const modal = document.getElementById('profileModal');
+									%>
+									<script>
+										let currentUserId = null;
+										const ruoloUtente = "<%= ruoloUtenteLoggato %>";
+										//VIEW IN BASE ALL'UTENTE
+										document.addEventListener('DOMContentLoaded', function () {
+											if (ruoloUtente === "Tecnico" || ruoloUtente === "Magazziniere") {
+												//PULSANTE ADD
+												addUser.style.display = 'none';
+											}
+										});
+										const addUser = document.getElementById('addUserBtn');
+										const editUser = document.querySelectorAll('.editUser');
+										const deleteUser = document.getElementById('deleteAccountBtn');
+										const viewUser = document.querySelectorAll('.viewUser');
+										const modal = document.getElementById('profileModal');
 
-									const closeModalBtn = document.getElementById('closeModalBtn');
-									const cancelBtn = document.getElementById('cancelBtn');
-									const cancelDeleteBtn = document.getElementById('cancel-delete');
-									const confirmDeleteBtn = document.getElementById('confirm-delete');
-									//SAVE
-									document.getElementById("saveBtn").addEventListener("click", function (e) {
-										e.preventDefault(); // se è dentro un form, impedisce l'invio automatico
-										let valid = true;
-										let messages = [];
+										const closeModalBtn = document.getElementById('closeModalBtn');
+										const cancelBtn = document.getElementById('cancelBtn');
+										const cancelDeleteBtn = document.getElementById('cancel-delete');
+										const confirmDeleteBtn = document.getElementById('confirm-delete');
+										//SAVE
+										document.getElementById("saveBtn").addEventListener("click", function (e) {
+											e.preventDefault(); // se è dentro un form, impedisce l'invio automatico
+											let valid = true;
+											let messages = [];
 
-										const username = document.getElementById("username").value.trim();
-										const nome = document.getElementById("nome").value.trim();
-										const cognome = document.getElementById("cognome").value.trim();
-										const email = document.getElementById("email").value.trim();
-										const password = document.getElementById("password").value.trim();
+											const username = document.getElementById("username").value.trim();
+											const nome = document.getElementById("nome").value.trim();
+											const cognome = document.getElementById("cognome").value.trim();
+											const email = document.getElementById("email").value.trim();
+											const password = document.getElementById("password").value.trim();
 
-										// Username
-										if (username === "") {
-											valid = false;
-											messages.push("⚠️ Il campo Username è obbligatorio");
-										}
-
-										// Nome
-										if (nome === "") {
-											valid = false;
-											messages.push("⚠️ Il campo Nome è obbligatorio");
-										}
-
-										// Cognome
-										if (cognome === "") {
-											valid = false;
-											messages.push("⚠️ Il campo Cognome è obbligatorio");
-										}
-
-										// Email
-										if (email === "") {
-											valid = false;
-											messages.push("⚠️ Il campo Email è obbligatorio");
-										} else {
-											// Regex semplice per email valida
-											const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-											if (!emailRegex.test(email)) {
+											// Username
+											if (username === "") {
 												valid = false;
-												messages.push("⚠️ Inserisci un'email valida");
+												messages.push("⚠️ Il campo Username è obbligatorio");
 											}
-										}
 
-										// Password
-										if (password === "" && document.getElementById('titolo').textContent === 'Aggiungi Nuovo Utente') {
-											valid = false;
-											messages.push("⚠️ Il campo Password è obbligatorio");
-										}
+											// Nome
+											if (nome === "") {
+												valid = false;
+												messages.push("⚠️ Il campo Nome è obbligatorio");
+											}
 
-										// Se ci sono errori → blocca invio e mostra alert
-										if (!valid) {
-											e.preventDefault();
-											alert(messages.join("\n"));
-										} else document.getElementById('profileForm').submit();
-									});
+											// Cognome
+											if (cognome === "") {
+												valid = false;
+												messages.push("⚠️ Il campo Cognome è obbligatorio");
+											}
 
+											// Email
+											if (email === "") {
+												valid = false;
+												messages.push("⚠️ Il campo Email è obbligatorio");
+											} else {
+												// Regex semplice per email valida
+												const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+												if (!emailRegex.test(email)) {
+													valid = false;
+													messages.push("⚠️ Inserisci un'email valida");
+												}
+											}
 
-									//CHIUSURA MODALE
-									function closeModal() {
-										modalBackdrop.classList.add('hidden');
-										profileModal.classList.add('hidden');
-										document.body.style.overflow = 'auto';
-										currentUserId = null;
-									}
-									//ADD
-									addUser.addEventListener('click', function () {
-										console.log("CLICCATO ADD")
-										modal.scrollTop = 0;
-										document.getElementById('profileForm').reset();
-										modal.classList.remove('hidden');
-										modalBackdrop.classList.remove('hidden');
-										document.getElementById('formAction').value = 'add';
-										deleteUser.classList.add('hidden');
-										document.getElementById('titolo').textContent = "Aggiungi Nuovo Utente";
+											// Password
+											if (password === "" && document.getElementById('titolo').textContent === 'Aggiungi Nuovo Utente') {
+												valid = false;
+												messages.push("⚠️ Il campo Password è obbligatorio");
+											}
 
-									});
-
-									//DELETE ZONE
-									deleteUser.addEventListener('click', function () {
-										console.log("CLICCATO DELETE")
-
-										if (!currentUserId) {
-											console.error("ID utente non definito.");
-											return;
-										}
-
-										modal.scrollTop = 0;
-										document.getElementById('deleteModal').classList.remove('hidden');
-										console.log("PRESO ID: " + currentUserId);
-										confirmDeleteBtn.dataset.id = currentUserId;
-									});
-
-									cancelDeleteBtn.addEventListener('click', function () {
-										deleteModal.classList.add('hidden');
-									});
-
-									confirmDeleteBtn.addEventListener('click', function () {
-										closeModal();
-										deleteModal.classList.add('hidden');
-										document.getElementById('formAction').value = 'delete';
-										const id = this.dataset.id; // Prende l'id salvato prima
-										document.getElementById('userId').value = id;
-										console.log("PRESO ID: " + id);
+											// Se ci sono errori → blocca invio e mostra alert
+											if (!valid) {
+												e.preventDefault();
+												alert(messages.join("\n"));
+											} else document.getElementById('profileForm').submit();
+										});
 
 
-										document.getElementById('profileForm').submit();
-
-									});
-
-									//CHIUSURA MODALE
-									closeModalBtn.addEventListener('click', closeModal);
-									cancelBtn.addEventListener('click', closeModal);
-									modalBackdrop.addEventListener('click', closeModal);
-
-									//EDIT
-									editUser.forEach(button => {
-										button.addEventListener('click', function () {
-											document.getElementById('formAction').value = 'update';
-											deleteUser.classList.remove('hidden');
-											modalBackdrop.classList.remove('hidden');
-											profileModal.classList.remove('hidden');
+										//CHIUSURA MODALE
+										function closeModal() {
+											modalBackdrop.classList.add('hidden');
+											profileModal.classList.add('hidden');
 											document.body.style.overflow = 'auto';
-											document.getElementById('titolo').textContent = "Modifica Utente";
+											currentUserId = null;
+										}
+										//ADD
+										addUser.addEventListener('click', function () {
+											console.log("CLICCATO ADD")
+											modal.scrollTop = 0;
+											document.getElementById('profileForm').reset();
+											modal.classList.remove('hidden');
+											modalBackdrop.classList.remove('hidden');
+											document.getElementById('formAction').value = 'add';
+											deleteUser.classList.add('hidden');
+											document.getElementById('titolo').textContent = "Aggiungi Nuovo Utente";
 
-											const card = button.closest('.userCard');
+										});
 
-											const id = card.dataset.id;
-											const username = card.dataset.username;
-											const nome = card.dataset.nome;
-											const cognome = card.dataset.cognome;
-											const mail = card.dataset.mail;
-											const ruolo = card.dataset.ruolo;
-											const telefono = card.dataset.telefono;
-											document.getElementById("role").value = ruolo;
-											const stato = card.dataset.stato;
-											console.log(username);
+										//DELETE ZONE
+										deleteUser.addEventListener('click', function () {
+											console.log("CLICCATO DELETE")
+
+											if (!currentUserId) {
+												console.error("ID utente non definito.");
+												return;
+											}
+
+											modal.scrollTop = 0;
+											document.getElementById('deleteModal').classList.remove('hidden');
+											console.log("PRESO ID: " + currentUserId);
+											confirmDeleteBtn.dataset.id = currentUserId;
+										});
+
+										cancelDeleteBtn.addEventListener('click', function () {
+											deleteModal.classList.add('hidden');
+										});
+
+										confirmDeleteBtn.addEventListener('click', function () {
+											closeModal();
+											deleteModal.classList.add('hidden');
+											document.getElementById('formAction').value = 'delete';
+											const id = this.dataset.id; // Prende l'id salvato prima
 											document.getElementById('userId').value = id;
-											currentUserId = id;
-											if (ruoloUtente === "Tecnico") {
-												document.getElementById('password').readOnly = true;
+											console.log("PRESO ID: " + id);
+
+
+											document.getElementById('profileForm').submit();
+
+										});
+
+										//CHIUSURA MODALE
+										closeModalBtn.addEventListener('click', closeModal);
+										cancelBtn.addEventListener('click', closeModal);
+										modalBackdrop.addEventListener('click', closeModal);
+
+										//EDIT
+										editUser.forEach(button => {
+											button.addEventListener('click', function () {
+												document.getElementById('formAction').value = 'update';
+												deleteUser.classList.remove('hidden');
+												modalBackdrop.classList.remove('hidden');
+												profileModal.classList.remove('hidden');
+												document.body.style.overflow = 'auto';
+												document.getElementById('titolo').textContent = "Modifica Utente";
+
+												const card = button.closest('.userCard');
+
+												const id = card.dataset.id;
+												const username = card.dataset.username;
+												const nome = card.dataset.nome;
+												const cognome = card.dataset.cognome;
+												const mail = card.dataset.mail;
+												const ruolo = card.dataset.ruolo;
+												const telefono = card.dataset.telefono;
+												document.getElementById("role").value = ruolo;
+												const stato = card.dataset.stato;
+												console.log(username);
+												document.getElementById('userId').value = id;
+												currentUserId = id;
+												if (ruoloUtente === "Tecnico") {
+													document.getElementById('password').readOnly = true;
+													document.getElementById('role').disabled = true;
+												}
+												document.getElementById('username').value = username;
+												document.getElementById('nome').value = nome;
+												document.getElementById('cognome').value = cognome;
+												//document.getElementById('password').textContent  = "Matricola: "+ matricola;
+												document.getElementById('email').value = mail;
+
+												document.getElementById('phone').value = telefono;
+
+											});
+										});
+
+										//IMPORT
+										(() => {
+											const form = document.getElementById('importForm');
+											const input = document.getElementById('fileInput');
+											const nameEl = document.getElementById('fileName');
+											const submitBtn = form.querySelector('button[type="submit"]');
+											if (!form || !input || !submitBtn) {
+												console.error('IMPORT: elementi non trovati', { form, input, submitBtn });
+												return;
+											}
+											// (opzionale) attiva drag&drop sulla card
+											const card = form.closest('div');
+											['dragover', 'dragenter'].forEach(ev => card.addEventListener(ev, e => {
+												e.preventDefault(); card.classList.add('ring-2', 'ring-blue-500');
+											}));
+											['dragleave', 'drop'].forEach(ev => card.addEventListener(ev, e => {
+												e.preventDefault(); card.classList.remove('ring-2', 'ring-blue-500');
+											}));
+											card.addEventListener('drop', e => {
+												if (e.dataTransfer.files?.length) {
+													input.files = e.dataTransfer.files;
+													input.dispatchEvent(new Event('change', { bubbles: true }));
+												}
+											});
+
+											input.addEventListener('change', () => {
+												const f = input.files[0];
+												console.log('IMPORT change fired:', f ? { name: f.name, size: f.size } : 'no file');
+
+												if (!f) { nameEl.textContent = 'Nessun file selezionato'; submitBtn.disabled = true; return; }
+
+												// vincolo: solo .txt e max 5MB (regola se vuoi)
+												if (!/\.txt$/i.test(f.name)) { alert('Seleziona un file .txt'); input.value = ''; nameEl.textContent = 'Formato non valido'; submitBtn.disabled = true; return; }
+												if (f.size > 100 * 1024 * 1024) { alert('File troppo grande (max 100MB)'); input.value = ''; nameEl.textContent = 'File troppo grande'; submitBtn.disabled = true; return; }
+
+												nameEl.textContent = f.name + `(` + Math.round(f.size / 1024) + `KB)`;
+												submitBtn.disabled = false;
+
+												// (se vuoi invio automatico appena scelto)
+												// form.submit();
+											});
+										})();
+
+										//SVUOTAMAGAZZINO
+										const $modal = document.getElementById('wipeModal');
+										document.getElementById('openWipeModal')?.addEventListener('click', () => $modal.classList.remove('hidden'));
+										document.getElementById('closeWipeModal')?.addEventListener('click', () => $modal.classList.add('hidden'));
+										document.getElementById('cancelExec')?.addEventListener('click', () => $modal.classList.add('hidden'));
+
+										// Intercetta Step1 per fare anteprima via fetch (Ajax opzionale)
+										document.getElementById('wipeStep1')?.addEventListener('submit', async (e) => {
+											e.preventDefault();
+											const form = new FormData(e.target);
+											const res = await fetch(e.target.action, { method: 'POST', body: form });
+											if (!res.ok) { alert('Controlla i campi e riprova'); return; }
+											const data = await res.json(); // {challengeId, totaleArticoli, totalePezzi, dettagli:[...]}
+											document.getElementById('challengeId').value = data.challengeId;
+											document.getElementById('previewData').textContent =
+												"Pezzi Totali: " + data.totalePezzi +
+												"\nArticoli coinvolti: " + data.totaleArticoli;
+
+											document.getElementById('previewBox').classList.remove('hidden');
+										});
+
+										//VIEW
+										viewUser.forEach(button => {
+											button.addEventListener('click', function () {
+
+												modalBackdrop.classList.remove('hidden');
+												profileModal.classList.remove('hidden');
+												document.body.style.overflow = 'auto';
+												deleteAccountBtn.classList.add('hidden');
+												cancelBtn.classList.add('hidden');
+												saveBtn.classList.add('hidden');
+												titolo.textContent = 'Visualizza Utente';
+
+												const card = button.closest('.userCard');
+
+												const id = card.dataset.id;
+												const username = card.dataset.username;
+												const mail = card.dataset.mail;
+												const nome = card.dataset.nome;
+												const cognome = card.dataset.cognome;
+												const ruolo = card.dataset.ruolo;
+												document.getElementById("role").value = ruolo;
+												const stato = card.dataset.stato;
+												const telefono = card.dataset.telefono;
+												console.log(username);
+
 												document.getElementById('role').disabled = true;
-											}
-											document.getElementById('username').value = username;
-											document.getElementById('nome').value = nome;
-											document.getElementById('cognome').value = cognome;
-											//document.getElementById('password').textContent  = "Matricola: "+ matricola;
-											document.getElementById('email').value = mail;
+												document.getElementById('username').readOnly = true;
+												document.getElementById('email').readOnly = true;
+												document.getElementById('phone').readOnly = true;
+												document.getElementById('password').readOnly = true;
+												document.getElementById('nome').readOnly = true;
+												document.getElementById('cognome').readOnly = true;
 
-											document.getElementById('phone').value = telefono;
+												document.getElementById('username').value = username;
+												document.getElementById('nome').value = nome;
+												document.getElementById('cognome').value = cognome;
+												//document.getElementById('password').textContent  = "Matricola: "+ matricola;
+												document.getElementById('email').value = mail;
+												document.getElementById('phone').value = telefono;
 
-										});
-									});
-
-									//IMPORT
-									(() => {
-										const form = document.getElementById('importForm');
-										const input = document.getElementById('fileInput');
-										const nameEl = document.getElementById('fileName');
-										const submitBtn = form.querySelector('button[type="submit"]');
-										if (!form || !input || !submitBtn) {
-											console.error('IMPORT: elementi non trovati', { form, input, submitBtn });
-											return;
-										}
-										// (opzionale) attiva drag&drop sulla card
-										const card = form.closest('div');
-										['dragover', 'dragenter'].forEach(ev => card.addEventListener(ev, e => {
-											e.preventDefault(); card.classList.add('ring-2', 'ring-blue-500');
-										}));
-										['dragleave', 'drop'].forEach(ev => card.addEventListener(ev, e => {
-											e.preventDefault(); card.classList.remove('ring-2', 'ring-blue-500');
-										}));
-										card.addEventListener('drop', e => {
-											if (e.dataTransfer.files?.length) {
-												input.files = e.dataTransfer.files;
-												input.dispatchEvent(new Event('change', { bubbles: true }));
-											}
+											});
 										});
 
-										input.addEventListener('change', () => {
-											const f = input.files[0];
-											console.log('IMPORT change fired:', f ? { name: f.name, size: f.size } : 'no file');
 
-											if (!f) { nameEl.textContent = 'Nessun file selezionato'; submitBtn.disabled = true; return; }
-
-											// vincolo: solo .txt e max 5MB (regola se vuoi)
-											if (!/\.txt$/i.test(f.name)) { alert('Seleziona un file .txt'); input.value = ''; nameEl.textContent = 'Formato non valido'; submitBtn.disabled = true; return; }
-											if (f.size > 100 * 1024 * 1024) { alert('File troppo grande (max 100MB)'); input.value = ''; nameEl.textContent = 'File troppo grande'; submitBtn.disabled = true; return; }
-
-											nameEl.textContent = f.name + `(` + Math.round(f.size / 1024) + `KB)`;
-											submitBtn.disabled = false;
-
-											// (se vuoi invio automatico appena scelto)
-											// form.submit();
-										});
-									})();
-
-									//SVUOTAMAGAZZINO
-									const $modal = document.getElementById('wipeModal');
-									document.getElementById('openWipeModal')?.addEventListener('click', () => $modal.classList.remove('hidden'));
-									document.getElementById('closeWipeModal')?.addEventListener('click', () => $modal.classList.add('hidden'));
-									document.getElementById('cancelExec')?.addEventListener('click', () => $modal.classList.add('hidden'));
-
-									// Intercetta Step1 per fare anteprima via fetch (Ajax opzionale)
-									document.getElementById('wipeStep1')?.addEventListener('submit', async (e) => {
-										e.preventDefault();
-										const form = new FormData(e.target);
-										const res = await fetch(e.target.action, { method: 'POST', body: form });
-										if (!res.ok) { alert('Controlla i campi e riprova'); return; }
-										const data = await res.json(); // {challengeId, totaleArticoli, totalePezzi, dettagli:[...]}
-										document.getElementById('challengeId').value = data.challengeId;
-										document.getElementById('previewData').textContent =
-											"Pezzi Totali: " + data.totalePezzi +
-											"\nArticoli coinvolti: " + data.totaleArticoli;
-
-										document.getElementById('previewBox').classList.remove('hidden');
-									});
-
-									//VIEW
-									viewUser.forEach(button => {
-										button.addEventListener('click', function () {
-
-											modalBackdrop.classList.remove('hidden');
-											profileModal.classList.remove('hidden');
-											document.body.style.overflow = 'auto';
-											deleteAccountBtn.classList.add('hidden');
-											cancelBtn.classList.add('hidden');
-											saveBtn.classList.add('hidden');
-											titolo.textContent = 'Visualizza Utente';
-
-											const card = button.closest('.userCard');
-
-											const id = card.dataset.id;
-											const username = card.dataset.username;
-											const mail = card.dataset.mail;
-											const nome = card.dataset.nome;
-											const cognome = card.dataset.cognome;
-											const ruolo = card.dataset.ruolo;
-											document.getElementById("role").value = ruolo;
-											const stato = card.dataset.stato;
-											const telefono = card.dataset.telefono;
-											console.log(username);
-
-											document.getElementById('role').disabled = true;
-											document.getElementById('username').readOnly = true;
-											document.getElementById('email').readOnly = true;
-											document.getElementById('phone').readOnly = true;
-											document.getElementById('password').readOnly = true;
-											document.getElementById('nome').readOnly = true;
-											document.getElementById('cognome').readOnly = true;
-
-											document.getElementById('username').value = username;
-											document.getElementById('nome').value = nome;
-											document.getElementById('cognome').value = cognome;
-											//document.getElementById('password').textContent  = "Matricola: "+ matricola;
-											document.getElementById('email').value = mail;
-											document.getElementById('phone').value = telefono;
-
-										});
-									});
-
-
-									//EXCEL
-									document.getElementById("btnGenerateExcel").addEventListener("click", () => {
-										document.getElementById('loadingOverlay').style.display = 'block';
-										document.getElementById("loadingOverlay").innerHTML = "Generando file excel attendere...";
-										const articoli = [
+										//EXCEL
+										document.getElementById("btnGenerateExcel").addEventListener("click", () => {
+											document.getElementById('loadingOverlay').style.display = 'block';
+											document.getElementById("loadingOverlay").innerHTML = "Generando file excel attendere...";
+											const articoli = [
 	    		<% List < Articolo > listaFull = lista.getAllarticoli();
-										for (int j = 0; j < listaFull.size(); j++) {
+											for (int j = 0; j < listaFull.size(); j++) {
 	    		        Articolo a = listaFull.get(j);
 	    		%>
-											{
-												nome: "<%= a.getNome() != null ? a.getNome().replace("\"", "\\\"") : "" %> ",
+												{
+													nome: "<%= a.getNome() != null ? a.getNome().replace("\"", "\\\"") : "" %> ",
 	    		        matricola: "<%= a.getMatricola() != null ? a.getMatricola().replace("\"", "\\\"") : "" %> ",
 	    		        provenienza: "<%= a.getProvenienza() != null ? a.getProvenienza().replace("\"", "\\\"") : "" %> ",
 	    		        centroRevisione: "<%= a.getFornitore() != null ? a.getFornitore().replace("\"", "\\\"") : "" %> ",
 	    		        garanzia: "<%= a.getRichiestaGaranzia() != false ? "SI" : "NO" %>",
-												dataSpedizione: "<%= a.getDataSpe_DDT() != null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/ MM / yyyy")) : "" %>",
-													ddtSpedizione: "<%= a.getDdt() != -1 ? a.getDdt() : 0 %>",
-														dataRientro: "<%= a.getDataRic_DDT() != null ? a.getDataRic_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd / MM / yyyy")) : "" %>",
-															ddtRientro: "<%= a.getDdtSpedizione() != -1 ? a.getDdtSpedizione() : 0 %>",
-																note: "<%= a.getNote() != null ? a.getNote().replace("\"", "\\\"") : "" %> "
-									}<%= (j < listaFull.size() - 1) ? "," : "" %>
+													dataSpedizione: "<%= a.getDataSpe_DDT() != null ? a.getDataSpe_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd/ MM / yyyy")) : "" %>",
+														ddtSpedizione: "<%= a.getDdt() != -1 ? a.getDdt() : 0 %>",
+															dataRientro: "<%= a.getDataRic_DDT() != null ? a.getDataRic_DDT().format(java.time.format.DateTimeFormatter.ofPattern("dd / MM / yyyy")) : "" %>",
+																ddtRientro: "<%= a.getDdtSpedizione() != -1 ? a.getDdtSpedizione() : 0 %>",
+																	note: "<%= a.getNote() != null ? a.getNote().replace("\"", "\\\"") : "" %> "
+										}<%= (j < listaFull.size() - 1) ? "," : "" %>
 	    		<% } %>
 	    		];
-									const header = ["NOME", "MATRICOLA", "PROVENIENZA", "CENTRO REVISIONE", "RICHIESTA GARANZIA", "DATA SPEDIZIONE", "DDT SPEDIZIONE", "DATA RIENTRO", "DDT RIENTRO", "NOTE"];
+										const header = ["NOME", "MATRICOLA", "PROVENIENZA", "CENTRO REVISIONE", "RICHIESTA GARANZIA", "DATA SPEDIZIONE", "DDT SPEDIZIONE", "DATA RIENTRO", "DDT RIENTRO", "NOTE"];
 
-									const data = articoli.map(a => [
-										a.nome, a.matricola, a.provenienza, a.centroRevisione,
-										a.garanzia, a.dataSpedizione, a.ddtSpedizione,
-										a.dataRientro, a.ddtRientro, a.note
-									]);
+										const data = articoli.map(a => [
+											a.nome, a.matricola, a.provenienza, a.centroRevisione,
+											a.garanzia, a.dataSpedizione, a.ddtSpedizione,
+											a.dataRientro, a.ddtRientro, a.note
+										]);
 
-									const wsData = [header, ...data];
-									const ws = XLSX.utils.aoa_to_sheet(wsData);
+										const wsData = [header, ...data];
+										const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-									// 🔠 Grassetto + centratura per intestazioni
-									header.forEach((_, colIdx) => {
-										const cell = ws[XLSX.utils.encode_cell({ c: colIdx, r: 0 })];
-										if (cell) {
-											cell.s = {
-												font: { bold: true },
-												alignment: { horizontal: "center" }
-											};
-										}
-									});
+										// 🔠 Grassetto + centratura per intestazioni
+										header.forEach((_, colIdx) => {
+											const cell = ws[XLSX.utils.encode_cell({ c: colIdx, r: 0 })];
+											if (cell) {
+												cell.s = {
+													font: { bold: true },
+													alignment: { horizontal: "center" }
+												};
+											}
+										});
 
-									// ↔️ Larghezza colonne simile al file originale
-									ws['!cols'] = [
-										{ wch: 30 },  // NOME
-										{ wch: 20 },  // MATRICOLA
-										{ wch: 20 },  // PROVENIENZA
-										{ wch: 25 },  // CENTRO REVISIONE
-										{ wch: 15 },  // GARANZIA
-										{ wch: 18 },  // DATA SPEDIZIONE
-										{ wch: 18 },  // DDT SPEDIZIONE
-										{ wch: 18 },  // DATA RIENTRO
-										{ wch: 18 },  // DDT RIENTRO
-										{ wch: 60 }   // NOTE
-									];
+										// ↔️ Larghezza colonne simile al file originale
+										ws['!cols'] = [
+											{ wch: 30 },  // NOME
+											{ wch: 20 },  // MATRICOLA
+											{ wch: 20 },  // PROVENIENZA
+											{ wch: 25 },  // CENTRO REVISIONE
+											{ wch: 15 },  // GARANZIA
+											{ wch: 18 },  // DATA SPEDIZIONE
+											{ wch: 18 },  // DDT SPEDIZIONE
+											{ wch: 18 },  // DATA RIENTRO
+											{ wch: 18 },  // DDT RIENTRO
+											{ wch: 60 }   // NOTE
+										];
 
-									const wb = XLSX.utils.book_new();
-									XLSX.utils.book_append_sheet(wb, ws, "Articoli");
-									XLSX.writeFile(wb, "articoli_magazzino.xlsx");
-									document.getElementById('loadingOverlay').style.display = 'none';
+										const wb = XLSX.utils.book_new();
+										XLSX.utils.book_append_sheet(wb, ws, "Articoli");
+										XLSX.writeFile(wb, "articoli_magazzino.xlsx");
+										document.getElementById('loadingOverlay').style.display = 'none';
     });
 
-									//GENERAZIONE ETICHETTE
-									const { jsPDF } = window.jspdf;
+										//GENERAZIONE ETICHETTE
+										const { jsPDF } = window.jspdf;
 
-									// Dati esempio
-									const dati = [
+										const dati = [
 		   <% for (int j = 0; j < size; j++) {
 		         String matricola = matricole.get(j);
 		         String nome = nomi.get(j);
+		         String dataSpe = dateSpe.get(j);
 		    %>
-											{ id: "<%= matricola.replace("\"", "\\\"") %> ", testo: " <%= nome.replace("\"", "\\\"") %> " }<%= (j < size - 1) ? ", " : "" %>
-												<% } %>
-	  ];
+												{ matricola: "<%= matricola.replace("\"", "\\\"") %> ", nome: " <%= nome.replace("\"", "\\\"") %> ", dataSpe: " <%= dataSpe != null ? dataSpe.replace("\"", "\\\"") : "" %> " }<%= (j < size - 1) ? ", " : "" %>
+													<% } %>
+		  ];
 
-									function generateQRCodeCanvas(text) {
-										return new Promise((resolve) => {
-											const tempDiv = document.createElement('div');
-											const qr = new QRCode(tempDiv, {
-												text,
-												width: 80,
-												height: 80,
-												correctLevel: QRCode.CorrectLevel.H,
-												colorDark: "#000000",
-												colorLight: "#ffffff"
+										document.getElementById('btnGeneratePdf').addEventListener('click', async () => {
+											document.getElementById('loadingOverlay').style.display = 'block';
+
+											const pdf = new jsPDF({
+												unit: 'mm',
+												format: 'a4',
 											});
 
-											setTimeout(() => {
-												const canvas = tempDiv.querySelector('canvas');
-												const ctx = canvas.getContext('2d');
+											const pageWidth = pdf.internal.pageSize.getWidth();
+											const pageHeight = pdf.internal.pageSize.getHeight();
 
-												const logoImg = document.getElementById('qrLogo');
+											// Layout: etichette 64mm × 25mm, 3 colonne
+											const labelW = 64;
+											const labelH = 25;
+											const margin = 5;
+											const gapX = 3;
+											const gapY = 3;
+											const cols = Math.floor((pageWidth - margin * 2 + gapX) / (labelW + gapX));
 
-												if (logoImg.complete) {
-													const size = 30; // dimensione logo in px
-													const centerX = (canvas.width - size) / 2;
-													const centerY = (canvas.height - size) / 2;
-													ctx.drawImage(logoImg, centerX, centerY, size, size);
-													resolve(canvas);
+											const logoImg = document.getElementById('qrLogo');
+
+											let x = margin;
+											let y = margin;
+
+											for (let i = 0; i < dati.length; i++) {
+												const item = dati[i];
+												document.getElementById("loadingOverlay").innerHTML = "Generando pdf per<br>" + item.nome + "<br>" + (i + 1) + "/" + dati.length + "<br>attendere...";
+
+												// Usa renderLabelPDF da labelUtils.js
+												await renderLabelPDF(pdf, x, y, item, logoImg);
+
+												if ((i + 1) % cols === 0) {
+													x = margin;
+													y += labelH + gapY;
+													if (y + labelH > pageHeight - margin) {
+														pdf.addPage();
+														y = margin;
+													}
 												} else {
-													logoImg.onload = () => {
-														const size = 30;
-														const centerX = (canvas.width - size) / 2;
-														const centerY = (canvas.height - size) / 2;
-														ctx.drawImage(logoImg, centerX, centerY, size, size);
-														resolve(canvas);
-													};
+													x += labelW + gapX;
 												}
-											}, 100); // attende che il QR venga generato
-										});
-									}
+											}
+											document.getElementById('loadingOverlay').style.display = 'none';
 
-
-									document.getElementById('btnGeneratePdf').addEventListener('click', async () => {
-										document.getElementById('loadingOverlay').style.display = 'block';
-
-										const pdf = new jsPDF({
-											unit: 'mm',
-											format: 'a4',
+											pdf.save('etichette_qr_tecnodeposit.pdf');
 										});
 
-										const formatText = (text, maxWords = 3) => {
-											const words = text.trim().split(/\s+/).slice(0, maxWords); // Prende solo le prime 2 parole
-											return words.join('\n'); // Ogni parola va a capo
-										};
-
-
-										const pageWidth = pdf.internal.pageSize.getWidth();
-										const pageHeight = pdf.internal.pageSize.getHeight();
-
-										const margin = 10;
-										const cols = 5;
-										const labelWidth = (pageWidth - margin * 2 - (cols - 1) * 5) / cols;
-										const labelHeight = 50;  // un po’ più alto per testo nel bordo
-
-										let x = margin;
-										let y = margin;
-
-										for (let i = 0; i < dati.length; i++) {
-											const item = dati[i];
-											document.getElementById("loadingOverlay").innerHTML = "Generando pdf per<br>" + item.testo + "<br>attendere...";
-
-											console.log('Generazione QR per:', item.id);
-											const qrCanvas = await generateQRCodeCanvas(item.id);
-											const imgData = qrCanvas.toDataURL('image/svg');
-
-											const qrSize = 30; // mm
-											const padding = 3;
-											const textFontSize = 9;
-
-											pdf.setFontSize(textFontSize);
-											// calcola larghezza testo in mm
-											const formattedText = formatText(item.testo, 1); // una parola per riga
-
-											const textWidth = pdf.getTextWidth(formattedText);
-											// larghezza bordo più larga fra qr + padding e testo + padding
-											const borderWidth = Math.max(qrSize + 2 * padding, textWidth + 2 * padding);
-											const borderHeight = qrSize + 12 + padding * 2; // spazio per testo sotto + padding
-
-											// posizione bordo centrata nell’etichetta
-											const borderX = x + (labelWidth - borderWidth) / 2;
-											const borderY = y + 3;
-
-											// sfondo bianco etichetta
-											pdf.setFillColor(255, 255, 255);
-											pdf.roundedRect(x, y, labelWidth, labelHeight, 3, 3, 'F');
-
-											// bordo arrotondato attorno a QR + testo
-											pdf.setDrawColor(0, 0, 0);
-											pdf.setLineWidth(0.6);
-											pdf.roundedRect(borderX, borderY, borderWidth, borderHeight, 5, 5);
-
-											// QR centrato nel bordo, sopra testo
-											const qrX = borderX + (borderWidth - qrSize) / 2;
-											const qrY = borderY + padding;
-											pdf.addImage(imgData, 'svg', qrX, qrY, qrSize, qrSize);
-
-											// testo centrato sotto QR
-											const textX = borderX + borderWidth / 2;
-											const textY = qrY + qrSize + 8; // sotto QR con spazio
-											pdf.setTextColor(0, 0, 0);
-											pdf.text(formattedText, textX, textY, { align: 'center' });
-
-
-											if ((i + 1) % cols === 0) {
-												x = margin;
-												y += labelHeight + 5;
-												if (y + labelHeight > pageHeight - margin) {
-													pdf.addPage();
-													y = margin;
+										//REFRESH IMMAGINI
+										document.getElementById('btnRefreshImages').addEventListener('click', async () => {
+											document.getElementById('loadingOverlay').style.display = 'block';
+											document.getElementById('loadingOverlay').innerHTML = 'Aggiornamento immagini in corso...<br>Attendere.';
+											try {
+												const resp = await fetch('<%= request.getContextPath() %>/api/refresh-images');
+												const data = await resp.json();
+												document.getElementById('loadingOverlay').style.display = 'none';
+												if (data.success) {
+													showToast('Aggiornate ' + data.updated + ' immagini su ' + data.total + ' articoli.', 'success');
+												} else {
+													showToast('Errore: ' + (data.error || 'sconosciuto'), 'error');
 												}
-											} else {
-												x += labelWidth + 5;
+											} catch (e) {
+												document.getElementById('loadingOverlay').style.display = 'none';
+												showToast('Errore di rete: ' + e.message, 'error');
 											}
+										});
+
+										// Toast helper
+										function showToast(msg, type) {
+											const toast = document.createElement('div');
+											toast.className = 'fixed top-4 right-4 z-[9999] px-6 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all duration-500 ' +
+												(type === 'success' ? 'bg-green-600' : 'bg-red-600');
+											toast.textContent = msg;
+											document.body.appendChild(toast);
+											setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 4000);
 										}
-										document.getElementById('loadingOverlay').style.display = 'none';
 
-										pdf.save('etichette_qr_tecnodeposit.pdf');
-									});
-
-									//REFRESH IMMAGINI
-									document.getElementById('btnRefreshImages').addEventListener('click', async () => {
-										document.getElementById('loadingOverlay').style.display = 'block';
-										document.getElementById('loadingOverlay').innerHTML = 'Aggiornamento immagini in corso...<br>Attendere.';
-										try {
-											const resp = await fetch('<%= request.getContextPath() %>/api/refresh-images');
-											const data = await resp.json();
-											document.getElementById('loadingOverlay').style.display = 'none';
-											if (data.success) {
-												showToast('Aggiornate ' + data.updated + ' immagini su ' + data.total + ' articoli.', 'success');
-											} else {
-												showToast('Errore: ' + (data.error || 'sconosciuto'), 'error');
-											}
-										} catch (e) {
-											document.getElementById('loadingOverlay').style.display = 'none';
-											showToast('Errore di rete: ' + e.message, 'error');
-										}
-									});
-
-									// Toast helper
-									function showToast(msg, type) {
-										const toast = document.createElement('div');
-										toast.className = 'fixed top-4 right-4 z-[9999] px-6 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all duration-500 ' +
-											(type === 'success' ? 'bg-green-600' : 'bg-red-600');
-										toast.textContent = msg;
-										document.body.appendChild(toast);
-										setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 4000);
-									}
-
-								</script>
-								</div>
+									</script>
+									</div>
 
 						</html>
