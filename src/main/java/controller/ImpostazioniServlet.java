@@ -18,7 +18,6 @@ import javax.crypto.SecretKey;
 
 import dao.DBConnection;
 import dao.TokenDAO;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,16 +41,87 @@ public class ImpostazioniServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// Verifica se l'utente è loggato
-		HttpSession session = request.getSession(false); // false significa non creare una nuova sessione se non esiste
+		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("username") == null) {
-			// Se la sessione non esiste o non contiene l'attributo "user", l'utente non è
-			// loggato
-			response.sendRedirect("login"); // Reindirizza l'utente alla pagina di login
+			response.sendRedirect("login");
+			return;
+		}
+
+		// API AJAX: restituisce dati articoli come JSON (per Excel/PDF)
+		String action = request.getParameter("action");
+		if ("exportData".equals(action)) {
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+
+			ListaArticoli lista = new ListaArticoli();
+			String type = request.getParameter("type");
+
+			StringBuilder sb = new StringBuilder();
+
+			if ("labels".equals(type)) {
+				// Dati per etichette PDF: matricola, nome, dataSpe
+				List<String> matricole = lista.getCampoFromDb("matricola");
+				List<String> nomi = lista.getCampoFromDb("nome");
+				List<String> dateSpe = lista.getCampoFromDb("data_spedizione");
+				int size = Math.min(matricole.size(), Math.min(nomi.size(), dateSpe.size()));
+
+				sb.append("[");
+				for (int j = 0; j < size; j++) {
+					if (j > 0)
+						sb.append(",");
+					sb.append("{\"matricola\":\"").append(escapeJson(matricole.get(j)))
+							.append("\",\"nome\":\"").append(escapeJson(nomi.get(j)))
+							.append("\",\"dataSpe\":\"")
+							.append(escapeJson(dateSpe.get(j) != null ? dateSpe.get(j) : ""))
+							.append("\"}");
+				}
+				sb.append("]");
+			} else {
+				// Dati per Excel: tutti i campi
+				List<Articolo> articoli = lista.getAllarticoli();
+				java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+				sb.append("[");
+				for (int j = 0; j < articoli.size(); j++) {
+					Articolo a = articoli.get(j);
+					if (j > 0)
+						sb.append(",");
+					sb.append("{")
+							.append("\"nome\":\"").append(escapeJson(a.getNome())).append("\"")
+							.append(",\"matricola\":\"").append(escapeJson(a.getMatricola())).append("\"")
+							.append(",\"provenienza\":\"").append(escapeJson(a.getProvenienza())).append("\"")
+							.append(",\"centroRevisione\":\"").append(escapeJson(a.getFornitore())).append("\"")
+							.append(",\"garanzia\":\"").append(a.getRichiestaGaranzia() ? "SI" : "NO").append("\"")
+							.append(",\"dataSpedizione\":\"")
+							.append(a.getDataSpe_DDT() != null ? a.getDataSpe_DDT().format(fmt) : "").append("\"")
+							.append(",\"ddtSpedizione\":\"").append(a.getDdt() != -1 ? a.getDdt() : 0).append("\"")
+							.append(",\"dataRientro\":\"")
+							.append(a.getDataRic_DDT() != null ? a.getDataRic_DDT().format(fmt) : "").append("\"")
+							.append(",\"ddtRientro\":\"").append(a.getDdtSpedizione() != -1 ? a.getDdtSpedizione() : 0)
+							.append("\"")
+							.append(",\"note\":\"").append(escapeJson(a.getNote())).append("\"")
+							.append("}");
+				}
+				sb.append("]");
+			}
+
+			response.getWriter().write(sb.toString());
 			return;
 		}
 
 		// Se l'utente è loggato, procedi con la visualizzazione della pagina
 		request.getRequestDispatcher("/impostazioni.jsp").forward(request, response);
+	}
+
+	/** Escape stringa per JSON (evita injection/errori di parsing) */
+	private static String escapeJson(String s) {
+		if (s == null)
+			return "";
+		return s.replace("\\", "\\\\")
+				.replace("\"", "\\\"")
+				.replace("\n", "\\n")
+				.replace("\r", "\\r")
+				.replace("\t", "\\t");
 	}
 
 	@Override
@@ -183,159 +253,166 @@ public class ImpostazioniServlet extends HttpServlet {
 				try {
 					us.registerUser(username, mail, nome, cognome, password, ruolo, telefono,
 							DBConnection.getConnection());
-					int idUser = us.getIdByUsername(username, DBConnection.getConnection());
-					SecretKey aesKey = CryptoUtil.loadAesKeyFromEnv("TD_AES_KEY_B64");
 
-					byte[] payload = CryptoUtil.encryptAesGcm(
-							password.getBytes(StandardCharsets.UTF_8),
-							aesKey);
+					// Email + crittografia in blocco separato:
+					// se fallisce, l'utente è già creato → nessun errore 500
+					try {
+						int idUser = us.getIdByUsername(username, DBConnection.getConnection());
+						SecretKey aesKey = CryptoUtil.loadAesKeyFromEnv("TD_AES_KEY_B64");
 
-					String tokenHex = TokenDAO.randomHex(32);
-					Instant expiresAt = Instant.now().plus(24, ChronoUnit.HOURS);
-					TokenDAO.insertRevealToken(idUser, tokenHex, payload, expiresAt);
+						byte[] payload = CryptoUtil.encryptAesGcm(
+								password.getBytes(StandardCharsets.UTF_8),
+								aesKey);
 
-					// Get base URL from config or system property
-					String baseUrl = System.getProperty("app.base.url", "http://localhost:8080/TecnoDeposit");
-					String revealUrl = baseUrl + "/credenziali?token=" + tokenHex;
+						String tokenHex = TokenDAO.randomHex(32);
+						Instant expiresAt = Instant.now().plus(24, ChronoUnit.HOURS);
+						TokenDAO.insertRevealToken(idUser, tokenHex, payload, expiresAt);
 
-					// Create email service from configuration
-					EmailService mailer = EmailConfig.createEmailService();
+						// Get base URL from config or system property
+						String baseUrl = System.getProperty("app.base.url", "http://localhost:8080/TecnoDeposit");
+						String revealUrl = baseUrl + "/credenziali?token=" + tokenHex;
 
-					String html = """
-							<!DOCTYPE html>
-							<html lang="it">
-							<head>
-							  <meta charset="UTF-8">
-							  <title>Messaggio di sicurezza</title>
-							  <meta name="x-apple-disable-message-reformatting">
-							  <meta name="color-scheme" content="light only">
-							  <style>
-							    /* Alcuni client accettano media query basiche */
-							    @media only screen and (max-width:600px){
-							      .container{width:100% !important}
-							      .padded{padding-left:20px !important;padding-right:20px !important}
-							    }
-							  </style>
-							</head>
-							<body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,Helvetica,sans-serif;">
-							  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;">
-							    <tr>
-							      <td align="center" style="padding:24px 12px;">
-							        <table role="presentation" width="600" class="container" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:10px;overflow:hidden;">
-							          <!-- Header -->
-							          <tr>
-							            <td style="background:#dc2626;padding:20px 24px;color:#ffffff;">
-							              <table role="presentation" width="100%%">
-							                <tr>
-							                  <td align="left">
-							                    <div style="font-size:22px;font-weight:700;line-height:1.2;">Messaggio Di Sicurezza</div>
-							                    <div style="font-size:13px;opacity:.9;">One-time reveal link</div>
-							                  </td>
-							                  <td align="right">
+						// Create email service from configuration
+						EmailService mailer = EmailConfig.createEmailService();
 
-							                  </td>
-							                </tr>
-							              </table>
-							            </td>
-							          </tr>
+						String html = """
+								<!DOCTYPE html>
+								<html lang="it">
+								<head>
+								  <meta charset="UTF-8">
+								  <title>Messaggio di sicurezza</title>
+								  <meta name="x-apple-disable-message-reformatting">
+								  <meta name="color-scheme" content="light only">
+								  <style>
+								    /* Alcuni client accettano media query basiche */
+								    @media only screen and (max-width:600px){
+								      .container{width:100% !important}
+								      .padded{padding-left:20px !important;padding-right:20px !important}
+								    }
+								  </style>
+								</head>
+								<body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,Helvetica,sans-serif;">
+								  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;">
+								    <tr>
+								      <td align="center" style="padding:24px 12px;">
+								        <table role="presentation" width="600" class="container" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:10px;overflow:hidden;">
+								          <!-- Header -->
+								          <tr>
+								            <td style="background:#dc2626;padding:20px 24px;color:#ffffff;">
+								              <table role="presentation" width="100%%">
+								                <tr>
+								                  <td align="left">
+								                    <div style="font-size:22px;font-weight:700;line-height:1.2;">Messaggio Di Sicurezza</div>
+								                    <div style="font-size:13px;opacity:.9;">One-time reveal link</div>
+								                  </td>
+								                  <td align="right">
 
-							          <!-- Body -->
-							          <tr>
-							            <td class="padded" style="padding:24px;">
-							              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
-							                <tr>
-							                  <td style="padding-bottom:16px;">
-							                    <table role="presentation">
-							                      <tr>
-							                        <td style="padding-right:12px;">
-							                          <img src="https://tecnodeposit.it/img/Icon.png" alt="TecnoDeposit" width="48" height="48" style="border-radius:999px;display:block;">
-							                        </td>
-							                        <td>
-							                          <div style="font-weight:700;">TecnoDeposit</div>
-							                          <div style="font-size:12px;color:#6b7280;">via no-reply@tecnodeposit.it</div>
-							                        </td>
-							                      </tr>
-							                    </table>
-							                  </td>
-							                </tr>
+								                  </td>
+								                </tr>
+								              </table>
+								            </td>
+								          </tr>
 
-							                <tr><td style="font-size:18px;font-weight:700;padding-bottom:8px;">Hai ricevuto un messaggio di sicurezza</td></tr>
-							                <tr><td style="color:#374151;padding-bottom:8px;">Ciao,</td></tr>
-							                <tr><td style="color:#374151;padding-bottom:8px;">L'admin del gestionale TecnoDeposit ha creato un account per te!</td></tr>
-							                <tr><td style="color:#374151;padding-bottom:8px;">Le credenziali di accesso sono username: ___USERNAME___ e la password la puoi scoprire cliccando il pulsante qui sotto.</td></tr>
-							                <tr><td style="color:#374151;padding-bottom:16px;">Attenzione! Il link scadrà una volta aperto: assicurati di salvare la password da qualche parte.</td></tr>
+								          <!-- Body -->
+								          <tr>
+								            <td class="padded" style="padding:24px;">
+								              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
+								                <tr>
+								                  <td style="padding-bottom:16px;">
+								                    <table role="presentation">
+								                      <tr>
+								                        <td style="padding-right:12px;">
+								                          <img src="https://tecnodeposit.it/img/Icon.png" alt="TecnoDeposit" width="48" height="48" style="border-radius:999px;display:block;">
+								                        </td>
+								                        <td>
+								                          <div style="font-weight:700;">TecnoDeposit</div>
+								                          <div style="font-size:12px;color:#6b7280;">via no-reply@tecnodeposit.it</div>
+								                        </td>
+								                      </tr>
+								                    </table>
+								                  </td>
+								                </tr>
 
-							                <!-- Pulsante -->
-							                <tr>
-							                  <td align="center" style="padding:16px 0 8px 0;">
-							                    <a href="___TOKEN___"
-							                       style="background:#2563eb;color:#ffffff;text-decoration:none;font-weight:700;
-							                              display:inline-block;padding:12px 24px;border-radius:10px;">
-							                      <!-- Occhio SVG -->
-							                      <span style="vertical-align:middle;display:inline-block;margin-right:8px;">
-							                        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-							                          <path fill="#ffffff" d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/>
-							                        </svg>
-							                      </span>
-							                      Scopri password
-							                    </a>
-							                    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Questo link è monouso.</div>
-							                  </td>
-							                </tr>
+								                <tr><td style="font-size:18px;font-weight:700;padding-bottom:8px;">Hai ricevuto un messaggio di sicurezza</td></tr>
+								                <tr><td style="color:#374151;padding-bottom:8px;">Ciao,</td></tr>
+								                <tr><td style="color:#374151;padding-bottom:8px;">L'admin del gestionale TecnoDeposit ha creato un account per te!</td></tr>
+								                <tr><td style="color:#374151;padding-bottom:8px;">Le credenziali di accesso sono username: ___USERNAME___ e la password la puoi scoprire cliccando il pulsante qui sotto.</td></tr>
+								                <tr><td style="color:#374151;padding-bottom:16px;">Attenzione! Il link scadrà una volta aperto: assicurati di salvare la password da qualche parte.</td></tr>
 
-							                <!-- Box sicurezza -->
-							                <tr>
-							                  <td style="background:#f3f4f6;border-radius:8px;padding:12px;color:#374151;">
-							                    <table role="presentation">
-							                      <tr>
-							                        <td style="vertical-align:top;padding-right:8px;">
-							                          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-							                            <path fill="#10b981" d="M12 2a10 10 0 1010 10A10.011 10.011 0 0012 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/>
-							                          </svg>
-							                        </td>
-							                        <td>
-							                          <div style="font-weight:700;margin-bottom:4px;">Security Information</div>
-							                          <div style="font-size:13px;color:#4b5563;">Questo è un link One-Time-Reveal e verrà eliminato una volta utilizzato.</div>
-							                        </td>
-							                      </tr>
-							                    </table>
-							                  </td>
-							                </tr>
+								                <!-- Pulsante -->
+								                <tr>
+								                  <td align="center" style="padding:16px 0 8px 0;">
+								                    <a href="___TOKEN___"
+								                       style="background:#2563eb;color:#ffffff;text-decoration:none;font-weight:700;
+								                              display:inline-block;padding:12px 24px;border-radius:10px;">
+								                      <!-- Occhio SVG -->
+								                      <span style="vertical-align:middle;display:inline-block;margin-right:8px;">
+								                        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+								                          <path fill="#ffffff" d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/>
+								                        </svg>
+								                      </span>
+								                      Scopri password
+								                    </a>
+								                    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Questo link è monouso.</div>
+								                  </td>
+								                </tr>
 
-							                <tr><td style="font-size:13px;color:#6b7280;padding-top:12px;">
-							                  Se non aspettavi questo messaggio, <a href="mailto:assistenza@tecnodeposit.it" style="color:#2563eb;">contattaci</a>.
-							                </td></tr>
-							              </table>
-							            </td>
-							          </tr>
+								                <!-- Box sicurezza -->
+								                <tr>
+								                  <td style="background:#f3f4f6;border-radius:8px;padding:12px;color:#374151;">
+								                    <table role="presentation">
+								                      <tr>
+								                        <td style="vertical-align:top;padding-right:8px;">
+								                          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+								                            <path fill="#10b981" d="M12 2a10 10 0 1010 10A10.011 10.011 0 0012 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/>
+								                          </svg>
+								                        </td>
+								                        <td>
+								                          <div style="font-weight:700;margin-bottom:4px;">Security Information</div>
+								                          <div style="font-size:13px;color:#4b5563;">Questo è un link One-Time-Reveal e verrà eliminato una volta utilizzato.</div>
+								                        </td>
+								                      </tr>
+								                    </table>
+								                  </td>
+								                </tr>
 
-							          <!-- Footer -->
-							          <tr>
-							            <td align="center" style="background:#f3f4f6;padding:16px;color:#4b5563;font-size:12px;">
-							              <div>™ 2025 TecnoDeposit</div>
-							              <div style="margin-top:4px;"><a href="https://www.tecnodeposit.it" style="color:#2563eb;text-decoration:none;">www.tecnodeposit.it</a></div>
-							            </td>
-							          </tr>
+								                <tr><td style="font-size:13px;color:#6b7280;padding-top:12px;">
+								                  Se non aspettavi questo messaggio, <a href="mailto:assistenza@tecnodeposit.it" style="color:#2563eb;">contattaci</a>.
+								                </td></tr>
+								              </table>
+								            </td>
+								          </tr>
 
-							        </table>
-							      </td>
-							    </tr>
-							  </table>
-							</body>
-							</html>
-							""";
-					html = html.replace("___TOKEN___", revealUrl);
-					html = html.replace("___USERNAME___", "<b>" + username + "</b>");
-					System.out.println(html.contains("___TOKEN___"));
+								          <!-- Footer -->
+								          <tr>
+								            <td align="center" style="background:#f3f4f6;padding:16px;color:#4b5563;font-size:12px;">
+								              <div>™ 2025 TecnoDeposit</div>
+								              <div style="margin-top:4px;"><a href="https://www.tecnodeposit.it" style="color:#2563eb;text-decoration:none;">www.tecnodeposit.it</a></div>
+								            </td>
+								          </tr>
 
-					mailer.sendHtml(mail, "Creazione Account TecnoDeposit | " + revealUrl, html,
-							"no-reply@tecnodeposit.it");
+								        </table>
+								      </td>
+								    </tr>
+								  </table>
+								</body>
+								</html>
+								""";
+						html = html.replace("___TOKEN___", revealUrl);
+						html = html.replace("___USERNAME___", "<b>" + username + "</b>");
+
+						mailer.sendHtml(mail, "Creazione Account TecnoDeposit | " + revealUrl, html,
+								"no-reply@tecnodeposit.it");
+						System.out.println("✅ Email inviata a " + mail);
+					} catch (Exception emailEx) {
+						// Email/crypto fallita, ma l'utente è già stato creato
+						System.err.println(
+								"⚠️ Utente '" + username + "' creato, ma invio email fallito: " + emailEx.getMessage());
+						emailEx.printStackTrace();
+					}
 
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (MessagingException e) {
-					// TODO Auto-generated catch block
+					System.err.println("❌ Errore creazione utente: " + e.getMessage());
 					e.printStackTrace();
 				}
 			if ("update".equals(action)) {
