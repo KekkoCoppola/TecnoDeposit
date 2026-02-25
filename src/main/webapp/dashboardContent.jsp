@@ -357,7 +357,8 @@
                                 group-hover:bg-slate-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-layer-group text-slate-600 text-lg"></i>
                       </div>
-                      <span id="count-total" class="text-xl font-bold text-slate-800">0</span>
+                      <span id="count-total" class="text-xl font-bold text-slate-800">${countTotal != null ? countTotal
+                        : 0}</span>
                       <span class="text-[10px] font-medium text-slate-500 uppercase tracking-wide">Trovati</span>
                     </div>
 
@@ -370,7 +371,8 @@
                                 group-hover:bg-yellow-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-hourglass-half text-yellow-600 text-lg"></i>
                       </div>
-                      <span id="count-In_attesa" class="text-xl font-bold text-yellow-700">0</span>
+                      <span id="count-In_attesa" class="text-xl font-bold text-yellow-700">${countInAttesa != null ?
+                        countInAttesa : 0}</span>
                       <span class="text-[10px] font-medium text-yellow-600 uppercase tracking-wide">Attesa</span>
                     </div>
 
@@ -383,7 +385,8 @@
                                 group-hover:bg-emerald-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-warehouse text-emerald-600 text-lg"></i>
                       </div>
-                      <span id="count-In_magazzino" class="text-xl font-bold text-emerald-700">0</span>
+                      <span id="count-In_magazzino" class="text-xl font-bold text-emerald-700">${countInMagazzino !=
+                        null ? countInMagazzino : 0}</span>
                       <span class="text-[10px] font-medium text-emerald-600 uppercase tracking-wide">Magazzino</span>
                     </div>
 
@@ -396,7 +399,8 @@
                                 group-hover:bg-violet-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-plug text-violet-600 text-lg"></i>
                       </div>
-                      <span id="count-Installato" class="text-xl font-bold text-violet-700">0</span>
+                      <span id="count-Installato" class="text-xl font-bold text-violet-700">${countInstallato != null ?
+                        countInstallato : 0}</span>
                       <span class="text-[10px] font-medium text-violet-600 uppercase tracking-wide">Installati</span>
                     </div>
 
@@ -409,7 +413,8 @@
                                 group-hover:bg-sky-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-location-arrow text-sky-600 text-lg"></i>
                       </div>
-                      <span id="count-Destinato" class="text-xl font-bold text-sky-700">0</span>
+                      <span id="count-Destinato" class="text-xl font-bold text-sky-700">${countDestinato != null ?
+                        countDestinato : 0}</span>
                       <span class="text-[10px] font-medium text-sky-600 uppercase tracking-wide">Destinati</span>
                     </div>
 
@@ -422,7 +427,8 @@
                                 group-hover:bg-cyan-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-user-check text-cyan-600 text-lg"></i>
                       </div>
-                      <span id="count-Assegnato" class="text-xl font-bold text-cyan-700">0</span>
+                      <span id="count-Assegnato" class="text-xl font-bold text-cyan-700">${countAssegnato != null ?
+                        countAssegnato : 0}</span>
                       <span class="text-[10px] font-medium text-cyan-600 uppercase tracking-wide">Assegnati</span>
                     </div>
 
@@ -435,7 +441,8 @@
                                 group-hover:bg-red-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
                       </div>
-                      <span id="count-Guasto" class="text-xl font-bold text-red-700">0</span>
+                      <span id="count-Guasto" class="text-xl font-bold text-red-700">${countGuasto != null ? countGuasto
+                        : 0}</span>
                       <span class="text-[10px] font-medium text-red-600 uppercase tracking-wide">Guasti</span>
                     </div>
 
@@ -448,7 +455,8 @@
                                 group-hover:bg-blue-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-wrench text-blue-600 text-lg"></i>
                       </div>
-                      <span id="count-Riparato" class="text-xl font-bold text-blue-700">0</span>
+                      <span id="count-Riparato" class="text-xl font-bold text-blue-700">${countRiparato != null ?
+                        countRiparato : 0}</span>
                       <span class="text-[10px] font-medium text-blue-600 uppercase tracking-wide">Riparati</span>
                     </div>
 
@@ -461,7 +469,8 @@
                                 group-hover:bg-orange-200 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-times-circle text-orange-600 text-lg"></i>
                       </div>
-                      <span id="count-Non_Riparato" class="text-xl font-bold text-orange-700">0</span>
+                      <span id="count-Non_Riparato" class="text-xl font-bold text-orange-700">${countNonRiparato != null
+                        ? countNonRiparato : 0}</span>
                       <span class="text-[10px] font-medium text-orange-600 uppercase tracking-wide">Non Rip.</span>
                     </div>
 
@@ -474,7 +483,8 @@
                                 group-hover:bg-gray-300 group-hover:scale-110 transition-all duration-200">
                         <i class="fas fa-ban text-gray-600 text-lg"></i>
                       </div>
-                      <span id="count-Non_Riparabile" class="text-xl font-bold text-gray-700">0</span>
+                      <span id="count-Non_Riparabile" class="text-xl font-bold text-gray-700">${countNonRiparabile !=
+                        null ? countNonRiparabile : 0}</span>
                       <span class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Scartati</span>
                     </div>
 
@@ -944,11 +954,13 @@
               const modal = document.getElementById('article-modal');
 
               // === VALIDAZIONE MATRICOLA DUPLICATA ===
-              <% List < String > matricole = (List < String >) request.getAttribute("matricole"); %>
+              <% List < String > matricoleJSP = (List < String >) request.getAttribute("matricole"); %>
               const matricoleEsistenti = new Set([
-                <% if (matricole != null) for (int mi = 0; mi < matricole.size(); mi++) { %>
-                "<%= matricole.get(mi).replace("\"", "\\\"") %> ".trim().toLowerCase()<%= (mi < matricole.size() - 1) ? ", " : "" %>
-                  <% } %>
+                <% if (matricoleJSP != null) {
+                for (int mi = 0; mi < matricoleJSP.size(); mi++) { %>
+                  "<%= matricoleJSP.get(mi).replace("\"", "\\\"").trim().toLowerCase() %> "<%= (mi < matricoleJSP.size() - 1) ? ", " : "" %>
+                    <% }
+              } %>
               ]);
               let matricolaOriginale = null; // per edit: la matricola corrente dell'articolo
               let matricolaDuplicata = false;

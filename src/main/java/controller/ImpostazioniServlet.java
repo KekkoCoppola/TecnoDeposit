@@ -251,8 +251,13 @@ public class ImpostazioniServlet extends HttpServlet {
 
 			if ("add".equals(action))
 				try {
-					us.registerUser(username, mail, nome, cognome, password, ruolo, telefono,
+					boolean inserted = us.registerUser(username, mail, nome, cognome, password, ruolo, telefono,
 							DBConnection.getConnection());
+
+					if (!inserted) {
+						response.sendRedirect(request.getContextPath() + "/impostazioni?error=duplicate");
+						return;
+					}
 
 					// Email + crittografia in blocco separato:
 					// se fallisce, l'utente è già creato → nessun errore 500

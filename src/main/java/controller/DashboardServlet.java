@@ -39,6 +39,18 @@ public class DashboardServlet extends HttpServlet {
 		request.setAttribute("fornitori", fornitori);
 		request.setAttribute("tecnici", tecnici);
 
+		// Pre-calculate counts server-side to prevent flickering
+		request.setAttribute("countTotal", lista.countArticoli());
+		request.setAttribute("countInAttesa", lista.countArticoliPerStato("In Attesa"));
+		request.setAttribute("countInMagazzino", lista.countArticoliPerStato("In Magazzino"));
+		request.setAttribute("countInstallato", lista.countArticoliPerStato("Installato"));
+		request.setAttribute("countDestinato", lista.countArticoliPerStato("Destinato"));
+		request.setAttribute("countAssegnato", lista.countArticoliPerStato("Assegnato"));
+		request.setAttribute("countGuasto", lista.countArticoliPerStato("Guasto"));
+		request.setAttribute("countRiparato", lista.countArticoliPerStato("Riparato"));
+		request.setAttribute("countNonRiparato", lista.countArticoliPerStato("Non Riparato"));
+		request.setAttribute("countNonRiparabile", lista.countArticoliPerStato("Non Riparabile"));
+
 		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("username") == null) {
 			response.sendRedirect("login");
