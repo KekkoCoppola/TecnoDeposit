@@ -4,6 +4,7 @@
     String titolo = (String) request.getAttribute("pageTitle");
     
 %>
+<script src="<%= request.getContextPath() %>/scripts/qrcode.min.js"></script>
 
 <style>
 /* Default: nascondi tutto */
@@ -114,6 +115,10 @@
                                         <i class="fas fa-cog"></i>
                                         <span>Impostazioni</span>
                                     </a>
+                                    <a href="#" class="profile-dropdown-item" onclick="event.preventDefault(); apriModaleQr();">
+                                        <i class="fas fa-qrcode text-gray-700"></i>
+                                        <span>Accesso Totem</span>
+                                    </a>
                                     <!-- <a href="#" class="profile-dropdown-item">
                                         <i class="fas fa-bell"></i>
                                         <span>Notifiche</span>
@@ -152,6 +157,61 @@
                     </div>
                 </div>
             </header>
+
+            <!-- Modale QR Code -->
+            <div id="qrModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+                <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="chiudiModaleQr()">
+                        <div class="absolute inset-0 bg-gray-900 bg-opacity-75"></div>
+                    </div>
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                    
+                    <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full border border-gray-100">
+                        <!-- Header modale QR -->
+                        <div class="bg-gradient-to-r from-red-600 to-red-700 px-4 py-3 sm:px-6 flex justify-between items-center">
+                            <h3 class="text-lg leading-6 font-semibold text-white flex items-center gap-2">
+                                <i class="fas fa-qrcode"></i> Accesso Totem Rapido
+                            </h3>
+                            <button onclick="chiudiModaleQr()" class="text-red-100 hover:text-white transition-colors focus:outline-none">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+            
+                        <!-- Body modale -->
+                        <div class="bg-white px-4 pt-5 pb-6 sm:p-6 sm:pb-4 flex flex-col items-center">
+                            <p class="text-sm text-gray-500 mb-4 text-center">Avvicina il QR Code allo scanner del Totem per effettuare l'accesso automatico.</p>
+                            
+                            <!-- Container del QR -->
+                            <div class="p-4 bg-white border-2 border-dashed border-gray-200 rounded-xl relative">
+                                <div id="qrcode-container" class="flex justify-center items-center h-48 w-48 bg-gray-50 rounded-lg relative">
+                                     <!-- Loading spinner -->
+                                     <i id="qrCodeSpinner" class="fas fa-spinner fa-spin text-3xl text-red-500"></i>
+                                     <!-- Logo sovrapposto (comparirà a caricamento finito) -->
+                                     <img id="qrCenterLogo" src="<%=request.getContextPath()%>/img/IconBN.png" alt="Logo" class="hidden absolute bg-white p-1.5 rounded-lg border border-gray-100 z-10 shadow-sm" style="width: 48px; height: 48px; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
+                                </div>
+                                <!-- Overlay QR Scaduto (nascosto di default) -->
+                                <div id="qrExpiredOverlay" class="hidden absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center rounded-xl z-20">
+                                    <i class="fas fa-exclamation-triangle text-3xl text-red-600 mb-2"></i>
+                                    <span class="font-bold text-gray-800 text-sm">QR Code Scaduto</span>
+                                    <button onclick="apriModaleQr()" class="mt-3 px-3 py-1.5 bg-red-600 text-white rounded-md text-xs hover:bg-red-700 hover:shadow-md transition-all">Genera Nuovo</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Timer Visivo Progressivo -->
+                            <div class="w-full mt-5 relative">
+                                <div class="flex justify-between text-xs text-gray-500 mb-1 px-1 font-medium">
+                                    <span class="text-red-600"><i class="fas fa-stopwatch mr-1"></i>Scadenza</span>
+                                    <span id="qrTimerText" class="font-mono bg-red-50 text-red-700 px-2 py-0.5 rounded border border-red-100">02:00</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden shadow-inner isolate">
+                                    <div id="qrTimerProgress" class="bg-gradient-to-r from-red-500 to-red-600 h-2.5 rounded-full transition-all duration-1000 ease-linear shadow-[0_0_10px_rgba(239,68,68,0.5)]" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <script>
             const profileButton = document.getElementById('profile-btn');
             const notificationButton = document.getElementById('notification-button');
@@ -175,6 +235,99 @@
       		  document.getElementById('catalogModal').classList.add('hidden');
       		  document.getElementById('modalContentArea').innerHTML = ''; 
       		}
+
+            // GESTIONE MODALE QR CODE TOTEM
+            let qrIntervalTimer;
+            
+            function apriModaleQr() {
+                // Resetta UI
+                const container = document.getElementById('qrcode-container');
+                const logo = document.getElementById('qrCenterLogo');
+                container.innerHTML = '<i class="fas fa-spinner fa-spin text-3xl text-red-500"></i>';
+                // Reinserisco il logo nascosto che viene piallato dall'innerHTML = ''
+                container.appendChild(logo);
+                logo.classList.add('hidden');
+                
+                document.getElementById('qrExpiredOverlay').classList.add('hidden');
+                document.getElementById('qrModal').classList.remove('hidden');
+                document.getElementById('qrTimerProgress').style.width = '100%';
+                document.getElementById('qrTimerText').innerText = '02:00';
+                
+                // Fetch al backend
+                fetch('<%=request.getContextPath()%>/api/generate-qr-login')
+                    .then(response => {
+                        if (!response.ok) throw new Error("Errore network");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(data.success && data.token) {
+                            container.innerHTML = ''; // Pialla lo spinner
+                            container.appendChild(logo); // Mantieni il logo nell'albero
+                            logo.classList.remove('hidden'); // Mostra il logo!
+                            
+                            // Genera Graficamente
+                            new QRCode(container, {
+                                text: data.token,
+                                width: 192,
+                                height: 192,
+                                colorDark : "#111827", // gray-900 (più scuro per lettura netta)
+                                colorLight : "#ffffff",
+                                correctLevel : QRCode.CorrectLevel.H // Mettiamo High Recovery dato che c'è l'immagine in mezzo
+                            });
+                            
+                            // L'immagine deve stare SOPRA il canvas generato! CSS z-index nel markup lo garantisce.
+                            
+                            // Avvia Countdown 2 Minuti (120 secondi x 1000 per fluidità della barra)
+                            avviaTimerQr(120);
+                        } else {
+                            throw new Error(data.error || "Errore sconosciuto");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Generazione QR fallita:', error);
+                        container.innerHTML = '<span class="text-red-500 text-sm">Errore. Riprova.</span>';
+                    });
+            }
+
+            function avviaTimerQr(secondiTotali) {
+                if(qrIntervalTimer) clearInterval(qrIntervalTimer);
+                
+                let rimanenti = secondiTotali;
+                const progressBar = document.getElementById('qrTimerProgress');
+                const textBar = document.getElementById('qrTimerText');
+                
+                qrIntervalTimer = setInterval(() => {
+                    rimanenti--;
+                    let perc = Math.max(0, (rimanenti / secondiTotali) * 100);
+                    progressBar.style.width = perc + '%';
+                    
+                    let min = Math.floor(rimanenti / 60);
+                    let sec = rimanenti % 60;
+                    
+                    // Fixed: padStart garantisce che "9" venga visualizzato come "09" e "0" come "00"
+                    textBar.innerText = String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+
+                    // Cambia colore barra al 25% (30 secondi)
+                    if(rimanenti <= 30) {
+                        progressBar.classList.remove('from-red-500', 'to-red-600');
+                        progressBar.classList.add('bg-orange-500'); // Warning
+                    }
+                    
+                    if(rimanenti <= 0) {
+                        clearInterval(qrIntervalTimer);
+                        document.getElementById('qrExpiredOverlay').classList.remove('hidden');
+                        document.getElementById('qrcode-container').innerHTML = ''; // Distruggi l'immagine visibile
+                    }
+                }, 1000);
+            }
+
+            function chiudiModaleQr() {
+                if(qrIntervalTimer) clearInterval(qrIntervalTimer);
+                document.getElementById('qrModal').classList.add('hidden');
+                
+                // Salta il clean duro per non far sparire il logo staticamente, 
+                // apriModaleQr() si occuperà di restorare il loader al click successivo
+            }
           
 
             markAllReadBtn.addEventListener('click', async () => {
