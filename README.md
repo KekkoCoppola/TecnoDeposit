@@ -79,7 +79,7 @@ L'app scala in base all'utenza loggata:
 
 | Ruolo | Poteri e Visuali |
 | :--- | :--- |
-| 👑 **Amministratore / Developer** | Accesso divino. Può gestire utenti, accettare carrelli richieste da tech, avviare reset magazzino, refresh blob immagini ed esportazioni Excel totali. |
+| 👑 **Amministratore** | Accesso divino. Può gestire utenti, accettare carrelli richieste da tech, avviare reset magazzino, refresh blob immagini ed esportazioni Excel totali. |
 | 📦 **Magazziniere** | Cuore pulsante dell'inventario. Aggiunge/modifica scorte liberamente, smarca e spedisce materiale. Non può gestire utenti o distruggere il database. |
 | 🔧 **Tecnico** | Utente "cliente" del magazzino. Sfoglia il catalogo base, fa ordini tramite flussi "Richiesta" e inquadra il proprio "Modulo Totem" per operare dal tablet aziendale. |
 
