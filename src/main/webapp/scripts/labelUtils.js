@@ -123,25 +123,27 @@ function renderLabel(targetCanvas, data, logoImg) {
         // --- Testo a destra ---
         var textX = sepX + padding;
         var textMaxW = LABEL_W_PX - textX - padding;
-        var lineHeight = 6 * SCALE;
-        var textY = padding + lineHeight + 2 * SCALE;
 
-        // Nome (bold, più grande)
-        ctx.fillStyle = '#1a1a1a';
-        ctx.font = 'bold ' + (5.5 * SCALE) + 'px Arial, sans-serif';
+        // Aumentate ulteriormente le dimensioni dei font per i 3 campi e usati i colori neri assoluti
+        var lineHeightNome = 11 * SCALE; // molto spazioso per il nome
+        var textY = padding + lineHeightNome - (1 * SCALE);
+
+        // Nome (bold, enorme, accorciato se serve)
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold ' + (10 * SCALE) + 'px Tahoma, sans-serif'; // Aumentato da 8 a 10
         var truncatedNome = truncateText(ctx, data.nome || '', textMaxW);
         ctx.fillText(truncatedNome, textX, textY);
 
         // Matricola
-        textY += lineHeight + 2 * SCALE;
-        ctx.fillStyle = '#444444';
-        ctx.font = (4.5 * SCALE) + "px 'Courier New', monospace";
+        textY += (8 * SCALE) + 4 * SCALE; // più margine
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold ' + (8.5 * SCALE) + "px 'Courier New', monospace"; // Aumentato da 7.5 a 8.5
         ctx.fillText(data.matricola || '', textX, textY);
 
         // Data spedizione
-        textY += lineHeight + 1 * SCALE;
-        ctx.fillStyle = '#666666';
-        ctx.font = (4 * SCALE) + 'px Arial, sans-serif';
+        textY += (7 * SCALE) + 4 * SCALE; // ancora scendiamo
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold ' + (7.5 * SCALE) + 'px Tahoma, sans-serif'; // Aumentato da 6.5 a 7.5
         var dataSpeFormatted = formatDate(data.dataSpe);
         ctx.fillText(dataSpeFormatted ? 'Sped: ' + dataSpeFormatted : '', textX, textY);
     }).catch(function (e) {
@@ -175,12 +177,21 @@ function printLabel(data, logoImg) {
     renderLabel(canvas, data, logoImg).then(function () {
         var imgData = canvas.toDataURL('image/png');
 
-        // Apri una finestra popup dedicata con solo l'etichetta
-        var printWin = window.open('', '_blank', 'width=400,height=200');
-        if (!printWin) return alert('Popup bloccato dal browser. Abilita i popup per stampare.');
+        // Usa un iframe invisibile per non attivare il popup blocker
+        var iframe = document.getElementById('printLabelIframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'printLabelIframe';
+            iframe.style.position = 'absolute';
+            iframe.style.width = '0px';
+            iframe.style.height = '0px';
+            iframe.style.border = 'none';
+            document.body.appendChild(iframe);
+        }
 
-        printWin.document.open();
-        printWin.document.write(
+        var doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(
             '<!DOCTYPE html>' +
             '<html><head><title>Stampa Etichetta</title>' +
             '<style>' +
@@ -202,20 +213,16 @@ function printLabel(data, logoImg) {
             '}' +
             '</style></head>' +
             '<body>' +
-            '<img src="' + imgData + '">' +
+            '<img id="labelImgToPrint" src="' + imgData + '">' +
             '</body></html>'
         );
-        printWin.document.close();
+        doc.close();
 
-        // Attendi il caricamento dell'immagine, poi stampa e chiudi
-        printWin.onload = function () {
-            setTimeout(function () {
-                printWin.focus();
-                printWin.print();
-                // Chiudi dopo che l'utente chiude la dialog di stampa
-                setTimeout(function () { printWin.close(); }, 500);
-            }, 200);
-        };
+        // Aspetta che l'immagine sia visibile prima di attivare la finestra di stampa
+        setTimeout(function () {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        }, 300);
     });
 }
 

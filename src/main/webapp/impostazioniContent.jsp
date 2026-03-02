@@ -641,7 +641,7 @@
 				<script>
 					let currentUserId = null;
 					const ruoloUtente = "<%= ruoloUtenteLoggato %>";
-					
+
 					// Mostra alert d'errore se si prova ad aggiungere un utente duplicato
 					const urlParams = new URLSearchParams(window.location.search);
 					if (urlParams.get('error') === 'duplicate') {
@@ -649,7 +649,7 @@
 						// Rimuovi il parametro dall'URL senza ricaricare la pagina
 						window.history.replaceState({}, document.title, window.location.pathname);
 					}
-					
+
 					//VIEW IN BASE ALL'UTENTE
 					document.addEventListener('DOMContentLoaded', function () {
 						if (ruoloUtente === "Tecnico" || ruoloUtente === "Magazziniere") {
@@ -1059,7 +1059,7 @@
 					});
 
 					//REFRESH IMMAGINI
-					document.getElementById('btnRefreshImages').addEventListener('click', async () => {
+					document.getElementById('btnRefreshImages')?.addEventListener('click', async () => {
 						document.getElementById('loadingOverlay').style.display = 'block';
 						document.getElementById('loadingOverlay').innerHTML = 'Aggiornamento immagini in corso...<br>Attendere.';
 						try {
