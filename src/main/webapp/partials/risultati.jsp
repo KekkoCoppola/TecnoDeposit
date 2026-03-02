@@ -39,8 +39,11 @@
                                         <div
                                             class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent">
                                         </div>
-                                        <% String stato=a.getStato().toString(); String statoCss="status-" +
-                                            stato.toLowerCase().replace(" ", " -").replace("à", "a" ); %>
+                                        <% 
+                                        String stato=a.getStato().toString(); 
+                                        String statoCss="status-" +
+                                        stato.toLowerCase().replace(" ", "-").replace("à", "a" ); 
+                                        %>
                                             <span
                                                 class="status-badge <%= statoCss %> absolute top-3 right-3 backdrop-blur-md bg-white/80 px-3 py-1 rounded-full text-xs font-semibold shadow-lg border border-white/50">
                                                 <%= a.getStato() %>

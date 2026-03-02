@@ -113,4 +113,19 @@ public class TokenDAO {
 		}
 	}
 
+	// Metodo per pulire il database dai token scaduti o già utilizzati.
+	// Viene chiamato periodicamente in background da TokenCleanupListener
+	public static void deleteExpiredTokens() {
+		String sql = "DELETE FROM user_token WHERE expires_at < NOW() OR used = 1";
+		try (Connection c = DBConnection.getConnection();
+				PreparedStatement ps = c.prepareStatement(sql)) {
+			int deleted = ps.executeUpdate();
+			if (deleted > 0) {
+				System.out.println("[TokenDAO] Pulizia Automatica: eliminati " + deleted + " token scaduti/usati.");
+			}
+		} catch (SQLException e) {
+			System.err.println("[TokenDAO] Errore durante la pulizia dei token scaduti: " + e.getMessage());
+		}
+	}
+
 }
