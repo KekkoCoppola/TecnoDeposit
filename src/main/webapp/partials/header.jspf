@@ -115,10 +115,11 @@
                                         <i class="fas fa-cog"></i>
                                         <span>Impostazioni</span>
                                     </a>
-                                   <!-- <a href="#" class="profile-dropdown-item" onclick="event.preventDefault(); apriModaleQr();">
+                                   <a href="#" class="profile-dropdown-item" onclick="event.preventDefault(); apriModaleQr();">
                                         <i class="fas fa-qrcode text-gray-700"></i>
                                         <span>Accesso Totem</span>
-                                    </a>-->
+                                    </a>
+                                    
                                     <!-- <a href="#" class="profile-dropdown-item">
                                         <i class="fas fa-bell"></i>
                                         <span>Notifiche</span>
