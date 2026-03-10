@@ -256,6 +256,16 @@
     <url-pattern>/api/contact-form</url-pattern>
 </servlet-mapping>
 
+<!-- TOTEM INTERFACE -->
+<servlet>
+    <servlet-name>TotemServlet</servlet-name>
+    <servlet-class>controller.TotemServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>TotemServlet</servlet-name>
+    <url-pattern>/t-8f92a1b3c4d5e6f7g8h9i0j/*</url-pattern>
+</servlet-mapping>
+
 <!-- Landing Page come welcome file -->
 <welcome-file-list>
     <welcome-file>landingPage.html</welcome-file>

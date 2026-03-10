@@ -161,6 +161,59 @@ public class ListaArticoli {
 
     }
 
+    public static Articolo getArticoloByMatricola(String matricola) {
+        Articolo articolo = null;
+        String query = "SELECT * FROM articolo WHERE matricola = ? LIMIT 1";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, matricola);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                articolo = new Articolo();
+                articolo.setId(rs.getInt("id"));
+                articolo.setMatricola(rs.getString("matricola"));
+                articolo.setNome(rs.getString("nome"));
+                articolo.setMarca(rs.getString("marca"));
+                articolo.setCompatibilita(rs.getString("compatibilita"));
+                articolo.setDdt(rs.getInt("ddt"));
+                articolo.setDdtSpedizione(rs.getInt("ddtSpedizione"));
+                articolo.setTecnico(rs.getString("tecnico"));
+                articolo.setPv(rs.getString("pv"));
+                articolo.setProvenienza(rs.getString("provenienza"));
+                articolo.setFornitore(rs.getString("fornitore"));
+
+                Date dataRicezione = rs.getDate("data_ricezione");
+                if (dataRicezione != null)
+                    articolo.setDataRic_DDT(dataRicezione.toLocalDate());
+
+                Date dataSpedizione = rs.getDate("data_spedizione");
+                if (dataSpedizione != null)
+                    articolo.setDataSpe_DDT(dataSpedizione.toLocalDate());
+
+                Date dataGaranzia = rs.getDate("data_garanzia");
+                if (dataGaranzia != null)
+                    articolo.setDataGaranzia(dataGaranzia.toLocalDate());
+
+                articolo.setNote(rs.getString("note"));
+                String statoStr = rs.getString("stato");
+
+                if (statoStr != null) {
+                    Stato stato = Stato.valueOf(statoStr.replace(" ", "_").toUpperCase());
+                    articolo.setStato(stato);
+                } else {
+                    articolo.setStato(Stato.GUASTO);
+                }
+                articolo.setImmagine(rs.getString("immagine"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return articolo;
+    }
+
     public void addArticolo(Articolo articolo) {
         String query = "INSERT INTO articolo (matricola, nome, marca, compatibilita,ddt,ddtSpedizione,tecnico,pv,provenienza,fornitore,data_ricezione,data_spedizione,data_garanzia,note,stato,immagine,richiesta_garanzia) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?,?)";
         try (Connection conn = DBConnection.getConnection();
@@ -331,7 +384,7 @@ public class ListaArticoli {
                     }
                 }
             }
-            NotificationService.createNotificaTemporaneaPerTutti(utenteModifica + " ha modificato un articolo");
+            NotificationService.createNotificaTemporaneaPerTutti(utenteModifica + " ha modificato: " + articolo.getNome() + "|#|dashboard?search=" + articolo.getMatricola() + "|#|" + articolo.getImmagine());
 
         } catch (SQLException e) {
             e.printStackTrace();

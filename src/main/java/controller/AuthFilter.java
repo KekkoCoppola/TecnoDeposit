@@ -32,9 +32,10 @@ public class AuthFilter implements Filter {
             "/register", // eventuale registrazione
             "/favicon.ico");
 
-    // Prefissi “aperti” per statici
+    // Prefissi “aperti” per statici e URL totem segreto
     private static final String[] WHITELIST_PREFIX = {
-            "/css/", "/js/", "/img/", "/ext-img/", "/images/", "/fonts/", "/static/", "/assets/"
+            "/css/", "/js/", "/img/", "/ext-img/", "/images/", "/fonts/", "/static/", "/assets/",
+            "/t-8f92a1b3c4d5e6f7g8h9i0j"
     };
 
     // Estensioni statiche da lasciare passare
