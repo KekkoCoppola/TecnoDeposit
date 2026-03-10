@@ -384,7 +384,7 @@ public class ListaArticoli {
                     }
                 }
             }
-            NotificationService.createNotificaTemporaneaPerTutti(utenteModifica + " ha modificato un articolo");
+            NotificationService.createNotificaTemporaneaPerTutti(utenteModifica + " ha modificato: " + articolo.getNome() + "|#|dashboard?search=" + articolo.getMatricola() + "|#|" + articolo.getImmagine());
 
         } catch (SQLException e) {
             e.printStackTrace();

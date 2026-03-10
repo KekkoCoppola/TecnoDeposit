@@ -13,14 +13,16 @@ import dao.DBConnection;
 public class NotificationService {
 	public NotificationService() {}
 	
-	public List<Notification> getUnreadNotifications(int userId) throws SQLException {
-	    String sql = "SELECT * FROM notifications WHERE user_id = ? AND is_read = FALSE ORDER BY created_at DESC";
+	public List<Notification> getRecentNotifications(int userId) throws SQLException {
+	    String sql = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50";
 	    try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql)) {
 	        stmt.setInt(1, userId);
 	        ResultSet rs = stmt.executeQuery();
 	        List<Notification> notifications = new ArrayList<>();
 	        while (rs.next()) {
-	            notifications.add(new Notification(rs.getInt("id"),userId, rs.getString("message"), rs.getTimestamp("created_at")));
+	            Notification n = new Notification(rs.getInt("id"),userId, rs.getString("message"), rs.getTimestamp("created_at"));
+	            n.setRead(rs.getBoolean("is_read"));
+	            notifications.add(n);
 	        }
 	        return notifications;
 	    }
@@ -92,6 +94,22 @@ public class NotificationService {
 	    String sql = "UPDATE notifications SET is_read = TRUE WHERE id = ?";
 	    try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql)) {
 	        stmt.setInt(1, notificationId);
+	        stmt.executeUpdate();
+	    }
+	}
+	
+	public void deleteNotification(int notificationId) throws SQLException {
+	    String sql = "DELETE FROM notifications WHERE id = ?";
+	    try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql)) {
+	        stmt.setInt(1, notificationId);
+	        stmt.executeUpdate();
+	    }
+	}
+	
+	public void deleteAllNotifications(int userId) throws SQLException {
+	    String sql = "DELETE FROM notifications WHERE user_id = ?";
+	    try (PreparedStatement stmt = DBConnection.getConnection().prepareStatement(sql)) {
+	        stmt.setInt(1, userId);
 	        stmt.executeUpdate();
 	    }
 	}
