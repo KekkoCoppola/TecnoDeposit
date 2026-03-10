@@ -29,7 +29,7 @@ public class NotificationServlet extends HttpServlet {
 	    try (Connection conn = DBConnection.getConnection()) {
 	        int userId = UserService.getIdByUsername((String) session.getAttribute("username"), conn);
 	        NotificationService notificationService = new NotificationService();
-	        List<Notification> notifications = notificationService.getUnreadNotifications(userId);
+	        List<Notification> notifications = notificationService.getRecentNotifications(userId);
 
 	        resp.setContentType("application/json");
 	        StringBuilder sb = new StringBuilder();
@@ -39,7 +39,9 @@ public class NotificationServlet extends HttpServlet {
 	            sb.append("{")
 	              .append("\"id\":").append(n.getId()).append(",")
 	              .append("\"userId\":").append(n.getUserId()).append(",")
-	              .append("\"message\":\"").append(n.getMessage().replace("\"", "\\\"")).append("\",")
+	              .append("\"message\":\"").append(n.getDisplayText().replace("\"", "\\\"")).append("\",")
+	              .append("\"link\":\"").append(n.getLink().replace("\"", "\\\"")).append("\",")
+	              .append("\"image\":\"").append(n.getImage().replace("\"", "\\\"")).append("\",")
 	              .append("\"read\":").append(n.isRead()).append(",")
 	              .append("\"createdAt\":\"").append(n.getCreatedAt()).append("\"")
 	              .append("}");
@@ -80,6 +82,38 @@ public class NotificationServlet extends HttpServlet {
 		}
 
         resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("username") == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        String action = req.getParameter("action");
+        String idParam = req.getParameter("id");
+        NotificationService notificationService = new NotificationService();
+
+        try {
+            if ("deleteAll".equals(action)) {
+                try (Connection conn = DBConnection.getConnection()) {
+                    int userId = UserService.getIdByUsername((String) session.getAttribute("username"), conn);
+                    notificationService.deleteAllNotifications(userId);
+                }
+            } else if (idParam != null) {
+                int notificationId = Integer.parseInt(idParam);
+                notificationService.deleteNotification(notificationId);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } catch (SQLException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
     }
 }
 

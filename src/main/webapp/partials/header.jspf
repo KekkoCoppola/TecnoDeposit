@@ -1,4 +1,4 @@
-﻿<%
+<%
     String mail2 = (String) session.getAttribute("mail");
     String username2 = (String) session.getAttribute("username");
     String titolo = (String) request.getAttribute("pageTitle");
@@ -88,10 +88,14 @@
 						         class="flex-1 overflow-y-auto divide-y divide-gray-200">
 						      <!-- Qui caricheremo le notifiche -->
 						    </div>
-						     <button id="mark-all-read" 
-							          class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800">
-							    Segna tutte come lette
+                             <div class="px-4 py-2 bg-gray-50 flex justify-between items-center text-sm font-medium rounded-b-md">
+						      <button id="mark-all-read" class="text-gray-600 hover:text-gray-800 flex items-center gap-1.5 transition-colors">
+							    <i class="fas fa-check-double"></i> Lette
 							  </button>
+                              <button id="delete-all-notifications" class="text-red-600 hover:text-red-800 flex items-center gap-1.5 transition-colors">
+							    <i class="fas fa-trash-alt"></i> Svuota
+							  </button>
+                             </div>
 						  </div>
 						</div>
 
@@ -337,17 +341,17 @@
             }
           
 
-            markAllReadBtn.addEventListener('click', async () => {
+            markAllReadBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 try {
-
-                    const notificationItems = document.getElementById('notification-items').children;
                     const response = await fetch('<%=request.getContextPath()%>'+'/api/notifications');
                     const notifications = await response.json();
                     
                     if (notifications.length > 0) {
-                        notifications.forEach(n => {
-                                markNotificationAsRead(n.id);
-                        });
+                        for(const n of notifications) {
+                            if(!n.read) await fetch('<%=request.getContextPath()%>'+'/api/notifications?id='+n.id, { method: 'POST' });
+                        }
                     }
 
                     fetchNotifications(); 
@@ -357,15 +361,30 @@
                 }
             });
 
+            const deleteAllBtn = document.getElementById('delete-all-notifications');
+            if(deleteAllBtn) {
+                deleteAllBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try {
+                        await fetch('<%=request.getContextPath()%>'+'/api/notifications?action=deleteAll', { method: 'DELETE' });
+                        fetchNotifications();
+                    } catch (error) {
+                        console.error('Errore nel cancellare tutte le notifiche:', error);
+                    }
+                });
+            }
+
             async function fetchNotifications() {
             	  try {
             	    const response = await fetch( '<%=request.getContextPath()%>' + '/api/notifications');
             	    if (!response.ok) throw new Error('Network response was not ok');
             	    const notifications = await response.json();
 
-            	    // badge
-            	    if (notifications.length > 0) {
-            	      notificationBadge.textContent = notifications.length;
+            	    // badge basato solo su notifiche non lette
+                    const unreadCount = notifications.filter(n => !n.read).length;
+            	    if (unreadCount > 0) {
+            	      notificationBadge.textContent = unreadCount;
             	      notificationBadge.style.display = 'inline-flex';
             	    } else {
             	      notificationBadge.style.display = 'none';
@@ -390,21 +409,89 @@
             	          : '';
 
             	        const li = document.createElement('div');
-            	        li.className = 'p-2 border-b border-gray-200 cursor-pointer';
+                        // Stile base della scheda notifica
+            	        li.className = 'p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 flex gap-3 items-start transition-colors duration-200';
+                        if (!n.read) li.classList.add('bg-blue-50');
+
+                        // Immagine/Icona
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'flex-shrink-0 mt-1';
+                        // determina url immagine (o icona di fallback)
+                        let imgUrl = n.image && n.image.trim() !== '' && n.image !== 'null' ? n.image : '';
+                        if(imgUrl !== '') {
+                            const img = document.createElement('img');
+                            img.src = imgUrl;
+                            img.className = 'w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm';
+                            img.onerror = function() { this.src = 'img/Icon.png'; };
+                            imgContainer.appendChild(img);
+                        } else {
+                            // Icona default se non c'e' immagine (es per richieste materiale)
+                            const iconBox = document.createElement('div');
+                            iconBox.className = 'w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center border border-red-100 shadow-sm';
+                            iconBox.innerHTML = '<i class="fas fa-bell"></i>';
+                            if(n.message.toLowerCase().includes('richiesta')) iconBox.innerHTML = '<i class="fas fa-clipboard-list"></i>';
+                            imgContainer.appendChild(iconBox);
+                        }
+
+                        // Testo e Meta
+                        const textContainer = document.createElement('div');
+                        textContainer.className = 'flex-1 min-w-0';
 
             	        const msg = document.createElement('div');
+                        msg.className = 'text-sm text-gray-800 break-words leading-tight';
+                        if (!n.read) msg.classList.add('font-semibold');
             	        msg.textContent = n.message;
 
             	        const meta = document.createElement('div');
-            	        meta.className = 'text-xs text-gray-500 mt-1';
-            	        meta.textContent = formatted; // es. "04/09/2025, 21:07"
+            	        meta.className = 'text-xs text-gray-400 mt-1.5 flex items-center gap-1.5 font-medium';
+            	        meta.innerHTML = '<i class="far fa-clock"></i> ' + formatted;
 
-            	        li.appendChild(msg);
-            	        if (formatted) li.appendChild(meta);
+            	        textContainer.appendChild(msg);
+            	        if (formatted) textContainer.appendChild(meta);
+
+                        // Azioni Rapide (Check e Trash)
+                        const actionContainer = document.createElement('div');
+                        actionContainer.className = 'flex-shrink-0 flex items-center space-x-1 opacity-75';
+
+                        if(!n.read) {
+                            const readBtn = document.createElement('button');
+                            readBtn.className = 'p-1.5 text-gray-400 hover:text-blue-600 rounded flex items-center justify-center transition-colors';
+                            readBtn.title = 'Segna come letta';
+                            readBtn.innerHTML = '<i class="fas fa-check"></i>';
+                            readBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                markNotificationAsRead(n.id);
+                            });
+                            actionContainer.appendChild(readBtn);
+                        }
+
+                        const delBtn = document.createElement('button');
+                        delBtn.className = 'p-1.5 text-gray-400 hover:text-red-600 rounded flex items-center justify-center transition-colors';
+                        delBtn.title = 'Elimina notifica';
+                        delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                        delBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            deleteNotification(n.id);
+                        });
+                        actionContainer.appendChild(delBtn);
+
+                        li.appendChild(imgContainer);
+                        li.appendChild(textContainer);
+                        li.appendChild(actionContainer);
 
             	        li.addEventListener('click', () => {
+                          // Segna come letta e rimuovi l'highlight visivo
             	          markNotificationAsRead(n.id);
-            	          li.style.fontWeight = 'normal';
+            	          li.classList.remove('bg-blue-50');
+                          msg.classList.remove('font-semibold');
+                          
+                          // Redirect se c'e' un link
+                          if(n.link && n.link.trim() !== '' && n.link !== 'null') {
+                              // aggiungiamo ritardo per far passare la chiamata fetch mark come letta (visto che c'è re-render in js ma il refresh della page la troncherebbe)
+                              setTimeout(() => {
+                                  window.location.href = n.link;
+                              }, 150);
+                          }
             	        });
 
             	        notificationItems.appendChild(li);
@@ -427,6 +514,15 @@
                     fetchNotifications();
                 } catch (error) {
                     console.error('Errore nel segnare notifica come letta:', error);
+                }
+            }
+
+            async function deleteNotification(notificationId) {
+                try {
+                     await fetch('<%=request.getContextPath()%>'+'/api/notifications?id='+notificationId, { method: 'DELETE' });
+                    fetchNotifications();
+                } catch (error) {
+                    console.error('Errore nel cancellare notifica:', error);
                 }
             }
 

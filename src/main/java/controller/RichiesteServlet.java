@@ -71,7 +71,7 @@ public class RichiesteServlet extends HttpServlet {
             try {
                 Richiesta ru = RichiestaDAO.getRichiestaById(id);
                 NotificationService.createNotification(ru.getRichiedenteId(),
-                        "La tua richiesta materiale è stata " + nuovoStato);
+                        "La tua richiesta materiale è stata " + nuovoStato + "|#|richieste-materiale|#|");
                 rd.updateRichiesta(id, nuovoStato);
 
                 ListaArticoli la = new ListaArticoli();
@@ -188,7 +188,7 @@ public class RichiesteServlet extends HttpServlet {
             List<Integer> ids = UserService.getIdMagazzinieriEAdmin(DBConnection.getConnection());
             for (int id : ids)
                 NotificationService.createNotification(id,
-                        "Nuova richiesta materiale da " + session.getAttribute("username"));
+                        "Nuova richiesta materiale da " + session.getAttribute("username") + "|#|richieste-materiale|#|");
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

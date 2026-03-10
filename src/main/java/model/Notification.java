@@ -74,4 +74,30 @@ public class Notification {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    // --- Helper Metodi Parser Payload Nascosto (Senza alterare DB schema) ---
+    // Struttura message supposta: "Testo per Utente|#|url_link|#|url_immagine"
+
+    public String getDisplayText() {
+        if(message != null && message.contains("|#|")) {
+            return message.split("\\|#\\|")[0];
+        }
+        return message;
+    }
+
+    public String getLink() {
+        if(message != null && message.contains("|#|")) {
+            String[] parts = message.split("\\|#\\|");
+            return parts.length > 1 ? parts[1] : "";
+        }
+        return "";
+    }
+
+    public String getImage() {
+        if(message != null && message.contains("|#|")) {
+            String[] parts = message.split("\\|#\\|");
+            return parts.length > 2 ? parts[2] : "";
+        }
+        return "";
+    }
 }
