@@ -55,3 +55,25 @@ self.addEventListener('fetch', event => {
             .catch(() => caches.match(event.request))
     );
 });
+
+// Handle notification clicks for ServiceWorker-created notifications
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    if (event.notification.data && event.notification.data.url && event.notification.data.url !== 'null') {
+        event.waitUntil(
+            clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
+                // Check if there is already a window/tab open with the target URL
+                for (let i = 0; i < windowClients.length; i++) {
+                    let client = windowClients[i];
+                    if (client.url.includes(event.notification.data.url) && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                // If not, open a new window/tab
+                if (clients.openWindow) {
+                    return clients.openWindow(event.notification.data.url);
+                }
+            })
+        );
+    }
+});

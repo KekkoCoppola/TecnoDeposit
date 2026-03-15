@@ -72,10 +72,10 @@
                                 style="display: flex; width: 100%; height: 100%; max-height: 480px; gap: 30px; align-items: stretch; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-left: 8px solid var(--totem-primary);">
                                 <div class="item-img-container"
                                     style="flex: 0 0 45%; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border-radius: 12px; overflow: hidden; padding: 15px;">
-                                    <% String primoImg=(primoArticolo.getImmagine() !=null &&
-                                        !primoArticolo.getImmagine().isEmpty() &&
-                                        !primoArticolo.getImmagine().equals("null")) ? primoArticolo.getImmagine() :
-                                        (request.getContextPath() + "/img/Icon.png" ); %>
+                                    <% String _imgVal = primoArticolo.getImmagine();
+                                       String primoImg = (_imgVal != null && !_imgVal.isEmpty() && !_imgVal.equals("null"))
+                                        ? (request.getContextPath() + "/" + _imgVal)
+                                        : (request.getContextPath() + "/img/Icon.png"); %>
                                         <img src="<%= primoImg %>" alt="Immagine Articolo"
                                             style="max-width: 100%; max-height: 100%; object-fit: contain;"
                                             onerror="this.src='${pageContext.request.contextPath}/img/Icon.png'">
@@ -162,10 +162,10 @@
                                                         <td style="padding: 4px 6px;">
                                                             <div
                                                                 style="width: 40px; height: 40px; border-radius: 6px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                                                <% String aImg=(a.getImmagine() !=null &&
-                                                                    !a.getImmagine().isEmpty() &&
-                                                                    !a.getImmagine().equals("null")) ? a.getImmagine() :
-                                                                    (request.getContextPath() + "/img/Icon.png" ); %>
+                                                                <% String _aImgVal = a.getImmagine();
+                                                                   String aImg = (_aImgVal != null && !_aImgVal.isEmpty() && !_aImgVal.equals("null"))
+                                                                    ? (request.getContextPath() + "/" + _aImgVal)
+                                                                    : (request.getContextPath() + "/img/Icon.png"); %>
                                                                     <img src="<%= aImg %>"
                                                                         style="max-width: 100%; max-height: 100%; object-fit: contain;"
                                                                         onerror="this.src='${pageContext.request.contextPath}/img/Icon.png'">

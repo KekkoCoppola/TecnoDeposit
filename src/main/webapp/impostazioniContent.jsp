@@ -285,6 +285,25 @@
 											</div>
 										</div>
 									</div>
+									<div class="p-4 hover:bg-gray-50">
+										<div class="flex items-center justify-between">
+											<div class="flex items-center">
+												<div class="fas fa-bell text-purple-600 bg-purple-100 p-2 rounded-full mr-4 w-8 h-8 flex items-center justify-center"></div>
+												<div class="flex-1">
+													<p class="text-sm font-medium text-purple-600">Notifiche Push (Richieste)</p>
+													<p class="text-xs text-gray-500">Ricevi avvisi sul dispositivo per nuove richieste materiale.</p>
+												</div>
+											</div>
+											<!-- Toggle Switch -->
+											<label for="pushToggle" class="flex items-center cursor-pointer">
+											  <div class="relative">
+												<input type="checkbox" id="pushToggle" class="sr-only">
+												<div class="block bg-gray-300 w-10 h-6 rounded-full transition-colors duration-300 ease-in-out" id="pushToggleBg"></div>
+												<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ease-in-out" id="pushToggleDot"></div>
+											  </div>
+											</label>
+										</div>
+									</div>
 									<div class="p-4 hover:bg-gray-50 rounded-xl border border-gray-200">
 										<form action="<%=request.getContextPath()%>/impostazioni" method="post"
 											enctype="multipart/form-data" id="importForm"
@@ -1086,6 +1105,65 @@
 						document.body.appendChild(toast);
 						setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 4000);
 					}
+
+					// ═══════════════════════════════════════════
+					// GESTIONE PUSH NOTIFICATIONS
+					// ═══════════════════════════════════════════
+					(() => {
+						const pushToggle = document.getElementById('pushToggle');
+						const pushToggleBg = document.getElementById('pushToggleBg');
+						const pushToggleDot = document.getElementById('pushToggleDot');
+						if (!pushToggle) return;
+
+						function updateToggleVisuals(isOn) {
+							if (isOn) {
+								pushToggleBg.classList.replace('bg-gray-300', 'bg-purple-600');
+								pushToggleDot.style.transform = 'translateX(100%)';
+							} else {
+								pushToggleBg.classList.replace('bg-purple-600', 'bg-gray-300');
+								pushToggleDot.style.transform = 'translateX(0)';
+							}
+						}
+
+						// Init from localStorage
+						const isPushEnabled = localStorage.getItem('tecno_push_enabled') === 'true';
+						pushToggle.checked = isPushEnabled;
+						updateToggleVisuals(isPushEnabled);
+
+						pushToggle.addEventListener('change', async (e) => {
+							const isChecked = e.target.checked;
+							
+							if (isChecked) {
+								// Request permission
+								if (!("Notification" in window)) {
+									alert("Questo browser non supporta le notifiche desktop/push.");
+									pushToggle.checked = false;
+									updateToggleVisuals(false);
+									return;
+								}
+								
+								let permission = Notification.permission;
+								if (permission === "default") {
+									permission = await Notification.requestPermission();
+								}
+								
+								if (permission === "granted") {
+									localStorage.setItem('tecno_push_enabled', 'true');
+									updateToggleVisuals(true);
+									showToast('Notifiche push attivate', 'success');
+								} else {
+									alert("Hai bloccato o rifiutato le notifiche. Modifica i permessi nelle impostazioni del browser.");
+									pushToggle.checked = false;
+									updateToggleVisuals(false);
+								}
+							} else {
+								// Disable
+								localStorage.setItem('tecno_push_enabled', 'false');
+								updateToggleVisuals(false);
+								showToast('Notifiche push disattivate', 'success');
+							}
+						});
+					})();
 
 					// ═══════════════════════════════════════════
 					// PAGINAZIONE TABELLA UTENTI

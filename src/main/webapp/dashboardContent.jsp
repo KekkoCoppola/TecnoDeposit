@@ -143,6 +143,39 @@
           <body>
             <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
+            <%-- === FLASH MATRICOLA ERROR TOAST (server-side) === --%>
+            <%
+              String flashMatricolaError = (String) session.getAttribute("FLASH_MATRICOLA_ERROR");
+              if (flashMatricolaError != null) {
+                session.removeAttribute("FLASH_MATRICOLA_ERROR");
+            %>
+            <div id="matricola-error-toast"
+              style="position:fixed;top:1.25rem;left:50%;transform:translateX(-50%);z-index:9999;
+                     display:flex;align-items:center;gap:0.6rem;
+                     background:#dc2626;color:#fff;padding:0.8rem 1.4rem;
+                     border-radius:0.75rem;box-shadow:0 4px 20px rgba(0,0,0,0.25);
+                     font-size:0.95rem;max-width:90vw;animation:slideDownToast .3s ease">
+              <i class="fas fa-exclamation-circle"></i>
+              <span><%=flashMatricolaError%></span>
+              <button onclick="document.getElementById('matricola-error-toast').remove()"
+                style="margin-left:0.8rem;background:transparent;border:none;color:#fff;cursor:pointer;font-size:1rem;"
+                aria-label="Chiudi">&#x2715;</button>
+            </div>
+            <style>
+              @keyframes slideDownToast {
+                from { opacity:0; transform:translateX(-50%) translateY(-12px); }
+                to   { opacity:1; transform:translateX(-50%) translateY(0); }
+              }
+            </style>
+            <script>
+              setTimeout(function() {
+                var t = document.getElementById('matricola-error-toast');
+                if (t) { t.style.transition='opacity .4s'; t.style.opacity='0'; setTimeout(function(){t.remove();},400); }
+              }, 5000);
+            </script>
+            <% } %>
+
+
             <!-- Main Content Area -->
             <main class="flex-1 overflow-y-auto p-6">
               <div class="mb-6 flex justify-between items-center">

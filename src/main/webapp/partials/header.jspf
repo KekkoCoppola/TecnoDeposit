@@ -375,6 +375,8 @@
                 });
             }
 
+            let globalLastNotificationId = parseInt(localStorage.getItem('tecno_last_notif_id') || "0");
+
             async function fetchNotifications() {
             	  try {
             	    const response = await fetch( '<%=request.getContextPath()%>' + '/api/notifications');
@@ -389,6 +391,55 @@
             	    } else {
             	      notificationBadge.style.display = 'none';
             	    }
+
+                    // Push Notification logic
+                    if (notifications.length > 0) {
+                        const newMaxId = Math.max(...notifications.map(n => n.id));
+                        
+                        // If we have seen notifications before and there are new ones
+                        if (globalLastNotificationId > 0 && newMaxId > globalLastNotificationId) {
+                            const isPushEnabled = localStorage.getItem('tecno_push_enabled') === 'true';
+                            
+                            if (isPushEnabled && ("Notification" in window) && Notification.permission === "granted") {
+                                // Find all new unread material requests
+                                const newPushes = notifications.filter(n => 
+                                    n.id > globalLastNotificationId && 
+                                    !n.read && 
+                                    n.message && 
+                                    n.message.toLowerCase().includes('richiesta')
+                                );
+                                
+                                newPushes.forEach(n => {
+                                    const title = "Nuova Richiesta Materiale";
+                                    const options = {
+                                        body: n.message,
+                                        icon: 'img/Icon.png',
+                                        badge: 'img/Icon.png',
+                                        data: { url: n.link }
+                                    };
+                                    
+                                    if (navigator.serviceWorker) {
+                                        navigator.serviceWorker.ready.then(reg => {
+                                            reg.showNotification(title, options);
+                                        }).catch(e => {
+                                            // Fallback to window Notification
+                                            const push = new Notification(title, options);
+                                            push.onclick = function() { window.focus(); if (this.data.url && this.data.url !== 'null') window.location.href = this.data.url; this.close(); };
+                                        });
+                                    } else {
+                                        const push = new Notification(title, options);
+                                        push.onclick = function() { window.focus(); if (this.data.url && this.data.url !== 'null') window.location.href = this.data.url; this.close(); };
+                                    }
+                                });
+                            }
+                        }
+                        
+                        // Update tracking ID
+                        if (newMaxId > globalLastNotificationId) {
+                            globalLastNotificationId = newMaxId;
+                            localStorage.setItem('tecno_last_notif_id', newMaxId.toString());
+                        }
+                    }
 
             	    // lista
             	    const notificationItems = document.getElementById('notification-items');

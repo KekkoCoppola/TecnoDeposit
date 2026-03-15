@@ -214,6 +214,31 @@ public class ListaArticoli {
         return articolo;
     }
 
+
+    /**
+     * Verifica se una matricola è già usata da un altro articolo nel DB.
+     *
+     * @param matricola la matricola da controllare (case-insensitive)
+     * @param excludeId ID dell'articolo da escludere (usare 0 in fase di inserimento)
+     * @return true se la matricola è già presente in un articolo diverso
+     */
+    public boolean matricolaExists(String matricola, int excludeId) {
+        if (matricola == null || matricola.trim().isEmpty()) return false;
+        // SELECT 1 + LIMIT 1 → il DB si ferma al primo match: O(1) spazio, O(1) tempo effettivo
+        String sql = "SELECT 1 FROM articolo WHERE matricola = ? AND id != ? LIMIT 1";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, matricola.trim());
+            stmt.setInt(2, excludeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void addArticolo(Articolo articolo) {
         String query = "INSERT INTO articolo (matricola, nome, marca, compatibilita,ddt,ddtSpedizione,tecnico,pv,provenienza,fornitore,data_ricezione,data_spedizione,data_garanzia,note,stato,immagine,richiesta_garanzia) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?,?)";
         try (Connection conn = DBConnection.getConnection();

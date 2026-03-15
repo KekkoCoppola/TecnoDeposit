@@ -80,18 +80,40 @@ public class ArticoloServlet extends HttpServlet {
                     garanziaFlag);
             ListaArticoli listaArticoli = new ListaArticoli();
 
-            if ("add".equals(action))
+            if ("add".equals(action)) {
+                // --- CONTROLLO UNICITÀ MATRICOLA (server-side, O(1)) ---
+                if (!matricola.isEmpty() && listaArticoli.matricolaExists(matricola, 0)) {
+                    HttpSession sess = request.getSession(false);
+                    if (sess != null) {
+                        sess.setAttribute("FLASH_MATRICOLA_ERROR",
+                                "Matricola \"" + matricola + "\" già presente in magazzino. Inserimento annullato.");
+                    }
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
+                    return;
+                }
                 listaArticoli.addArticolo(articolo);
+            }
             if ("update".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 articolo.setId(id);
                 System.out.println("ID ARTICOLO " + id);
+                // --- CONTROLLO UNICITÀ MATRICOLA (server-side, esclude l'articolo stesso) ---
+                if (!matricola.isEmpty() && listaArticoli.matricolaExists(matricola, id)) {
+                    HttpSession sess = request.getSession(false);
+                    if (sess != null) {
+                        sess.setAttribute("FLASH_MATRICOLA_ERROR",
+                                "Matricola \"" + matricola + "\" già usata da un altro articolo. Modifica annullata.");
+                    }
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
+                    return;
+                }
                 try {
                     listaArticoli.updateArticolo(articolo, username);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
+
             if ("assegna".equals(assegnaAction)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 articolo.setId(id);
